@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Wishlist · weave.ing</title>
+
+    <meta name="description"
+          content="Your saved crochet patterns on weave.ing.">
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/wishlist.css}">
+
+</head>
+
+<body class="wishlist-page">
+
+<header class="wishlist-header">
+
+    <div class="wishlist-header-inner">
+
+        <a th:href="@{/home}"
+           class="logo"
+           aria-label="weave.ing home">
+            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
+        </a>
+
+        <a th:href="@{/dashboard}"
+           class="back-dashboard">
+
+            Dashboard
+
+        </a>
+
+    </div>
+
+</header>
+
+
+<main class="wishlist-main">
+
+    <section class="wishlist-container">
+
+
+        <div class="wishlist-heading">
+
+            <div>
+
+                <span class="wishlist-eyebrow">
+                    SAVED FOR LATER
+                </span>
+
+                <h1>
+                    My Wishlist
+                </h1>
+
+                <p>
+                    Patterns you loved enough to keep for your next project.
+                </p>
+
+            </div>
+
+
+            <div class="wishlist-actions"
+                 th:unless="${#lists.isEmpty(wishlistItems)}">
+
+                <form th:action="@{/wishlist/buy-all}"
+                      method="post">
+
+                    <button type="submit"
+                            class="primary-button">
+
+                        Buy All
+
+                    </button>
+
+                </form>
+
+
+                <form th:action="@{/wishlist/delete-all}"
+                      method="post"
+                      onsubmit="return confirm('Remove all saved patterns from your wishlist?');">
+
+                    <button type="submit"
+                            class="text-button">
+
+                        Delete All
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <div class="wishlist-message"
+             th:if="${wishlistMessage}"
+             th:text="${wishlistMessage}">
+
+            Wishlist message.
+
+        </div>
+
+
+        <div class="wishlist-grid"
+             th:unless="${#lists.isEmpty(wishlistItems)}">
+
+
+            <article class="wishlist-card"
+                     th:each="item : ${wishlistItems}">
+
+
+                <a th:href="@{/patterns/{id}(id=${item.pattern.id})}"
+                   class="wishlist-image"
+                   th:attr="aria-label=|View ${item.pattern.title}|">
+
+                    <img th:if="${item.pattern.imagePath != null}"
+                         th:src="${item.pattern.imagePath}"
+                         th:alt="${item.pattern.title}">
+
+                    <span th:unless="${item.pattern.imagePath != null}"
+                          class="image-placeholder">
+
+                        ♡
+
+                    </span>
+
+                </a>
+
+
+                <div class="wishlist-card-content">
+
+
+                    <div class="wishlist-card-top">
+
+                        <div class="wishlist-title-wrap">
+
+                            <h2 th:text="${item.pattern.title}">
+                                Crochet Pattern
+                            </h2>
+
+                            <p th:text="'@' + ${item.pattern.creator.username}">
+                                @creator
+                            </p>
+
+                        </div>
+
+
+                        <span class="wishlist-price"
+                              th:if="${item.pattern.free}">
+
+                            Free
+
+                        </span>
+
+
+                        <span class="wishlist-price"
+                              th:unless="${item.pattern.free}"
+                              th:text="'Rs ' + ${#numbers.formatDecimal(item.pattern.price, 0, 0)}">
+
+                            Rs 0
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="wishlist-meta">
+
+
+                        <span class="difficulty-meta"
+                              th:text="${item.pattern.difficulty}">
+
+                            Beginner
+
+                        </span>
+
+
+                        <span class="save-meta">
+
+                            <svg width="14"
+                                 height="14"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.8"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 aria-hidden="true">
+
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
+
+                            </svg>
+
+                            <span th:text="${wishlistCounts[item.pattern.id]}">
+                                0
+                            </span>
+
+                            <span>
+                                saves
+                            </span>
+
+                        </span>
+
+
+                        <span class="download-meta">
+
+                            <svg width="14"
+                                 height="14"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.8"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 aria-hidden="true">
+
+                                <path d="M12 3v12"/>
+
+                                <path d="m7 10 5 5 5-5"/>
+
+                                <path d="M5 19h14a2 2 0 0 0 2-2v-2"/>
+
+                                <path d="M5 15v2a2 2 0 0 0 2 2"/>
+
+                            </svg>
+
+                            <span th:text="${item.pattern.downloads}">
+                                0
+                            </span>
+
+                            <span>
+                                downloads
+                            </span>
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="wishlist-card-actions">
+
+
+                        <a th:href="@{/patterns/{id}(id=${item.pattern.id})}"
+                           class="secondary-button">
+
+                            View Pattern
+
+                        </a>
+
+
+                        <form th:if="${!item.pattern.free}"
+                              th:action="@{/wishlist/buy/{id}(id=${item.pattern.id})}"
+                              method="post">
+
+                            <button type="submit"
+                                    class="primary-button">
+
+                                Buy This Pattern
+
+                            </button>
+
+                        </form>
+
+
+                        <a th:if="${item.pattern.free}"
+                           th:href="@{/patterns/{id}(id=${item.pattern.id})}"
+                           class="primary-button">
+
+                            Get Pattern
+
+                        </a>
+
+
+                        <form th:action="@{/wishlist/remove/{id}(id=${item.pattern.id})}"
+                              method="post">
+
+                            <button type="submit"
+                                    class="remove-button"
+                                    aria-label="Remove from wishlist"
+                                    title="Remove from wishlist">
+
+                                <svg width="17"
+                                     height="17"
+                                     viewBox="0 0 24 24"
+                                     fill="currentColor"
+                                     aria-hidden="true">
+
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54z"/>
+
+                                </svg>
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+
+
+        <div class="wishlist-empty"
+             th:if="${#lists.isEmpty(wishlistItems)}">
+
+
+            <div class="empty-heart">
+
+                ♡
+
+            </div>
+
+
+            <span class="wishlist-eyebrow">
+                YOUR NEXT PROJECT
+            </span>
+
+
+            <h2>
+                Your wishlist is waiting
+            </h2>
+
+
+            <p>
+                Save patterns you love and come back when you're ready to make them.
+            </p>
+
+
+            <a th:href="@{/home}"
+               class="primary-button">
+
+                Browse Patterns
+
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

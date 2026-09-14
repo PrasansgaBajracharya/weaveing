@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Report Vacancy — weave.ing</title>
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/vacancies.css}">
+
+</head>
+
+<body>
+
+<nav class="vacancy-nav">
+
+    <div class="vacancy-nav-inner">
+
+        <a th:href="@{/home}"
+           class="vacancy-logo">
+            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
+        </a>
+
+        <div class="nav-actions">
+
+            <a th:href="@{/vacancies}"
+               class="nav-link">
+                Vacancies
+            </a>
+
+            <a th:href="@{/profile}"
+               class="nav-link">
+                Profile
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<main class="vacancy-page report-page">
+
+    <div class="form-page">
+
+        <a th:href="@{/vacancies/{id}(id=${vacancy.id})}"
+           class="back-link">
+            ← Back to vacancy
+        </a>
+
+
+        <section class="form-card report-card">
+
+            <div class="form-heading">
+
+                <span class="eyebrow">
+                    COMMUNITY SAFETY
+                </span>
+
+                <h1>
+                    Report this vacancy
+                </h1>
+
+                <p>
+                    Help us keep weave.ing a safe and useful
+                    space for the crochet community.
+                </p>
+
+            </div>
+
+
+            <div class="report-vacancy-preview">
+
+                <span class="report-preview-label">
+                    YOU ARE REPORTING
+                </span>
+
+                <h2 th:text="${vacancy.title}">
+                    Vacancy title
+                </h2>
+
+                <p>
+                    Posted by
+                    <strong th:text="${vacancy.postedBy.username}">
+                        username
+                    </strong>
+                </p>
+
+            </div>
+
+
+            <form th:action="@{/vacancies/{id}/report(id=${vacancy.id})}"
+                  th:object="${report}"
+                  method="post"
+                  class="report-form">
+
+
+                <div class="form-field">
+
+                    <label>
+                        Why are you reporting this vacancy?
+                    </label>
+
+                    <p class="field-help">
+                        Choose the reason that best describes
+                        the problem.
+                    </p>
+
+
+                    <div class="report-reasons">
+
+                        <label class="report-reason"
+                               th:each="reason : ${reasons}">
+
+                            <input type="radio"
+                                   th:field="*{reason}"
+                                   th:value="${reason.name()}">
+
+                            <span class="report-radio"></span>
+
+
+                            <div class="report-reason-copy">
+
+                                <strong th:if="${reason.name() == 'SPAM'}">
+                                    Spam
+                                </strong>
+
+                                <strong th:if="${reason.name() == 'MISLEADING'}">
+                                    Misleading information
+                                </strong>
+
+                                <strong th:if="${reason.name() == 'INAPPROPRIATE'}">
+                                    Inappropriate content
+                                </strong>
+
+                                <strong th:if="${reason.name() == 'UNRELATED'}">
+                                    Unrelated to crochet
+                                </strong>
+
+                                <strong th:if="${reason.name() == 'OTHER'}">
+                                    Other
+                                </strong>
+
+
+                                <small th:if="${reason.name() == 'SPAM'}">
+                                    Repeated, promotional, or unwanted content.
+                                </small>
+
+                                <small th:if="${reason.name() == 'MISLEADING'}">
+                                    The opportunity appears false or deceptive.
+                                </small>
+
+                                <small th:if="${reason.name() == 'INAPPROPRIATE'}">
+                                    The content is unsafe, offensive, or unsuitable.
+                                </small>
+
+                                <small th:if="${reason.name() == 'UNRELATED'}">
+                                    The vacancy does not belong on the crochet board.
+                                </small>
+
+                                <small th:if="${reason.name() == 'OTHER'}">
+                                    Something else needs the moderation team's attention.
+                                </small>
+
+                            </div>
+
+                        </label>
+
+                    </div>
+
+
+                    <p class="field-error"
+                       th:if="${error}"
+                       th:text="${error}">
+                        Please choose a reason.
+                    </p>
+
+                </div>
+
+
+                <div class="form-field">
+
+                    <label for="details">
+                        Additional details
+                        <span class="optional-label">
+                            Optional
+                        </span>
+                    </label>
+
+                    <p class="field-help">
+                        Tell us anything that may help our
+                        moderation team understand the issue.
+                    </p>
+
+                    <textarea id="details"
+                              th:field="*{details}"
+                              maxlength="1000"
+                              rows="6"
+                              placeholder="What seems wrong with this vacancy?"></textarea>
+
+                    <div class="character-help">
+                        Maximum 1000 characters
+                    </div>
+
+                </div>
+
+
+                <div class="report-notice">
+
+                    <div class="report-notice-icon">
+                        !
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            A report does not automatically mean
+                            the vacancy has violated our rules.
+                        </strong>
+
+                        <p>
+                            Our moderation team will review the
+                            report and take appropriate action
+                            if necessary.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <a th:href="@{/vacancies/{id}(id=${vacancy.id})}"
+                       class="cancel-button">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="primary-button report-submit-button">
+                        Submit report
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<style>
+
+    .report-page {
+        min-height: calc(100vh - 80px);
+        padding-top: 48px;
+        padding-bottom: 80px;
+    }
+
+    .report-card {
+        max-width: 760px;
+        margin: 0 auto;
+    }
+
+    .report-card .form-heading {
+        margin-bottom: 30px;
+    }
+
+    .report-card .form-heading h1 {
+        margin-bottom: 10px;
+    }
+
+    .report-card .form-heading p {
+        max-width: 580px;
+    }
+
+    .report-vacancy-preview {
+        padding: 20px 22px;
+        margin-bottom: 32px;
+        background: var(--beige-light);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+    }
+
+    .report-preview-label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: .68rem;
+        font-weight: 800;
+        letter-spacing: .13em;
+    }
+
+    .report-vacancy-preview h2 {
+        margin: 0 0 6px;
+        color: var(--brown-dark);
+        font-family: var(--font-display);
+        font-size: 1.35rem;
+        font-weight: 600;
+    }
+
+    .report-vacancy-preview p {
+        margin: 0;
+        color: var(--muted);
+        font-size: .82rem;
+    }
+
+    .report-vacancy-preview strong {
+        color: var(--brown);
+    }
+
+    .report-form {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .report-form .form-field > label {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--brown-dark);
+        font-size: .9rem;
+        font-weight: 700;
+    }
+
+    .optional-label {
+        margin-left: 7px;
+        color: var(--muted);
+        font-size: .7rem;
+        font-weight: 500;
+    }
+
+    .report-form .field-help {
+        margin: 0 0 14px;
+        color: var(--muted);
+        font-size: .78rem;
+        line-height: 1.55;
+    }
+
+    .report-reasons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .report-reason {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 17px 18px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--white);
+        cursor: pointer;
+        transition:
+                border-color .2s ease,
+                background .2s ease,
+                transform .2s ease,
+                box-shadow .2s ease;
+    }
+
+    .report-reason:hover {
+        border-color: rgba(99, 77, 64, .32);
+        background: var(--beige-light);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .report-reason input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .report-radio {
+        width: 19px;
+        height: 19px;
+        flex: 0 0 19px;
+        margin-top: 2px;
+        border: 1.5px solid var(--brown-light);
+        border-radius: 50%;
+        position: relative;
+        box-sizing: border-box;
+    }
+
+    .report-reason input:checked + .report-radio {
+        border-color: var(--brown);
+        background: var(--brown);
+    }
+
+    .report-reason input:checked + .report-radio::after {
+        content: "";
+        position: absolute;
+        width: 7px;
+        height: 7px;
+        top: 50%;
+        left: 50%;
+        border-radius: 50%;
+        background: var(--white);
+        transform: translate(-50%, -50%);
+    }
+
+    .report-reason:has(input:checked) {
+        border-color: var(--brown);
+        background: var(--beige-light);
+        box-shadow: 0 8px 25px rgba(74, 56, 48, .08);
+    }
+
+    .report-reason-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+    }
+
+    .report-reason-copy strong {
+        color: var(--brown-dark);
+        font-size: .88rem;
+        font-weight: 700;
+    }
+
+    .report-reason-copy small {
+        color: var(--muted);
+        font-size: .76rem;
+        line-height: 1.5;
+    }
+
+    .report-form textarea {
+        width: 100%;
+        min-height: 145px;
+        padding: 15px 16px;
+        box-sizing: border-box;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        outline: none;
+        resize: vertical;
+        background: var(--white);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: .88rem;
+        line-height: 1.6;
+        transition:
+                border-color .2s ease,
+                box-shadow .2s ease;
+    }
+
+    .report-form textarea:focus {
+        border-color: var(--brown-light);
+        box-shadow: 0 0 0 4px rgba(99, 77, 64, .08);
+    }
+
+    .character-help {
+        margin-top: 7px;
+        color: var(--muted);
+        font-size: .7rem;
+        text-align: right;
+    }
+
+    .report-notice {
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+        padding: 17px 18px;
+        border: 1px solid rgba(99, 77, 64, .12);
+        border-radius: 16px;
+        background: var(--beige-mid);
+    }
+
+    .report-notice-icon {
+        width: 28px;
+        height: 28px;
+        flex: 0 0 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: var(--beige);
+        color: var(--brown);
+        font-size: .8rem;
+        font-weight: 800;
+    }
+
+    .report-notice strong {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--brown-dark);
+        font-size: .78rem;
+        line-height: 1.5;
+    }
+
+    .report-notice p {
+        margin: 0;
+        color: var(--muted);
+        font-size: .74rem;
+        line-height: 1.55;
+    }
+
+    .report-submit-button {
+        border: 0;
+        cursor: pointer;
+    }
+
+    @media (max-width: 620px) {
+
+        .report-page {
+            padding-top: 30px;
+            padding-bottom: 50px;
+        }
+
+        .report-vacancy-preview {
+            padding: 17px;
+        }
+
+        .report-reason {
+            padding: 15px;
+        }
+
+        .report-reason-copy strong {
+            font-size: .84rem;
+        }
+
+        .report-reason-copy small {
+            font-size: .72rem;
+        }
+
+        .report-notice {
+            padding: 15px;
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .form-actions .primary-button,
+        .form-actions .cancel-button {
+            width: 100%;
+            justify-content: center;
+            text-align: center;
+        }
+
+    }
+
+</style>
+
+</body>
+</html>

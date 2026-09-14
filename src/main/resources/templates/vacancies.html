@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Vacancies — weave.ing</title>
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/vacancies.css}">
+
+</head>
+
+<body>
+
+<nav class="vacancy-nav">
+
+    <div class="vacancy-nav-inner">
+
+        <a th:href="@{/home}"
+           class="vacancy-logo">
+
+            <img class="vacancy-logo-image"
+                 th:src="@{/assets/images/logo.png}"
+                 alt="weave.ing">
+
+        </a>
+
+        <div class="nav-actions">
+
+            <a th:href="@{/home}"
+               class="nav-link">
+
+                Marketplace
+
+            </a>
+
+            <a th:href="@{/profile}"
+               class="nav-link">
+
+                Profile
+
+            </a>
+
+            <a th:href="@{/dashboard}"
+               class="nav-link">
+
+                Dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<main class="vacancy-page">
+
+    <section class="vacancy-hero">
+
+        <div>
+
+            <span class="eyebrow">
+                WEAVE.ING OPPORTUNITIES
+            </span>
+
+            <h1>
+                Find your next<br>
+                crochet opportunity.
+            </h1>
+
+            <p>
+                Discover crochet-related work posted by people
+                in the weave.ing community.
+            </p>
+
+        </div>
+
+        <a th:href="@{/vacancies/new}"
+           class="primary-button">
+
+            <span>+</span>
+
+            Post a Vacancy
+
+        </a>
+
+    </section>
+
+
+    <section class="vacancy-board">
+
+        <div class="board-heading">
+
+            <div>
+
+                <h2>
+                    Open vacancies
+                </h2>
+
+                <p>
+                    Explore open and closed opportunities from the community.
+                </p>
+
+            </div>
+
+            <span class="vacancy-count"
+                  th:text="${#lists.size(vacancies)} + ' listings'">
+
+                0 listings
+
+            </span>
+
+        </div>
+
+
+        <div class="vacancy-grid"
+             th:if="${!#lists.isEmpty(vacancies)}">
+
+            <article class="vacancy-card"
+                     th:each="vacancy : ${vacancies}">
+
+                <div class="card-top">
+
+                    <span class="status-pill"
+                          th:classappend="${vacancy.status.name() == 'CLOSED'} ? ' closed' : ' open'"
+                          th:text="${vacancy.status}">
+                        OPEN
+                    </span>
+
+                    <span class="deadline"
+                          th:text="'Deadline · ' + ${#temporals.format(vacancy.deadline, 'dd MMM yyyy')}">
+
+                        Deadline · 30 Sep 2026
+
+                    </span>
+
+                </div>
+
+
+                <h3 th:text="${vacancy.title}">
+                    Vacancy title
+                </h3>
+
+
+                <p class="vacancy-description"
+                   th:text="${vacancy.description}">
+
+                    Vacancy description
+
+                </p>
+
+
+                <div class="posted-by">
+
+                    <span class="avatar"
+                          th:text="${#strings.substring(vacancy.postedBy.username, 0, 1).toUpperCase()}">
+
+                        U
+
+                    </span>
+
+                    <span>
+
+                        Posted by
+                        <strong th:text="${vacancy.postedBy.username}">
+                            username
+                        </strong>
+
+                    </span>
+
+                </div>
+
+
+                <div class="card-footer">
+
+                    <a th:href="@{/vacancies/{id}(id=${vacancy.id})}"
+                       class="view-button">
+
+                        View Vacancy
+
+                    </a>
+
+                    <a th:if="${vacancy.postedBy.id != user.id}"
+                       th:href="@{/vacancies/{id}/report(id=${vacancy.id})}"
+                       class="report-link">
+
+                        Report
+
+                    </a>
+
+                </div>
+
+            </article>
+
+        </div>
+
+
+        <div class="empty-state"
+             th:if="${#lists.isEmpty(vacancies)}">
+
+            <div class="empty-icon">
+                ♡
+            </div>
+
+            <h3>
+                No open vacancies yet
+            </h3>
+
+            <p>
+                Be the first to share an opportunity
+                with the weave.ing community.
+            </p>
+
+            <a th:href="@{/vacancies/new}"
+               class="secondary-button">
+
+                Post the first vacancy
+
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+
+</html>

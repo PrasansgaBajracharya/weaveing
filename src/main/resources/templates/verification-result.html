@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Verification — weave.ing</title>
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/auth.css}">
+</head>
+
+<body class="verification-result-body">
+
+<main class="verification-result-page">
+
+    <section class="verification-result-card">
+
+        <a th:href="@{/}"
+           class="verification-result-logo"
+           aria-label="weave.ing home">
+            <img th:src="@{/assets/images/logo.png}"
+                 alt="weave.ing"
+                 class="site-logo-image">
+        </a>
+
+        <div class="verification-result-icon"
+             th:classappend="${verificationSuccess} ? ' success' : ' failed'">
+
+            <span th:if="${verificationSuccess}">✓</span>
+            <span th:unless="${verificationSuccess}">!</span>
+
+        </div>
+
+        <span class="verification-result-eyebrow"
+              th:text="${verificationSuccess
+                    ? (verificationType == 'device' ? 'DEVICE VERIFIED' : 'EMAIL VERIFIED')
+                    : 'VERIFICATION FAILED'}">
+            EMAIL VERIFIED
+        </span>
+
+        <h1 th:text="${verificationSuccess
+                ? (verificationType == 'device'
+                    ? 'This login is verified'
+                    : 'Your email is verified')
+                : 'This verification link is no longer valid'}">
+            Your email is verified
+        </h1>
+
+        <p th:if="${verificationSuccess and verificationType == 'device'}">
+            Your verification choice has been saved. We will return you to the login page.
+        </p>
+
+        <p th:if="${verificationSuccess and verificationType == 'email'}">
+            Your account is ready. We will return you to the login page.
+        </p>
+
+        <p th:unless="${verificationSuccess}">
+            The link may have expired or already been used. Please return to weave.ing and try again.
+        </p>
+
+        <button type="button"
+                class="btn btn-primary verification-result-action"
+                id="verificationResultAction">
+            Continue
+        </button>
+
+        <small>
+            If this page opened in a new tab, it will close automatically when your browser allows it.
+        </small>
+
+    </section>
+
+</main>
+
+<script th:inline="javascript">
+    const targetUrl = /*[[${targetUrl}]]*/ '/login';
+    const success = /*[[${verificationSuccess}]]*/ false;
+
+    function continueVerification() {
+        if (window.opener && !window.opener.closed) {
+            try {
+                window.opener.location.href = targetUrl;
+                window.close();
+                return;
+            } catch (error) {
+                // Fall back to this tab.
+            }
+        }
+
+        window.location.href = targetUrl;
+    }
+
+    document.getElementById('verificationResultAction')
+        .addEventListener('click', continueVerification);
+
+    if (success) {
+        setTimeout(continueVerification, 900);
+    }
+</script>
+
+</body>
+</html>

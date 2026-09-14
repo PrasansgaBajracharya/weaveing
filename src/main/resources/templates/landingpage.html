@@ -1,0 +1,1038 @@
+<!-- weave.ing landing page -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>weave.ing — Crafted with Care. Shared with Creativity.</title>
+
+    <meta name="description"
+          content="weave.ing is Nepal's digital marketplace for crochet creators — buy and sell patterns, build a shop, join the community.">
+
+    <link rel="stylesheet" th:href="@{/assets/css/landing.css}">
+</head>
+
+<body>
+
+
+
+<nav class="navbar" id="navbar">
+
+    <div class="container nav-inner">
+
+        <a th:href="@{/}" class="logo">
+            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
+        </a>
+
+        <ul class="nav-links">
+            <li>
+                <a href="#carousel">Marketplace</a>
+            </li>
+
+            <li>
+                <a href="#problem">Why weave.ing</a>
+            </li>
+
+            <li>
+                <a href="#features">Features</a>
+            </li>
+
+            <li>
+                <a href="#testimonials">Stories</a>
+            </li>
+        </ul>
+
+        <div class="nav-actions">
+
+
+            <a th:if="${username == null}"
+               th:href="@{/login}"
+               class="btn btn-outline">
+                Log In
+            </a>
+
+
+            <span th:if="${username != null}"
+                  class="welcome-user">
+                Welcome, <b th:text="${username}">Username</b>
+            </span>
+
+            <a th:href="@{/home}"
+               class="btn btn-primary">
+                Explore Marketplace
+            </a>
+
+        </div>
+
+        <button class="hamburger"
+                id="hamburger"
+                type="button"
+                aria-label="Open menu"
+                aria-expanded="false">
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </button>
+
+    </div>
+
+</nav>
+
+
+
+
+<div class="mobile-menu" id="mobileMenu">
+
+    <div class="mobile-menu-inner">
+
+        <a href="#carousel">Marketplace</a>
+        <a href="#problem">Why weave.ing</a>
+        <a href="#features">Features</a>
+        <a href="#testimonials">Stories</a>
+
+        <div class="mobile-menu-actions">
+
+            <a th:if="${username == null}"
+               th:href="@{/login}"
+               class="btn btn-outline">
+                Log In
+            </a>
+
+            <a th:href="@{/home}"
+               class="btn btn-primary">
+                Explore Marketplace
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+<header class="hero container">
+    <div class="hero-left" id="heroLeft">
+        <div class="landing-art">
+
+            <div class="landing-decor decor-dot decor-dot-one"></div>
+            <div class="landing-decor decor-dot decor-dot-two"></div>
+            <div class="landing-decor decor-star">✦</div>
+            <div class="landing-decor decor-ring decor-ring-one"></div>
+            <div class="landing-decor decor-ring decor-ring-two"></div>
+
+            <div class="landing-image landing-image-main">
+                <img th:src="@{/assets/images/gintama.png}" alt="Crochet gintama">
+            </div>
+            <div class="landing-image landing-image-one">
+                <img th:src="@{/assets/images/capybara.png}" alt="capybara with headphones">
+            </div>
+            <div class="landing-image landing-image-two">
+                <img th:src="@{/assets/images/bearcouple.png}" alt="bear couple">
+            </div>
+        </div>
+    </div>
+    <div class="hero-right">
+        <span class="eyebrow">Crafted with Care · Shared with Creativity</span>
+        <div th:if="${username != null}" class="homepage-welcome">
+            <span>Welcome, </span><strong th:text="${username}">Username</strong><span>! 👋</span>
+        </div>
+        <h1>The Home for Nepal's <span>Crochet Creators.</span></h1>
+        <p class="lead">Buy and sell digital crochet patterns, share your work with a community that gets it, open your own business page, and grow from hobbyist to full-time creator — all in one place.</p>
+        <div class="hero-ctas">
+            <a th:href="@{/home}" class="btn btn-primary">Explore Marketplace</a>
+            <a th:href="@{/login}" class="btn btn-outline">Become a Seller</a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat"><div class="stat-num" data-count="2000">0</div><div class="stat-label">Patterns</div></div>
+            <div class="stat"><div class="stat-num" data-count="500">0</div><div class="stat-label">Creators</div></div>
+            <div class="stat"><div class="stat-num" data-count="15">0</div><div class="stat-label">Downloads (K+)</div></div>
+            <div class="stat"><div class="stat-num" data-count="98">0</div><div class="stat-label">Happy Customers (%)</div></div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<section class="carousel-section container"
+         id="carousel">
+
+    <div class="section-head reveal">
+
+        <div>
+            <span class="section-kicker">
+                COMMUNITY
+            </span>
+
+            <h2>
+                Made by our community
+            </h2>
+
+            <p class="subtitle">
+                A small taste of what's being crocheted,
+                listed, and loved on weave.ing right now.
+            </p>
+        </div>
+
+        <a th:href="@{/home}"
+           class="btn btn-ghost">
+            View All Patterns
+        </a>
+
+    </div>
+
+
+    <div class="carousel-track"
+         id="carouselTrack">
+
+        <article class="product-card"
+                 th:each="pattern : ${communityPatterns}">
+
+            <a th:href="@{/patterns/{id}(id=${pattern.id})}"
+               class="product-card-link"
+               th:aria-label="'View ' + ${pattern.title}">
+
+                <div class="product-thumb">
+
+                    <img th:src="${pattern.imagePath}"
+                         th:alt="${pattern.title}">
+
+                    <span class="product-badge"
+                          th:if="${pattern.free}">
+                        Free
+                    </span>
+
+                </div>
+
+                <div class="product-info">
+
+                    <p class="p-name"
+                       th:text="${pattern.title}">
+                        Pattern title
+                    </p>
+
+                    <p class="p-meta">
+
+                        by @<span th:text="${pattern.creator.username}">
+                            username
+                        </span>
+
+                        ·
+
+                        <span th:text="${pattern.free
+                            ? 'Free'
+                            : 'Rs ' + #numbers.formatDecimal(pattern.price, 0, 0)}">
+                            Rs 0
+                        </span>
+
+                    </p>
+
+                </div>
+
+            </a>
+
+            <button class="fav-btn"
+                    type="button"
+                    th:aria-label="'Save ' + ${pattern.title} + ' to wishlist'">
+
+                <svg width="17"
+                     height="17"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2"
+                     aria-hidden="true">
+
+                    <path d="M20.8 8.7c0 5.5-8.8 10.3-8.8 10.3S3.2 14.2 3.2 8.7C3.2 5.7 5.1 4 7.5 4c1.7 0 3.3 1 4.5 2.4C13.2 5 14.8 4 16.5 4c2.4 0 4.3 1.7 4.3 4.7z"></path>
+
+                </svg>
+
+            </button>
+
+        </article>
+
+        <div class="community-empty"
+             th:if="${#lists.isEmpty(communityPatterns)}">
+
+            <p>No approved patterns are available yet.</p>
+
+            <a th:href="@{/login}"
+               class="btn btn-outline">
+                Become a creator
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+<section class="flow-section container"
+         id="problem">
+
+    <div class="section-head reveal">
+
+        <div>
+
+            <span class="section-kicker">
+                WHY WEAVE.ING
+            </span>
+
+            <h2>
+                Crochet creators in Nepal deserve
+                better than a comments section.
+            </h2>
+
+            <p class="subtitle">
+                Right now, most sellers are stuck patching together
+                social media, DMs, and screenshots.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="flow-grid">
+
+
+
+        <div class="flow-col reveal">
+
+            <div class="flow-heading problem-heading">
+                <span class="flow-number">01</span>
+
+                <div>
+                    <h3>The problem today</h3>
+
+                    <p>
+                        Too many tools. Too much clutter.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flow-steps">
+
+                <div class="flow-step bad">
+                    <p>Social Media</p>
+                    <span>
+                        Posting on Instagram/Facebook with no real storefront
+                    </span>
+                </div>
+
+                <div class="flow-step bad">
+                    <p>Message Clutter</p>
+                    <span>
+                        Orders, prices and questions buried in DMs
+                    </span>
+                </div>
+
+                <div class="flow-step bad">
+                    <p>No Local Marketplace</p>
+                    <span>
+                        No dedicated place built for Nepali crochet sellers
+                    </span>
+                </div>
+
+                <div class="flow-step bad">
+                    <p>Hard to Find Patterns</p>
+                    <span>
+                        Buyers scroll endlessly with no real search or catalog
+                    </span>
+                </div>
+
+                <div class="flow-step bad">
+                    <p>Lost Collaborations</p>
+                    <span>
+                        No way to discover or hire other crocheters
+                    </span>
+                </div>
+
+                <div class="flow-step bad">
+                    <p>No Business Identity</p>
+                    <span>
+                        Personal and business posts blur together
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+        <div class="flow-col reveal">
+
+            <div class="flow-heading solution-heading">
+                <span class="flow-number">02</span>
+
+                <div>
+                    <h3>How weave.ing solves it</h3>
+
+                    <p>
+                        One place built around creators.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flow-steps">
+
+                <div class="flow-step good">
+                    <p>Marketplace</p>
+                    <span>
+                        A dedicated storefront to buy and sell digital patterns
+                    </span>
+                </div>
+
+                <div class="flow-step good">
+                    <p>Business Profiles</p>
+                    <span>
+                        A separate, professional page for your shop
+                    </span>
+                </div>
+
+                <div class="flow-step good">
+                    <p>Community</p>
+                    <span>
+                        Share finished work, tutorials, and get real feedback
+                    </span>
+                </div>
+
+                <div class="flow-step good">
+                    <p>Leaderboard</p>
+                    <span>
+                        Get recognized as a top creator or seller
+                    </span>
+                </div>
+
+                <div class="flow-step good">
+                    <p>Vacancy Board</p>
+                    <span>
+                        Businesses recruit crocheters directly on-platform
+                    </span>
+                </div>
+
+                <div class="flow-step good">
+                    <p>Seller Dashboard</p>
+                    <span>
+                        Track revenue, downloads and followers in one view
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+<section class="features-section"
+         id="features">
+
+    <div class="container">
+
+        <div class="section-head reveal">
+
+            <div>
+
+                <span class="section-kicker">
+                    THE ECOSYSTEM
+                </span>
+
+                <h2>
+                    Everything a crochet business needs
+                </h2>
+
+                <p class="subtitle">
+                    One ecosystem instead of five disconnected apps.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="features-grid">
+
+
+            <div class="feature-card reveal-scale">
+
+                <div class="feature-icon">
+                    <svg width="24"
+                         height="24"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <path d="M4 4h16v16H4z"></path>
+                        <path d="M4 9h16"></path>
+                        <path d="M9 4v16"></path>
+
+                    </svg>
+                </div>
+
+                <h4>Digital Patterns</h4>
+
+                <p>
+                    Upload, price and sell downloadable PDF patterns
+                    to buyers across Nepal.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card reveal-scale">
+
+                <div class="feature-icon">
+                    <svg width="24"
+                         height="24"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <circle cx="9" cy="8" r="3"></circle>
+                        <path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"></path>
+                        <circle cx="18" cy="7" r="2.4"></circle>
+                        <path d="M15.5 14.2c2.9.4 5.5 2.5 5.5 5.8"></path>
+
+                    </svg>
+                </div>
+
+                <h4>Community</h4>
+
+                <p>
+                    Post finished projects, tutorials and reels-style
+                    updates like an Instagram feed.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card reveal-scale">
+
+                <div class="feature-icon">
+                    <svg width="24"
+                         height="24"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <path d="M3 3h18v18H3z"></path>
+                        <path d="M8 21V9"></path>
+                        <path d="M16 21V13"></path>
+
+                    </svg>
+                </div>
+
+                <h4>Marketplace</h4>
+
+                <p>
+                    Browse a curated catalog of patterns by category,
+                    difficulty and creator.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card reveal-scale">
+
+                <div class="feature-icon">
+                    <svg width="24"
+                         height="24"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <path d="M3 12l4-8 4 4 3-6 4 8 3-2v9H3z"></path>
+
+                    </svg>
+                </div>
+
+                <h4>Business Dashboard</h4>
+
+                <p>
+                    Revenue, downloads, views and follower analytics,
+                    updated in real time.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card reveal-scale">
+
+                <div class="feature-icon">
+                    <svg width="24"
+                         height="24"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <path d="M4 20l4-9 4 5 4-11 4 15"></path>
+
+                    </svg>
+                </div>
+
+                <h4>Leaderboard</h4>
+
+                <p>
+                    Weekly and monthly rankings for top designers,
+                    sellers, and rising stars.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card reveal-scale">
+
+                <div class="feature-icon">
+
+                    <svg width="24"
+                         height="24"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <path d="M20.8 8.7c0 5.5-8.8 10.3-8.8 10.3S3.2 14.2 3.2 8.7C3.2 5.7 5.1 4 7.5 4c1.7 0 3.3 1 4.5 2.4C13.2 5 14.8 4 16.5 4c2.4 0 4.3 1.7 4.3 4.7z"></path>
+
+                    </svg>
+
+                </div>
+
+                <h4>Likes</h4>
+
+                <p>
+                    Show love for the patterns and posts that inspire
+                    you most.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card reveal-scale">
+
+                <div class="feature-icon">
+
+                    <svg width="24"
+                         height="24"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <circle cx="9" cy="20" r="1.3"></circle>
+                        <circle cx="17" cy="20" r="1.3"></circle>
+                        <path d="M2 3h2l2.6 12.4a2 2 0 002 1.6h8.8a2 2 0 002-1.6L21 7H6"></path>
+
+                    </svg>
+
+                </div>
+
+                <h4>Cart</h4>
+
+                <p>
+                    Bundle multiple patterns from different sellers
+                    into a single checkout.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card reveal-scale">
+
+                <div class="feature-icon">
+
+                    <svg width="24"
+                         height="24"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <path d="M4 4h16v5H4z"></path>
+                        <path d="M4 15h10v5H4z"></path>
+
+                    </svg>
+
+                </div>
+
+                <h4>Wishlist</h4>
+
+                <p>
+                    Save patterns you love for later and get notified
+                    when they go on sale.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+<section class="testimonial-section container"
+         id="testimonials">
+
+    <div class="section-head reveal">
+
+        <div>
+
+            <span class="section-kicker">
+                CREATOR STORIES
+            </span>
+
+            <h2>
+                Loved by creators across Nepal
+            </h2>
+
+            <p class="subtitle">
+                A growing community of designers, sellers and hobbyists.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="testimonial-grid">
+
+
+        <article class="testimonial-card reveal">
+
+            <div class="stars">
+                ★★★★★
+            </div>
+
+            <p class="quote">
+                I finally have a proper shop instead of a highlight reel.
+                My earnings tripled within two months of listing on weave.ing.
+            </p>
+
+            <div class="t-person">
+
+                <div class="t-avatar">
+
+                    <img th:src="@{/assets/images/pompompurin-doll.png}"
+                         alt="">
+
+                </div>
+
+                <div>
+
+                    <div class="t-name">
+                        Sujita K.
+                    </div>
+
+                    <div class="t-role">
+                        Amigurumi Designer, Kathmandu
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <article class="testimonial-card reveal">
+
+            <div class="stars">
+                ★★★★★
+            </div>
+
+            <p class="quote">
+                The leaderboard genuinely pushed me to upload more often.
+                Now I'm ranked top 10 sellers this month.
+            </p>
+
+            <div class="t-person">
+
+                <div class="t-avatar">
+
+                    <img th:src="@{/assets/images/luffy-keychain.png}"
+                         alt="">
+
+                </div>
+
+                <div>
+
+                    <div class="t-name">
+                        Aayusha R.
+                    </div>
+
+                    <div class="t-role">
+                        Pattern Designer, Pokhara
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <article class="testimonial-card reveal">
+
+            <div class="stars">
+                ★★★★★
+            </div>
+
+            <p class="quote">
+                I hired two crocheters through the vacancy board for a bulk
+                keychain order. Saved me weeks of searching.
+            </p>
+
+            <div class="t-person">
+
+                <div class="t-avatar">
+
+                    <img th:src="@{/assets/images/gintoki-doll.png}"
+                         alt="">
+
+                </div>
+
+                <div>
+
+                    <div class="t-name">
+                        Prasangsa B.
+                    </div>
+
+                    <div class="t-role">
+                        Founder, weave.ing Studio
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+    </div>
+
+</section>
+
+
+
+
+<section class="container" id="contact">
+
+    <div class="final-cta reveal-scale">
+
+        <div class="cta-decoration cta-decoration-one"></div>
+        <div class="cta-decoration cta-decoration-two"></div>
+
+        <span class="section-kicker cta-kicker">
+            YOUR NEXT CREATION STARTS HERE
+        </span>
+
+        <h2>
+            Ready to share what you've woven?
+        </h2>
+
+        <p>
+            Join hundreds of Nepali crochet creators already selling,
+            learning and growing together on weave.ing.
+        </p>
+
+        <a th:href="@{/login}"
+           class="btn btn-primary">
+            Become a Seller
+        </a>
+
+    </div>
+
+</section>
+
+
+
+
+<footer>
+
+    <div class="container">
+
+        <div class="footer-grid">
+
+            <div class="footer-brand">
+
+                <a th:href="@{/}"
+                   class="logo">
+
+                    <span class="dot"></span>
+                    <span>weave.ing</span>
+
+                </a>
+
+                <p>
+                    Crafted with Care. Shared with Creativity.
+                    Nepal's digital marketplace for crochet creators.
+                </p>
+
+            </div>
+
+
+            <div class="footer-col">
+
+                <h5>Platform</h5>
+
+                <a th:href="@{/home}">
+                    Marketplace
+                </a>
+
+                <a href="#features">
+                    Features
+                </a>
+
+                <a th:href="@{/home#leaderboard}">
+                    Leaderboard
+                </a>
+
+                <a th:href="@{/vacancies}">
+                    Vacancy Board
+                </a>
+
+            </div>
+
+
+            <div class="footer-col">
+
+                <h5>Sellers</h5>
+
+                <a th:href="@{/login}">
+                    Become a Seller
+                </a>
+
+                <a th:href="@{/dashboard}">
+                    Seller Dashboard
+                </a>
+
+                <a th:href="@{/patterns/new}">
+                    Sell a Pattern
+                </a>
+
+            </div>
+
+
+            <div class="footer-col">
+
+                <h5>Company</h5>
+
+                <a href="#problem">
+                    About
+                </a>
+
+                <a href="#features">
+                    Community Guidelines
+                </a>
+
+                <a href="#contact">
+                    Contact
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>
+                © 2026 weave.ing. All rights reserved.
+            </span>
+
+            <div class="social-row">
+
+                <a href="https://www.instagram.com/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Instagram">
+                    Instagram
+                </a>
+
+                <a href="https://www.tiktok.com/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="TikTok">
+                    TikTok
+                </a>
+
+                <a href="https://www.facebook.com/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Facebook">
+                    Facebook
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+
+
+<div class="toast"
+     id="toast">
+
+    <span class="toast-icon">♡</span>
+
+    <span id="toastMsg">
+        Saved to wishlist
+    </span>
+
+</div>
+
+
+
+
+<button class="back-to-top"
+        id="backToTop"
+        type="button"
+        aria-label="Back to top">
+
+    <svg width="18"
+         height="18"
+         viewBox="0 0 24 24"
+         fill="none"
+         stroke="currentColor"
+         stroke-width="2.4">
+
+        <path d="M12 19V5"></path>
+        <path d="M5 12l7-7 7 7"></path>
+
+    </svg>
+
+</button>
+
+
+
+
+<script th:src="@{/assets/js/landing.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${vacancy.title} + ' — weave.ing'">
+        Vacancy — weave.ing
+    </title>
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/vacancies.css}">
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/application-owner.css(v=2)}">
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/application-status.css(v=2)}">
+
+</head>
+
+<body>
+
+<nav class="vacancy-nav">
+
+    <div class="vacancy-nav-inner">
+
+        <a th:href="@{/home}"
+           class="vacancy-logo">
+
+            <img class="vacancy-logo-image"
+                 th:src="@{/assets/images/logo.png}"
+                 alt="weave.ing">
+
+        </a>
+
+        <a th:href="@{/vacancies}"
+           class="nav-link">
+
+            ← Vacancy Board
+
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main class="details-page">
+
+    <section class="details-card">
+
+        <div class="report-banner success"
+             th:if="${param.report != null and param.report[0] == 'submitted'}">
+            <strong>Report submitted.</strong> Thank you for helping keep weave.ing safe.
+        </div>
+
+        <div class="report-banner"
+             th:if="${param.report != null and param.report[0] == 'already'}">
+            You have already reported this vacancy. Our moderation team can review it from here.
+        </div>
+
+        <div class="details-top">
+
+            <span class="status-pill"
+                  th:classappend="${vacancy.status.name() == 'CLOSED'} ? ' closed' : ' open'"
+                  th:text="${vacancy.status}">
+
+                OPEN
+
+            </span>
+
+            <span class="deadline"
+                  th:text="'Deadline · ' + ${#temporals.format(vacancy.deadline, 'dd MMM yyyy')}">
+
+                Deadline
+
+            </span>
+
+        </div>
+
+
+        <h1 th:text="${vacancy.title}">
+            Vacancy title
+        </h1>
+
+
+        <div class="details-report-row"
+             th:if="${!owner}">
+
+            <a th:href="@{/vacancies/{id}/report(id=${vacancy.id})}"
+               class="report-link">
+                ♧ Report vacancy
+            </a>
+
+        </div>
+
+        <div class="posted-by details-author">
+
+            <span class="avatar"
+                  th:text="${#strings.substring(vacancy.postedBy.username, 0, 1).toUpperCase()}">
+
+                U
+
+            </span>
+
+            <span>
+
+                Posted by
+
+                <strong th:text="${vacancy.postedBy.username}">
+                    username
+                </strong>
+
+            </span>
+
+        </div>
+
+
+        <div class="details-section">
+
+            <h2>
+                About the opportunity
+            </h2>
+
+            <p th:text="${vacancy.description}">
+                Description
+            </p>
+
+        </div>
+
+
+        <div class="details-section">
+
+            <h2>
+                Requirements
+            </h2>
+
+            <p th:text="${vacancy.requirements}">
+                Requirements
+            </p>
+
+        </div>
+
+
+        <!-- APPLICANT ACTION / STATUS -->
+
+        <div class="details-actions application-area"
+             th:if="${!owner}">
+
+            <a th:if="${existingApplication == null
+               and vacancy.status.name() == 'OPEN'}"
+               th:href="@{/vacancies/{id}/apply(id=${vacancy.id})}"
+               class="primary-button application-apply-button">
+                Apply for this vacancy
+            </a>
+
+            <div th:if="${existingApplication != null}"
+                 class="your-application-card">
+
+                <div class="application-card-header">
+
+                    <div>
+                <span class="vacancy-eyebrow">
+                    YOUR APPLICATION
+                </span>
+
+                        <h3>
+                            Application status
+                        </h3>
+                    </div>
+
+                    <div class="application-status-icon"
+                         th:classappend="${existingApplication.status.name() == 'ACCEPTED'} ? ' accepted' :
+                                 (${existingApplication.status.name() == 'REJECTED'} ? ' rejected' : ' pending')">
+
+                <span th:if="${existingApplication.status.name() == 'ACCEPTED'}">
+                    ✓
+                </span>
+
+                        <span th:if="${existingApplication.status.name() == 'REJECTED'}">
+                    ×
+                </span>
+
+                        <span th:if="${existingApplication.status.name() == 'PENDING'}">
+                    …
+                </span>
+
+                    </div>
+
+                </div>
+
+                <div class="application-status-content">
+
+                    <div class="application-status-main">
+
+                <span class="application-status-label">
+                    STATUS
+                </span>
+
+                        <span class="application-status"
+                              th:classappend="${existingApplication.status.name() == 'ACCEPTED'} ? ' accepted' :
+                                      (${existingApplication.status.name() == 'REJECTED'} ? ' rejected' : ' pending')"
+                              th:text="${existingApplication.status}">
+                    PENDING
+                </span>
+
+                    </div>
+
+                    <div class="application-status-message">
+
+                        <p th:if="${existingApplication.status.name() == 'PENDING'}">
+                            Your application has been submitted successfully.
+                            The vacancy owner has not made a decision yet.
+                        </p>
+
+                        <p th:if="${existingApplication.status.name() == 'ACCEPTED'}">
+                            Great news! The vacancy owner accepted your application.
+                            You can now follow up with them about the opportunity.
+                        </p>
+
+                        <p th:if="${existingApplication.status.name() == 'REJECTED'}">
+                            The vacancy owner has reviewed your application,
+                            but unfortunately it was not accepted this time.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="application-card-footer">
+
+            <span>
+                You have already applied to this vacancy.
+            </span>
+
+                </div>
+
+            </div>
+
+            <div th:if="${existingApplication == null
+                 and vacancy.status.name() != 'OPEN'}"
+                 class="vacancy-closed-card">
+
+                <div class="closed-icon">
+                    ×
+                </div>
+
+                <div>
+            <span class="vacancy-eyebrow">
+                APPLICATIONS CLOSED
+            </span>
+
+                    <h3>
+                        This opportunity is no longer accepting applications.
+                    </h3>
+
+                    <p>
+                        The vacancy owner has closed this opportunity.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- VACANCY OWNER -->
+
+        <div class="details-actions"
+             th:if="${owner}">
+
+    <span class="vacancy-owner-note"
+          th:if="${vacancy.status.name() == 'CLOSED'}">
+        This vacancy is closed.
+    </span>
+
+            <form th:if="${vacancy.status.name() == 'OPEN'}"
+                  th:action="@{/vacancies/{id}/close(id=${vacancy.id})}"
+                  method="post">
+
+                <button type="submit"
+                        class="primary-button">
+                    Close vacancy
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- APPLICATIONS -->
+
+        <section class="applications-section owner-applications"
+                 th:if="${owner}">
+
+            <div class="applications-heading">
+
+                <div class="applications-heading-copy">
+                    <span class="vacancy-eyebrow">APPLICATIONS</span>
+
+                    <div class="applications-title-row">
+                        <h2>People who applied</h2>
+                        <span class="application-count"
+                              th:text="${#lists.size(applications)}">
+                            0
+                        </span>
+                    </div>
+
+                    <p>
+                        Review the people interested in this opportunity
+                        and decide who you'd like to work with.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="applications-list"
+                 th:if="${!#lists.isEmpty(applications)}">
+
+                <article class="application-card owner-application-card"
+                         th:each="app : ${applications}">
+
+                    <div class="owner-application-top">
+
+                        <div class="application-applicant">
+
+                            <span class="application-avatar"
+                                  th:text="${#strings.substring(app.applicant.username, 0, 1).toUpperCase()}">
+                                U
+                            </span>
+
+                            <div class="applicant-info">
+                                <strong th:text="'@' + ${app.applicant.username}">
+                                    @username
+                                </strong>
+
+                                <span th:text="'Applied ' + ${#temporals.format(app.appliedAt, 'dd MMM yyyy')}">
+                                    Applied date
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <span class="application-status"
+                              th:classappend="${app.status.name() == 'ACCEPTED'} ? ' accepted' :
+                                              (${app.status.name() == 'REJECTED'} ? ' rejected' : ' pending')"
+                              th:text="${app.status}">
+                            PENDING
+                        </span>
+
+                    </div>
+
+                    <div class="application-message">
+                        <span class="application-message-label">APPLICATION MESSAGE</span>
+                        <p th:text="${app.message}">
+                            Application message
+                        </p>
+                    </div>
+
+                    <div class="application-decision"
+                         th:if="${app.status.name() == 'PENDING'}">
+
+                        <div class="decision-copy">
+                            <strong>Ready to make a decision?</strong>
+                            <span>Choose whether to accept or reject this application.</span>
+                        </div>
+
+                        <div class="application-actions">
+
+                            <form th:action="@{/vacancies/{vacancyId}/applications/{applicationId}/accept(
+                                        vacancyId=${vacancy.id},
+                                        applicationId=${app.id}
+                                     )}"
+                                  method="post">
+
+                                <button type="submit"
+                                        class="application-action accept-button">
+                                    <span>✓</span>
+                                    Accept
+                                </button>
+
+                            </form>
+
+                            <form th:action="@{/vacancies/{vacancyId}/applications/{applicationId}/reject(
+                                        vacancyId=${vacancy.id},
+                                        applicationId=${app.id}
+                                     )}"
+                                  method="post">
+
+                                <button type="submit"
+                                        class="application-action reject-button">
+                                    <span>×</span>
+                                    Reject
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                    <div class="application-decision resolved"
+                         th:if="${app.status.name() != 'PENDING'}">
+
+                        <span th:if="${app.status.name() == 'ACCEPTED'}">
+                            ✓ Application accepted
+                        </span>
+
+                        <span th:if="${app.status.name() == 'REJECTED'}">
+                            Application declined
+                        </span>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+            <div class="applications-empty"
+                 th:if="${#lists.isEmpty(applications)}">
+
+                <div class="empty-icon">♡</div>
+
+                <h3>No applications yet</h3>
+
+                <p>
+                    When someone applies for this opportunity,
+                    their application will appear here.
+                </p>
+
+            </div>
+
+        </section>
+
+    </section>
+
+</main>
+
+</body>
+
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Post a Vacancy — weave.ing</title>
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/vacancies.css}">
+
+</head>
+
+<body>
+
+<nav class="vacancy-nav">
+
+    <div class="vacancy-nav-inner">
+
+        <a th:href="@{/home}"
+           class="vacancy-logo">
+
+            <img class="vacancy-logo-image"
+                 th:src="@{/assets/images/logo.png}"
+                 alt="weave.ing">
+
+        </a>
+
+        <a th:href="@{/vacancies}"
+           class="nav-link">
+
+            ← Vacancy Board
+
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main class="form-page">
+
+    <section class="form-card">
+
+        <a th:href="@{/vacancies}"
+           class="back-link">
+
+            ← Back to vacancy board
+
+        </a>
+
+
+        <div class="form-heading">
+
+            <span class="eyebrow">
+                SHARE AN OPPORTUNITY
+            </span>
+
+            <h1>
+                Post a vacancy
+            </h1>
+
+            <p>
+                Tell the weave.ing community what kind of
+                crochet help you're looking for.
+            </p>
+
+        </div>
+
+
+        <form th:action="@{/vacancies}"
+              th:object="${vacancy}"
+              method="post">
+
+
+            <div class="form-field">
+
+                <label for="title">
+                    Vacancy title
+                </label>
+
+                <input id="title"
+                       type="text"
+                       th:field="*{title}"
+                       maxlength="150"
+                       placeholder="e.g. Crochet keychain maker needed">
+
+                <p class="field-error"
+                   th:if="${#fields.hasErrors('title')}"
+                   th:errors="*{title}">
+                </p>
+
+            </div>
+
+
+            <div class="form-field">
+
+                <label for="description">
+                    About the opportunity
+                </label>
+
+                <p class="field-help">
+                    Describe the project, work, or opportunity
+                    so people know what they would be joining.
+                </p>
+
+                <textarea id="description"
+                          th:field="*{description}"
+                          rows="7"
+                          placeholder="Tell the community about the project, what the work involves, and what you're hoping to find..."></textarea>
+
+                <p class="field-error"
+                   th:if="${#fields.hasErrors('description')}"
+                   th:errors="*{description}">
+                </p>
+
+            </div>
+
+
+            <div class="form-field">
+
+                <label for="requirements">
+                    Requirements
+                </label>
+
+                <p class="field-help">
+                    Mention useful skills, experience, materials,
+                    availability, or anything else applicants should know.
+                </p>
+
+                <textarea id="requirements"
+                          th:field="*{requirements}"
+                          rows="7"
+                          placeholder="e.g. Comfortable with crochet basics, able to follow written patterns, available on weekends..."></textarea>
+
+                <p class="field-error"
+                   th:if="${#fields.hasErrors('requirements')}"
+                   th:errors="*{requirements}">
+                </p>
+
+            </div>
+
+
+            <div class="form-field">
+
+                <label for="deadline">
+                    Application deadline
+                </label>
+
+                <input id="deadline"
+                       type="date"
+                       th:field="*{deadline}">
+
+                <p class="field-help">
+                    Choose the final date people can apply.
+                </p>
+
+                <p class="field-error"
+                   th:if="${#fields.hasErrors('deadline')}"
+                   th:errors="*{deadline}">
+                </p>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a th:href="@{/vacancies}"
+                   class="cancel-button">
+
+                    Cancel
+
+                </a>
+
+                <button type="submit"
+                        class="primary-button">
+
+                    Publish Vacancy
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+</body>
+
+</html>

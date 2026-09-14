@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages — weave.ing</title>
+    <meta name="description" content="weave.ing messaging preview.">
+    <link rel="stylesheet" th:href="@{/assets/css/messages.css}">
+</head>
+<body class="messages-page">
+
+<header class="messages-header">
+    <div class="messages-header-inner">
+        <a th:href="@{/home}" class="messages-logo">
+            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
+        </a>
+
+        <div class="messages-header-actions">
+            <a th:href="@{/profile}" class="messages-nav-link">Profile</a>
+            <a th:href="@{/home}" class="messages-nav-link">Marketplace</a>
+        </div>
+    </div>
+</header>
+
+<main class="messages-main">
+    <section class="messages-hero">
+        <span class="messages-eyebrow">COMMUNICATION</span>
+        <h1>Messages</h1>
+        <p>Chat and message requests are part of the weave.ing roadmap.</p>
+    </section>
+
+    <section class="messages-shell">
+        <div class="messages-tabs" role="tablist" aria-label="Messages sections">
+            <button class="messages-tab active" type="button" data-panel="requests" role="tab" aria-selected="true">Requests</button>
+            <button class="messages-tab" type="button" data-panel="chats" role="tab" aria-selected="false">Chats</button>
+        </div>
+
+        <div class="messages-panel active" id="requests" role="tabpanel">
+            <div class="messages-empty-icon">✉</div>
+            <span class="messages-coming-soon-badge">COMING SOON</span>
+            <h2>Message requests will live here</h2>
+            <p>When messaging launches, requests from other creators will appear here so you can accept or reject them before a conversation begins.</p>
+        </div>
+
+        <div class="messages-panel" id="chats" role="tabpanel" aria-hidden="true">
+            <div class="messages-empty-icon">♡</div>
+            <span class="messages-coming-soon-badge">COMING SOON</span>
+            <h2>Your chats will live here</h2>
+            <p>Accepted conversations and future creator chats will appear here when the messaging feature is developed.</p>
+        </div>
+    </section>
+
+    <a th:href="@{/home}" class="messages-back-link">← Back to marketplace</a>
+</main>
+
+<script>
+const tabs = document.querySelectorAll('.messages-tab');
+const panels = document.querySelectorAll('.messages-panel');
+
+tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+        const target = tab.dataset.panel;
+        tabs.forEach(function (item) {
+            const active = item === tab;
+            item.classList.toggle('active', active);
+            item.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        panels.forEach(function (panel) {
+            const active = panel.id === target;
+            panel.classList.toggle('active', active);
+            panel.setAttribute('aria-hidden', active ? 'false' : 'true');
+        });
+    });
+});
+</script>
+
+</body>
+</html>

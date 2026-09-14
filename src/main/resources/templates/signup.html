@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up - Weave.ing</title>
+</head>
+
+<body>
+
+<h1>Create your Weave.ing account</h1>
+
+<form th:action="@{/signup}"
+      th:object="${signupRequest}"
+      method="post">
+
+    <div class="field">
+
+        <input type="text"
+               id="suName"
+               th:field="*{name}"
+               placeholder=" "
+               required>
+
+        <label for="suName">
+            Full name
+        </label>
+
+        <p class="field-hint error"
+           th:if="${#fields.hasErrors('name')}"
+           th:errors="*{name}">
+        </p>
+
+    </div>
+
+
+    <div class="field">
+
+        <input type="text"
+               id="suUsername"
+               th:field="*{username}"
+               placeholder=" "
+               required>
+
+        <label for="suUsername">
+            Username
+        </label>
+
+        <p class="field-hint error"
+           th:if="${#fields.hasErrors('username')}"
+           th:errors="*{username}">
+        </p>
+
+    </div>
+
+
+    <div class="field">
+
+        <input type="email"
+               id="suEmail"
+               th:field="*{email}"
+               placeholder=" "
+               required>
+
+        <label for="suEmail">
+            Email
+        </label>
+
+        <p class="field-hint error"
+           th:if="${#fields.hasErrors('email')}"
+           th:errors="*{email}">
+        </p>
+
+    </div>
+
+
+    <div class="field">
+
+        <input type="password"
+               id="suPassword"
+               th:field="*{password}"
+               placeholder=" "
+               required
+               minlength="8">
+
+        <label for="suPassword">
+            Password
+        </label>
+
+        <div class="pw-strength"
+             id="pwStrength"
+             data-level="0">
+
+            <i></i>
+            <i></i>
+            <i></i>
+
+        </div>
+
+        <p class="pw-strength-label"
+           id="pwStrengthLabel">
+            Use 8+ characters with a mix of letters &amp; numbers
+        </p>
+
+        <p class="field-hint error"
+           th:if="${#fields.hasErrors('password')}"
+           th:errors="*{password}">
+        </p>
+
+    </div>
+
+
+    <div class="field">
+
+        <input type="password"
+               id="suConfirm"
+               th:field="*{confirmPassword}"
+               placeholder=" "
+               required>
+
+        <label for="suConfirm">
+            Confirm password
+        </label>
+
+        <p class="field-hint error"
+           th:if="${#fields.hasErrors('confirmPassword')}"
+           th:errors="*{confirmPassword}">
+        </p>
+
+    </div>
+
+
+    <div class="terms-row">
+
+        <input type="checkbox"
+               id="suTerms"
+               required>
+
+        <label for="suTerms">
+            I agree to the
+            <a href="#">Terms of Service</a>
+            and
+            <a href="#">Privacy Policy</a>.
+        </label>
+
+    </div>
+
+
+    <button type="submit"
+            class="btn btn-primary auth-submit">
+        Create Account
+    </button>
+
+</form>
+
+<p class="field-hint error"
+   th:if="${error}"
+   th:text="${error}">
+</p>
+
+<p class="field-hint"
+   th:if="${success}"
+   th:text="${success}">
+</p>
+
+</body>
+
+</html>

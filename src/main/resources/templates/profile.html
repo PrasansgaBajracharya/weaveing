@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${user.name + ' — weave.ing'}">Profile — weave.ing</title>
+
+    <meta name="description"
+          content="Your weave.ing profile.">
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/profile.css}">
+
+</head>
+
+<body>
+
+<nav class="profile-nav">
+
+    <a th:href="@{/home}"
+       class="profile-logo"
+       aria-label="weave.ing home">
+
+        <img th:src="@{/assets/images/logo.png}"
+             alt="weave.ing">
+
+    </a>
+
+    <div class="profile-nav-actions">
+
+        <a th:href="@{/dashboard}"
+           class="nav-button">
+
+            Dashboard
+
+        </a>
+
+        <a th:href="@{/home}"
+           class="nav-button">
+
+            Marketplace
+
+        </a>
+
+    </div>
+
+</nav>
+
+<main class="profile-page">
+
+    <section class="profile-header">
+
+        <div class="profile-avatar-large">
+
+            <img th:if="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
+                 th:src="${user.profileImagePath}"
+                 alt="Profile picture">
+
+            <span th:unless="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
+                  class="avatar-initial"
+                  th:text="${#strings.substring(user.username, 0, 1).toUpperCase()}">
+                U
+            </span>
+
+        </div>
+
+        <div class="profile-header-info">
+
+            <div class="profile-name-row">
+
+                <div>
+
+                    <h1 th:text="${user.name}">
+                        User Name
+                    </h1>
+
+                    <p th:text="'@' + ${user.username}">
+                        @username
+                    </p>
+
+                </div>
+
+                <div class="profile-header-links">
+
+                    <a th:href="@{/profile/edit}"
+                       class="profile-action-button">
+
+                        Edit Profile
+
+                    </a>
+
+                    <a th:href="@{/messages}"
+                       class="profile-action-button profile-message-button">
+
+                        <span aria-hidden="true">✉</span>
+                        Messages
+
+                    </a>
+
+                    <a href="#account-settings"
+                       class="profile-action-button">
+
+                        Account Settings
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <p class="profile-bio"
+               th:text="${user.bio != null and !#strings.isEmpty(user.bio) ? user.bio : 'No bio added yet.'}">
+                No bio added yet.
+            </p>
+
+            <div class="profile-stats">
+
+                <span>
+                    <strong th:text="${myPatterns.size()}">0</strong>
+                    Patterns
+                </span>
+
+                <span>
+                    <strong th:text="${libraryPurchases.size()}">0</strong>
+                    Library
+                </span>
+
+                <span>
+                    <strong th:text="${wishlistItems.size()}">0</strong>
+                    Wishlist
+                </span>
+
+                <span>
+                    <strong th:text="${#temporals.format(user.createdAt, 'MMM yyyy')}">
+                        Sep 2026
+                    </strong>
+                    Joined
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <nav class="profile-tabs"
+         aria-label="Profile sections">
+
+        <a href="#patterns"
+           class="profile-tab active">
+
+            <span>✦</span>
+            My Patterns
+
+        </a>
+
+        <a href="#library"
+           class="profile-tab">
+
+            <span>▣</span>
+            My Library
+
+        </a>
+
+        <a href="#wishlist"
+           class="profile-tab">
+
+            <span>♡</span>
+            Wishlist
+
+        </a>
+
+    </nav>
+
+    <section id="patterns"
+             class="profile-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="section-kicker">
+                    YOUR WORK
+                </p>
+
+                <h2>
+                    My Patterns
+                </h2>
+
+                <p>
+                    Patterns you've posted to weave.ing.
+                </p>
+
+            </div>
+
+            <a th:href="@{/patterns/new}"
+               class="dark-button">
+
+                + Post Pattern
+
+            </a>
+
+        </div>
+
+        <div class="pattern-grid"
+             th:if="${!myPatterns.isEmpty()}">
+
+            <article class="pattern-card"
+                     th:each="pattern : ${myPatterns}">
+
+                <a th:if="${pattern.approvalStatus.name() == 'APPROVED'}"
+                   th:href="@{/patterns/{id}(id=${pattern.id})}"
+                   class="pattern-image-link">
+
+                    <div class="pattern-image">
+
+                        <img th:if="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}"
+                             th:src="${pattern.imagePath}"
+                             th:alt="${pattern.title}">
+
+                        <span th:unless="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}"
+                              class="pattern-placeholder">
+                            ✦
+                        </span>
+
+                    </div>
+
+                </a>
+
+                <div th:unless="${pattern.approvalStatus.name() == 'APPROVED'}"
+                     class="pattern-image-link">
+
+                    <div class="pattern-image">
+
+                        <img th:if="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}"
+                             th:src="${pattern.imagePath}"
+                             th:alt="${pattern.title}">
+
+                        <span th:unless="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}"
+                              class="pattern-placeholder">
+                            ✦
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="pattern-card-body">
+
+                    <div class="pattern-card-top">
+
+                        <div>
+
+                            <h3 th:text="${pattern.title}">
+                                Pattern title
+                            </h3>
+
+                            <p th:text="${pattern.category + ' · ' + pattern.difficulty}">
+                                Amigurumi · Beginner
+                            </p>
+
+                        </div>
+
+                        <span class="status-badge"
+                              th:classappend="${#strings.toLowerCase(pattern.approvalStatus.name())}"
+                              th:text="${pattern.approvalStatus.name()}">
+                            APPROVED
+                        </span>
+
+                    </div>
+
+                    <div class="pattern-card-meta">
+
+                        <span th:if="${pattern.free}">
+                            Free
+                        </span>
+
+                        <span th:unless="${pattern.free}"
+                              th:text="'Rs ' + ${#numbers.formatDecimal(pattern.price, 0, 0)}">
+                            Rs 0
+                        </span>
+
+                        <span>
+                            ↓
+                            <span th:text="${pattern.downloads}">0</span>
+                        </span>
+
+                        <span>
+                            ♡
+                            <span th:text="${pattern.likes}">0</span>
+                        </span>
+
+                    </div>
+
+                    <div class="rejection-note"
+                         th:if="${pattern.approvalStatus.name() == 'REJECTED' and pattern.rejectionReason != null and !#strings.isEmpty(pattern.rejectionReason)}">
+
+                        <strong>
+                            Needs attention
+                        </strong>
+
+                        <p th:text="${pattern.rejectionReason}">
+                            Rejection reason
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+
+        <div class="empty-state"
+             th:if="${myPatterns.isEmpty()}">
+
+            <div class="empty-icon">
+                ✦
+            </div>
+
+            <h3>
+                No patterns yet
+            </h3>
+
+            <p>
+                Your submitted patterns will appear here.
+            </p>
+
+            <a th:href="@{/patterns/new}"
+               class="dark-button">
+
+                Post Your First Pattern
+
+            </a>
+
+        </div>
+
+    </section>
+
+    <section id="library"
+             class="profile-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="section-kicker">
+                    YOUR COLLECTION
+                </p>
+
+                <h2>
+                    My Library
+                </h2>
+
+                <p>
+                    Digital patterns you've purchased and own.
+                </p>
+
+            </div>
+
+            <a th:href="@{/home}"
+               class="light-button">
+
+                Browse Patterns
+
+            </a>
+
+        </div>
+
+        <div class="pattern-grid library-grid"
+             th:if="${!libraryPurchases.isEmpty()}">
+
+            <article class="library-card"
+                     th:each="purchase : ${libraryPurchases}">
+
+                <a th:href="@{/patterns/{id}(id=${purchase.pattern.id})}"
+                   class="pattern-image-link">
+
+                    <div class="pattern-image">
+
+                        <img th:if="${purchase.pattern.imagePath != null and !#strings.isEmpty(purchase.pattern.imagePath)}"
+                             th:src="${purchase.pattern.imagePath}"
+                             th:alt="${purchase.pattern.title}">
+
+                        <span th:unless="${purchase.pattern.imagePath != null and !#strings.isEmpty(purchase.pattern.imagePath)}"
+                              class="pattern-placeholder">
+                            ▣
+                        </span>
+
+                    </div>
+
+                </a>
+
+                <div class="pattern-card-body">
+
+                    <div class="pattern-card-top">
+
+                        <div>
+
+                            <h3 th:text="${purchase.pattern.title}">
+                                Pattern title
+                            </h3>
+
+                            <p th:text="'@' + ${purchase.pattern.creator.username}">
+                                @creator
+                            </p>
+
+                        </div>
+
+                        <span class="status-badge owned">
+                            OWNED
+                        </span>
+
+                    </div>
+
+                    <div class="pattern-card-meta">
+
+                        <span th:text="${purchase.pattern.category + ' · ' + purchase.pattern.difficulty}">
+                            Amigurumi · Beginner
+                        </span>
+
+                        <span th:text="'Purchased ' + ${#temporals.format(purchase.purchasedAt, 'dd MMM yyyy')}">
+                            Purchased 03 Sep 2026
+                        </span>
+
+                    </div>
+
+                    <div class="card-actions">
+
+                        <a th:href="@{/patterns/{id}/view(id=${purchase.pattern.id})}"
+                           class="light-button">
+
+                            View
+
+                        </a>
+
+                        <a th:href="@{/patterns/{id}/download(id=${purchase.pattern.id})}"
+                           class="dark-button">
+
+                            Download
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+
+        <div class="empty-state"
+             th:if="${libraryPurchases.isEmpty()}">
+
+            <div class="empty-icon">
+                ▣
+            </div>
+
+            <h3>
+                Your library is empty
+            </h3>
+
+            <p>
+                Patterns you purchase will appear here for easy access.
+            </p>
+
+            <a th:href="@{/home}"
+               class="dark-button">
+
+                Browse Patterns
+
+            </a>
+
+        </div>
+
+    </section>
+
+    <section id="wishlist"
+             class="profile-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="section-kicker">
+                    SAVED FOR LATER
+                </p>
+
+                <h2>
+                    Wishlist
+                </h2>
+
+                <p>
+                    Patterns you've saved for later.
+                </p>
+
+            </div>
+
+            <a th:href="@{/wishlist}"
+               class="light-button">
+
+                Open Wishlist
+
+            </a>
+
+        </div>
+
+        <div class="pattern-grid"
+             th:if="${!wishlistItems.isEmpty()}">
+
+            <article class="wishlist-card"
+                     th:each="item : ${wishlistItems}">
+
+                <a th:href="@{/patterns/{id}(id=${item.pattern.id})}"
+                   class="pattern-image-link">
+
+                    <div class="pattern-image">
+
+                        <img th:if="${item.pattern.imagePath != null and !#strings.isEmpty(item.pattern.imagePath)}"
+                             th:src="${item.pattern.imagePath}"
+                             th:alt="${item.pattern.title}">
+
+                        <span th:unless="${item.pattern.imagePath != null and !#strings.isEmpty(item.pattern.imagePath)}"
+                              class="pattern-placeholder">
+                            ♡
+                        </span>
+
+                    </div>
+
+                </a>
+
+                <div class="pattern-card-body">
+
+                    <div class="pattern-card-top">
+
+                        <div>
+
+                            <h3 th:text="${item.pattern.title}">
+                                Pattern title
+                            </h3>
+
+                            <p th:text="'@' + ${item.pattern.creator.username}">
+                                @creator
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="pattern-card-meta">
+
+                        <span th:if="${item.pattern.free}">
+                            Free
+                        </span>
+
+                        <span th:unless="${item.pattern.free}"
+                              th:text="'Rs ' + ${#numbers.formatDecimal(item.pattern.price, 0, 0)}">
+                            Rs 0
+                        </span>
+
+                        <span th:text="${item.pattern.category}">
+                            Category
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+
+        <div class="empty-state"
+             th:if="${wishlistItems.isEmpty()}">
+
+            <div class="empty-icon">
+                ♡
+            </div>
+
+            <h3>
+                Nothing saved yet
+            </h3>
+
+            <p>
+                Tap the heart on a pattern to save it here.
+            </p>
+
+            <a th:href="@{/home}"
+               class="dark-button">
+
+                Explore Patterns
+
+            </a>
+
+        </div>
+
+    </section>
+
+    <section id="account-settings"
+             class="settings-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="section-kicker">
+                    ACCOUNT
+                </p>
+
+                <h2>
+                    Account Settings
+                </h2>
+
+                <p>
+                    Security and account preferences belong here.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="settings-list">
+
+            <div class="settings-row">
+
+                <div>
+
+                    <h3>
+                        Email
+                    </h3>
+
+                    <p th:text="${user.email}">
+                        user@example.com
+                    </p>
+
+                </div>
+
+                <span class="coming-soon">
+                    Coming next
+                </span>
+
+            </div>
+
+            <div class="settings-row">
+
+                <div>
+
+                    <h3>
+                        Password
+                    </h3>
+
+                    <p>
+                        Change your weave.ing account password.
+                    </p>
+
+                </div>
+
+                <span class="coming-soon">
+                    Coming next
+                </span>
+
+            </div>
+
+            <div class="settings-row">
+
+                <div>
+
+                    <h3>
+                        Trusted devices
+                    </h3>
+
+                    <p>
+                        Manage browsers you've chosen to trust.
+                    </p>
+
+                </div>
+
+                <span class="settings-status">
+                    Active
+                </span>
+
+            </div>
+
+            <div class="settings-row">
+
+                <div>
+
+                    <h3>
+                        Log out
+                    </h3>
+
+                    <p>
+                        Sign out of your weave.ing account.
+                    </p>
+
+                </div>
+
+                <form th:action="@{/logout}"
+                      method="post">
+
+                    <button type="submit"
+                            class="light-button danger-button">
+
+                        Log out
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile — weave.ing</title>
+    <meta name="description" content="Edit your weave.ing profile.">
+    <link rel="stylesheet" th:href="@{/assets/css/profile.css}">
+</head>
+<body class="profile-edit-page">
+<nav class="profile-nav">
+    <a th:href="@{/profile}" class="profile-logo">
+        <img th:src="@{/assets/images/logo.png}" alt="weave.ing">
+    </a>
+    <div class="profile-nav-actions">
+        <a th:href="@{/profile}" class="nav-button">Profile</a>
+        <a th:href="@{/dashboard}" class="nav-button">Dashboard</a>
+        <a th:href="@{/home}" class="nav-button">Marketplace</a>
+    </div>
+</nav>
+<main class="profile-edit-page-main">
+    <a th:href="@{/profile}" class="profile-back-link">
+        <span>←</span> Back to Profile
+    </a>
+    <section class="profile-edit-panel profile-edit-page-panel">
+        <div class="profile-edit-heading">
+            <div>
+                <span class="panel-kicker">EDIT PROFILE</span>
+                <h1>Make your profile yours</h1>
+                <p>Update your photo, name, username, and bio from one place.</p>
+            </div>
+            <div class="profile-edit-mark" aria-hidden="true">✦</div>
+        </div>
+        <div class="profile-form-message success" th:if="${profileUpdated}" th:text="${profileUpdated}">Your profile has been updated.</div>
+        <div class="profile-form-message error" th:if="${profileError}" th:text="${profileError}">Something went wrong.</div>
+        <form th:action="@{/profile/edit}" method="post" enctype="multipart/form-data" class="profile-edit-form">
+            <div class="profile-edit-photo">
+                <div class="profile-edit-avatar">
+                    <img th:if="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}" th:src="${user.profileImagePath}" alt="Current profile picture">
+                    <span th:unless="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}" th:text="${#strings.substring(user.username, 0, 1).toUpperCase()}">U</span>
+                </div>
+                <div class="profile-edit-photo-copy">
+                    <strong>Profile picture</strong>
+                    <p>JPG, PNG, or WebP. Choose a new photo if you want to change it.</p>
+                </div>
+                <label for="profilePicture" class="choose-photo profile-photo-button">Choose Photo</label>
+                <input type="file" id="profilePicture" name="profilePicture" accept="image/jpeg,image/png,image/webp">
+            </div>
+            <div class="profile-edit-fields">
+                <div class="edit-field">
+                    <label for="name">Name</label>
+                    <input id="name" name="name" type="text" maxlength="100" th:value="${user.name}" placeholder="Your name" required>
+                </div>
+                <div class="edit-field">
+                    <label for="username">Username</label>
+                    <div class="username-input">
+                        <span>@</span>
+                        <input id="username" name="username" type="text" maxlength="30" th:value="${user.username}" placeholder="username" pattern="[A-Za-z0-9._]+" required>
+                    </div>
+                    <small>3–30 characters. Letters, numbers, dots, and underscores only.</small>
+                </div>
+                <div class="edit-field">
+                    <label for="email">Email</label>
+                    <input id="email" type="email" th:value="${user.email}" readonly>
+                    <small>Your email is used for account verification and notifications.</small>
+                </div>
+                <div class="edit-field full-width">
+                    <label for="bio">Bio</label>
+                    <textarea id="bio" name="bio" maxlength="500" rows="5" placeholder="Tell the crochet community a little about yourself..." th:text="${user.bio}"></textarea>
+                    <small>Up to 500 characters.</small>
+                </div>
+            </div>
+            <div class="profile-edit-actions">
+                <a th:href="@{/profile}" class="light-button">Cancel</a>
+                <button type="submit" class="dark-button">Save Changes</button>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

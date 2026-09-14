@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${pattern.title} + ' · weave.ing'">
+        Pattern · weave.ing
+    </title>
+
+    <link rel="stylesheet" th:href="@{/assets/css/home.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/pattern-details.css}">
+</head>
+
+<body class="pattern-details-body">
+
+<header class="pattern-details-header">
+
+    <div class="container pattern-details-header-inner">
+
+        <a th:href="@{/home}"
+           class="pattern-details-brand"
+           aria-label="weave.ing marketplace">
+
+            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
+
+        </a>
+
+        <a th:href="@{/home}"
+           class="details-back-link">
+
+            <svg width="18"
+                 height="18"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 aria-hidden="true">
+
+                <path d="M19 12H5"></path>
+                <path d="M12 19l-7-7 7-7"></path>
+
+            </svg>
+
+            <span>Back to marketplace</span>
+
+        </a>
+
+    </div>
+
+</header>
+
+<main class="pattern-details-page">
+
+    <section class="container pattern-details-wrap">
+
+        <div class="pattern-details-image-card">
+
+            <div class="pattern-details-image-wrap">
+
+                <span class="pattern-details-difficulty"
+                      th:text="${pattern.difficulty}">
+                    Beginner
+                </span>
+
+                <img th:src="${pattern.imagePath}"
+                     th:alt="${pattern.title}"
+                     class="pattern-details-image">
+
+            </div>
+
+        </div>
+
+        <div class="pattern-details-content">
+
+            <div class="pattern-details-category"
+                 th:text="${pattern.categoryLabel}">
+                Amigurumi
+            </div>
+
+            <h1 th:text="${pattern.title}">
+                Pattern title
+            </h1>
+
+            <p class="pattern-details-creator">
+                Created by
+                <strong th:text="'@' + ${pattern.creator.username}">
+                    @username
+                </strong>
+            </p>
+
+            <button type="button"
+                    class="pattern-message-button"
+                    onclick="openMessagingComingSoon()">
+                <span aria-hidden="true">✉</span>
+                Message Creator
+            </button>
+
+            <div class="pattern-details-stats">
+
+                <span>
+                    <span class="stat-icon" aria-hidden="true">♥</span>
+                    <strong th:text="${pattern.likes}">0</strong>
+                    likes
+                </span>
+
+                <span>
+                    <span class="stat-icon download-stat-icon" aria-hidden="true">↓</span>
+                    <strong th:text="${pattern.downloads}">0</strong>
+                    downloads
+                </span>
+
+            </div>
+
+            <div class="pattern-details-divider"></div>
+
+            <div class="pattern-details-price-row">
+
+                <span class="pattern-details-price"
+                      th:if="${pattern.free}">
+                    Free
+                </span>
+
+                <span class="pattern-details-price"
+                      th:unless="${pattern.free}"
+                      th:text="'Rs ' + ${#numbers.formatDecimal(pattern.price, 0, 0)}">
+                    Rs 0
+                </span>
+
+            </div>
+
+            <div class="pattern-details-description">
+
+                <h2>About this pattern</h2>
+
+                <p th:text="${pattern.description}">
+                    Pattern description.
+                </p>
+
+            </div>
+
+            <div class="pattern-access-card free-access-card"
+                 th:if="${pattern.free}">
+
+                <div class="access-icon free-access-icon">
+
+                    <svg width="21"
+                         height="21"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8"
+                         stroke-linecap="round"
+                         stroke-linejoin="round"
+                         aria-hidden="true">
+
+                        <path d="M12 3v18"></path>
+                        <path d="M17 7H9.5a3.5 3.5 0 0 0 0 7H15a3.5 3.5 0 0 1 0 7H6"></path>
+
+                    </svg>
+
+                </div>
+
+                <div>
+                    <strong>Free pattern</strong>
+                    <p>This pattern is available to everyone.</p>
+                </div>
+
+            </div>
+
+            <div class="pattern-access-card paid-access-card"
+                 th:if="${!pattern.free and !ownsPattern}">
+
+                <div class="access-icon">
+
+                    <svg width="21"
+                         height="21"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8"
+                         stroke-linecap="round"
+                         stroke-linejoin="round"
+                         aria-hidden="true">
+
+                        <rect x="4" y="10" width="16" height="11" rx="2"></rect>
+                        <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+
+                    </svg>
+
+                </div>
+
+                <div>
+                    <strong>Pattern PDF is locked</strong>
+                    <p>
+                        Purchase this pattern to unlock the full PDF.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="pattern-access-card free-access-card"
+                 th:if="${!pattern.free and ownsPattern}">
+
+                <div class="access-icon free-access-icon">
+
+                    <svg width="21"
+                         height="21"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8"
+                         stroke-linecap="round"
+                         stroke-linejoin="round"
+                         aria-hidden="true">
+
+                        <path d="M20 6L9 17l-5-5"></path>
+
+                    </svg>
+
+                </div>
+
+                <div>
+                    <strong>Pattern unlocked</strong>
+                    <p>
+                        You own this pattern and can access the PDF anytime.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="pattern-action-group"
+                 th:if="${pattern.free}">
+
+                <a th:href="@{/patterns/{id}/view(id=${pattern.id})}"
+                   class="pattern-primary-action">
+                    View pattern PDF
+                </a>
+
+                <a th:href="@{/patterns/{id}/download(id=${pattern.id})}"
+                   class="pattern-secondary-action">
+                    Download PDF
+                </a>
+
+            </div>
+
+            <div class="purchase-message"
+                 th:if="${purchaseMessage}"
+                 th:text="${purchaseMessage}">
+                Purchase message.
+            </div>
+
+            <div class="pattern-purchase-area"
+                 th:if="${!pattern.free and !ownsPattern}">
+
+                <div class="pending-purchase-box"
+                     th:if="${!isAuthenticated}">
+
+                    <strong>Login required to purchase</strong>
+
+                    <p>
+                        Sign in to your weave.ing account before purchasing this pattern.
+                    </p>
+
+                    <a th:href="@{/login}"
+                       class="pattern-primary-action">
+                        Log in to purchase
+                    </a>
+
+                </div>
+
+                <form th:if="${isAuthenticated and !hasPendingPurchase}"
+                      th:action="@{/purchase/{id}(id=${pattern.id})}"
+                      method="post">
+
+                    <button class="pattern-primary-action"
+                            type="submit">
+                        Purchase pattern
+                    </button>
+
+                </form>
+
+                <div class="pending-purchase-box"
+                     th:if="${hasPendingPurchase}">
+
+                    <strong>Purchase order ready</strong>
+
+                    <p>
+                        Your order has been created. Continue to payment to unlock this pattern.
+                    </p>
+
+                    <a th:href="@{/payment/{id}(id=${pendingPurchase.id})}"
+                       class="pattern-primary-action">
+                        Continue to payment
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="pattern-action-group"
+                 th:if="${!pattern.free and ownsPattern}">
+
+                <a th:href="@{/patterns/{id}/view(id=${pattern.id})}"
+                   class="pattern-primary-action">
+                    View pattern PDF
+                </a>
+
+                <a th:href="@{/patterns/{id}/download(id=${pattern.id})}"
+                   class="pattern-secondary-action">
+                    Download PDF
+                </a>
+
+            </div>
+
+            <p class="pattern-details-note"
+               th:if="${pattern.free}">
+                Free patterns can be viewed and downloaded directly from weave.ing.
+            </p>
+
+            <p class="pattern-details-note"
+               th:if="${!pattern.free and !ownsPattern and isAuthenticated}">
+                The full PDF stays protected until a verified purchase is completed.
+            </p>
+
+            <p class="pattern-details-note"
+               th:if="${!pattern.free and !ownsPattern and !isAuthenticated}">
+                The full PDF stays protected. Log in to purchase and unlock it.
+            </p>
+
+            <p class="pattern-details-note"
+               th:if="${!pattern.free and ownsPattern}">
+                Your verified ownership keeps this pattern available in your library.
+            </p>
+
+        </div>
+
+    </section>
+
+    <section class="container related-patterns-section"
+             th:if="${!#lists.isEmpty(relatedPatterns)}">
+
+        <div class="related-patterns-heading">
+            <span class="pattern-details-category">EXPLORE MORE</span>
+            <h2>More like this</h2>
+            <p>Keep exploring patterns from the same category.</p>
+        </div>
+
+        <div class="related-patterns-grid">
+
+            <a th:each="related : ${relatedPatterns}"
+               th:href="@{/patterns/{id}(id=${related.id})}"
+               class="related-pattern-card">
+
+                <div class="related-pattern-image-wrap">
+
+                    <img th:src="${related.imagePath}"
+                         th:alt="${related.title}">
+
+                    <span th:if="${related.free}"
+                          class="related-free-badge">
+                        Free
+                    </span>
+
+                </div>
+
+                <div class="related-pattern-copy">
+
+                    <h3 th:text="${related.title}">
+                        Pattern title
+                    </h3>
+
+                    <p>
+                        by @<span th:text="${related.creator.username}">
+                            username
+                        </span>
+                    </p>
+
+                    <strong th:text="${related.free
+                        ? 'Free'
+                        : 'Rs ' + #numbers.formatDecimal(related.price, 0, 0)}">
+                        Rs 0
+                    </strong>
+
+                </div>
+
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+<div id="messagingComingSoon"
+     class="messaging-coming-soon"
+     aria-hidden="true">
+
+    <div class="messaging-coming-soon-backdrop"
+         onclick="closeMessagingComingSoon()"></div>
+
+    <div class="messaging-coming-soon-card"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="messagingComingSoonTitle">
+
+        <button type="button"
+                class="messaging-coming-soon-close"
+                onclick="closeMessagingComingSoon()"
+                aria-label="Close">
+            ×
+        </button>
+
+        <span class="messaging-coming-soon-kicker">COMING SOON</span>
+
+        <div class="messaging-coming-soon-icon" aria-hidden="true">✉</div>
+
+        <h2 id="messagingComingSoonTitle">Messaging is on its way</h2>
+
+        <p>
+            Chat and message requests are planned for a future weave.ing update.
+            For now, this feature is only a preview.
+        </p>
+
+        <button type="button"
+                class="pattern-primary-action"
+                onclick="closeMessagingComingSoon()">
+            Got it
+        </button>
+
+    </div>
+</div>
+
+<script>
+function openMessagingComingSoon() {
+    const modal = document.getElementById('messagingComingSoon');
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+}
+
+function closeMessagingComingSoon() {
+    const modal = document.getElementById('messagingComingSoon');
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+}
+
+document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+        closeMessagingComingSoon();
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Marketplace — weave.ing</title>
+
+    <meta name="description"
+          content="Browse and discover digital crochet patterns from creators across Nepal on weave.ing.">
+
+    <!-- Thymeleaf static CSS -->
+    <link rel="stylesheet" th:href="@{/assets/css/home.css}">
+</head>
+
+<body class="homepage">
+
+<!-- ============ NAVBAR ============ -->
+<nav class="navbar scrolled" id="navbar">
+
+    <div class="container nav-inner">
+
+        <a th:href="@{/landing}" class="logo home-logo" aria-label="weave.ing home">
+            <img th:src="@{/assets/images/logo.png}" alt="weave.ing">
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="#patterns">Marketplace</a></li>
+            <li><a href="#community">Community</a></li>
+            <li><a href="#leaderboard">Leaderboard</a></li>
+            <li><a th:href="@{/vacancies}">Vacancies</a></li>
+        </ul>
+
+        <div class="nav-actions">
+
+            <a th:href="@{/messages}"
+               class="icon-btn messages-nav-btn"
+               aria-label="Messages">
+
+                <svg width="21" height="21"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M20 11.5a8.5 8.5 0 0 1-8.5 8.5H6l-3 2 .5-4.2A8.5 8.5 0 1 1 20 11.5z"/>
+                </svg>
+            </a>
+
+            <a th:href="@{/wishlist}"
+               class="icon-btn wishlist-nav-btn"
+               aria-label="Wishlist">
+
+                <svg width="21" height="21"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+            </a>
+
+            <!-- Seller: hidden for admins -->
+            <a th:if="${!user.admin}"
+               th:href="@{/patterns/new}"
+               class="btn btn-outline">
+                Sell a Pattern
+            </a>
+
+            <!-- Admin Dashboard -->
+            <a th:if="${user.admin}"
+               th:href="@{/admin}"
+               class="btn btn-outline dashboard-nav-btn">
+                Admin Dashboard
+            </a>
+
+            <!-- Dashboard -->
+            <a th:href="@{/dashboard}"
+               class="btn btn-outline dashboard-nav-btn">
+                Dashboard
+            </a>
+
+            <!-- Profile -->
+            <a th:href="@{/profile}"
+               class="user-chip">
+
+                <span class="user-avatar">
+                    <img th:if="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
+                         th:src="${user.profileImagePath}"
+                         alt="Profile">
+
+                    <span th:unless="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
+                          class="avatar-initial"
+                          th:text="${#strings.substring(user.username, 0, 1).toUpperCase()}">
+                        U
+                    </span>
+                </span>
+
+                <span th:text="${user.username}">
+                    username
+                </span>
+            </a>
+
+        </div>
+
+        <!-- Mobile hamburger -->
+        <button class="hamburger"
+                id="hamburger"
+                aria-label="Open menu"
+                aria-expanded="false">
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </button>
+
+    </div>
+</nav>
+
+
+<!-- ============ MOBILE MENU ============ -->
+
+<div class="mobile-menu" id="mobileMenu">
+
+    <a href="#patterns">Marketplace</a>
+    <a href="#community">Community</a>
+    <a href="#leaderboard">Leaderboard</a>
+    <a th:href="@{/vacancies}">Vacancies</a>
+    <a th:href="@{/messages}">Messages</a>
+
+    <a th:if="${!user.admin}"
+       th:href="@{/patterns/new}"
+       class="btn btn-outline">
+        Sell a Pattern
+    </a>
+
+    <a th:if="${user.admin}"
+       th:href="@{/admin}"
+       class="btn btn-outline dashboard-nav-btn">
+        Admin Dashboard
+    </a>
+
+    <a th:href="@{/dashboard}"
+       class="btn btn-outline">
+        Dashboard
+    </a>
+
+    <a th:href="@{/profile}"
+       class="btn btn-primary">
+        My Account
+    </a>
+
+</div>
+
+
+<!-- ============ HOME HERO ============ -->
+
+<header class="home-hero container">
+
+    <span class="eyebrow">Welcome back</span>
+
+    <h1>Let's create something beautiful today.</h1>
+
+    <p>
+        Search thousands of digital crochet patterns, follow creators you love,
+        and pick up right where you left off.
+    </p>
+
+    <form class="search-wrap"
+          th:action="@{/home}"
+          method="get">
+
+        <svg width="20" height="20"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2">
+
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="21" y1="21"
+                  x2="16.65" y2="16.65"/>
+
+        </svg>
+
+        <input type="text"
+               name="search"
+               th:value="${search}"
+               placeholder="Search patterns, creators, or keywords…"
+               aria-label="Search patterns">
+
+        <input type="hidden"
+               name="category"
+               th:value="${selectedCategory}">
+
+        <input type="hidden"
+               name="difficulty"
+               th:value="${selectedDifficulty}">
+
+        <input type="hidden"
+               name="priceType"
+               th:value="${selectedPriceType}">
+
+        <input type="hidden"
+               name="sort"
+               th:value="${selectedSort}">
+
+        <button class="btn btn-primary"
+                type="submit">
+            Search
+        </button>
+
+    </form>
+
+</header>
+
+
+<!-- ============ FILTER / SORT BAR ============ -->
+
+<div class="sticky-search filter-search" id="stickySearch">
+
+    <div class="container">
+
+        <div class="filter-toolbar" id="filterToolbar">
+
+            <button class="filter-toggle"
+                    id="filterToggle"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="filterPanel">
+
+                <span class="filter-toggle-icon">☷</span>
+                <span>Filter &amp; Sort</span>
+                <span class="filter-count" id="filterCount"
+                  th:text="${activeFilterCount}"
+                  th:style="${activeFilterCount == 0 ? 'display:none;' : 'display:inline-flex;'}">0</span>
+                <span class="filter-chevron">▼</span>
+
+            </button>
+
+            <div class="filter-summary" id="filterSummary">
+                <span th:text="${filterSummary}">All patterns</span>
+            </div>
+
+            <button class="clear-filters"
+                    id="clearFilters"
+                    type="button">
+                Clear
+            </button>
+
+        </div>
+
+        <div class="filter-panel"
+             id="filterPanel"
+             aria-hidden="true">
+
+            <div class="filter-group">
+                <label for="categoryFilter">Category</label>
+                <select id="categoryFilter"
+                        name="category">
+
+                    <option value="all"
+                            th:selected="${selectedCategory == 'all'}">
+                        All categories
+                    </option>
+
+                    <option th:each="category : ${categories}"
+                            th:value="${category}"
+                            th:text="${category}"
+                            th:selected="${selectedCategory == category}">
+                        Category
+                    </option>
+
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="difficultyFilter">Difficulty</label>
+                <select id="difficultyFilter"
+                        name="difficulty">
+
+                    <option value="all"
+                            th:selected="${selectedDifficulty == 'all'}">
+                        All levels
+                    </option>
+
+                    <option value="Beginner"
+                            th:selected="${selectedDifficulty == 'Beginner'}">
+                        Beginner
+                    </option>
+
+                    <option value="Intermediate"
+                            th:selected="${selectedDifficulty == 'Intermediate'}">
+                        Intermediate
+                    </option>
+
+                    <option value="Advanced"
+                            th:selected="${selectedDifficulty == 'Advanced'}">
+                        Advanced
+                    </option>
+
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="priceFilter">Price</label>
+                <select id="priceFilter"
+                        name="priceType">
+
+                    <option value="all"
+                            th:selected="${selectedPriceType == 'all'}">
+                        All prices
+                    </option>
+
+                    <option value="free"
+                            th:selected="${selectedPriceType == 'free'}">
+                        Free
+                    </option>
+
+                    <option value="paid"
+                            th:selected="${selectedPriceType == 'paid'}">
+                        Paid
+                    </option>
+
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sortFilter">Sort by</label>
+                <select id="sortFilter"
+                        name="sort">
+
+                    <option value="newest"
+                            th:selected="${selectedSort == 'newest'}">
+                        Newest
+                    </option>
+
+                    <option value="popular"
+                            th:selected="${selectedSort == 'popular'}">
+                        Most popular
+                    </option>
+
+                    <option value="downloads"
+                            th:selected="${selectedSort == 'downloads'}">
+                        Most downloaded
+                    </option>
+
+                    <option value="price-low"
+                            th:selected="${selectedSort == 'price-low'}">
+                        Price: Low to High
+                    </option>
+
+                    <option value="price-high"
+                            th:selected="${selectedSort == 'price-high'}">
+                        Price: High to Low
+                    </option>
+
+                </select>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ============ FEATURED PATTERNS ============ -->
+
+<section class="home-section container" id="patterns">
+
+    <div class="section-head reveal">
+
+        <div>
+
+            <h2>Featured patterns</h2>
+
+            <p class="subtitle">
+                Hand-picked designs from creators across Nepal, updated daily.
+            </p>
+
+        </div>
+
+        <a href="#" class="btn btn-ghost">
+            See All
+        </a>
+
+    </div>
+
+
+    <div class="masonry">
+
+        <!-- REAL APPROVED PATTERNS -->
+        <div th:each="pattern : ${approvedPatterns}"
+             class="pattern-card reveal-scale"
+             th:attr="data-category=${#strings.toLowerCase(pattern.category)}, data-difficulty=${#strings.toLowerCase(pattern.difficulty)}, data-price-type=${pattern.free ? 'free' : 'paid'}, data-price=${pattern.price}, data-downloads=${pattern.downloads}">
+
+            <div class="pattern-thumb">
+
+                <span class="pattern-diff"
+                      th:text="${pattern.difficulty}">
+                    Beginner
+                </span>
+
+                <a th:href="@{/patterns/{id}(id=${pattern.id})}"
+                   class="pattern-image-link"
+                   th:attr="aria-label=|View ${pattern.title}|">
+                    <img th:src="${pattern.imagePath}"
+                         th:alt="${pattern.title}">
+                </a>
+
+                <button class="fav-btn"
+                        type="button"
+                        th:classappend="${wishlistPatternIds.contains(pattern.id)} ? ' is-saved' : ''"
+                        th:attr="data-pattern-id=${pattern.id}, aria-pressed=${wishlistPatternIds.contains(pattern.id)}"
+                        th:aria-label="${wishlistPatternIds.contains(pattern.id)} ? 'Remove from wishlist' : 'Save to wishlist'">
+                    <svg width="19" height="19"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.9"
+                         stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                </button>
+
+            </div>
+
+            <div class="pattern-body">
+
+                <p class="pattern-title">
+                    <a th:href="@{/patterns/{id}(id=${pattern.id})}"
+                       th:text="${pattern.title}">
+                        Pattern title
+                    </a>
+                </p>
+
+                <div class="pattern-creator">
+                    <span>
+                        by @<span th:text="${pattern.creator.username}">username</span>
+                    </span>
+                </div>
+
+                <span class="pattern-category"
+                      th:text="${pattern.categoryLabel}">
+                    Amigurumi &amp; Toys
+                </span>
+
+                <div class="pattern-meta-row">
+
+                    <span class="pattern-price" th:if="${pattern.free}">
+                        Free
+                    </span>
+
+                    <span class="pattern-price"
+                          th:unless="${pattern.free}"
+                          th:text="'Rs ' + ${#numbers.formatDecimal(pattern.price, 0, 0)}">
+                        Rs 0
+                    </span>
+
+                    <span class="pattern-stats">
+
+    <span class="save-stat">
+
+        <svg width="15" height="15"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="1.9"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             aria-hidden="true">
+
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
+
+        </svg>
+
+        <span class="wishlist-save-count"
+              th:attr="data-pattern-id=${pattern.id}"
+              th:text="${wishlistCounts[pattern.id]}">
+            0
+        </span>
+
+    </span>
+
+
+    <span class="download-stat">
+
+        <svg width="15" height="15"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="1.9"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             aria-hidden="true">
+
+            <path d="M12 3v12"/>
+
+            <path d="m7 10 5 5 5-5"/>
+
+            <path d="M5 19h14a2 2 0 0 0 2-2v-2"/>
+
+            <path d="M5 15v2a2 2 0 0 0 2 2"/>
+
+        </svg>
+
+        <span th:text="${pattern.downloads}">
+            0
+        </span>
+
+    </span>
+
+</span>
+
+                </div>
+
+                <a class="view-pattern-btn"
+                   th:href="@{/patterns/{id}(id=${pattern.id})}">
+                    View Pattern
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="filter-empty show"
+             th:if="${#lists.isEmpty(approvedPatterns)}">
+            <span th:if="${search != null and !#strings.isEmpty(search)}">
+                No patterns match your search or selected filters.
+            </span>
+            <span th:unless="${search != null and !#strings.isEmpty(search)}">
+                No approved patterns are available yet.
+            </span>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ============ COMMUNITY FEED ============ -->
+
+<section class="home-section container"
+         id="community"
+         style="background:var(--beige-light); border-radius:var(--radius-lg);">
+
+    <div class="section-head reveal">
+
+        <div>
+
+            <h2>From the community</h2>
+
+            <p class="subtitle">
+                Finished projects, tutorials, and behind-the-scenes from creators you follow.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="feed">
+
+
+        <!-- POST 1 -->
+
+        <div class="post-card reveal">
+
+            <div class="post-head">
+
+                <div class="post-avatar">
+
+                    <img th:src="@{/assets/images/gintoki-doll.png}"
+                         alt="">
+
+                </div>
+
+                <div>
+
+                    <div class="post-user">
+                        weave.ing
+                    </div>
+
+                    <div class="post-time">
+                        2 hours ago
+                    </div>
+
+                </div>
+
+            </div>
+
+            <img class="post-img"
+                 th:src="@{/assets/images/gintoki-doll.png}"
+                 alt="Finished Gintoki amigurumi doll photographed against a Mt. Fuji backdrop">
+
+            <div class="post-actions">
+
+                <button class="like-btn">
+
+                    <svg width="19" height="19"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2">
+
+                        <path d="M12 21s-6.7-4.35-9.3-8.1C.8 9.9 1.6 6.4 4.6 5.1c2.2-.95 4.4.05 5.9 2 1.5-1.95 3.7-2.95 5.9-2 3 1.3 3.8 4.8 1.9 7.8C18.7 16.65 12 21 12 21z"/>
+
+                    </svg>
+
+                    214
+
+                </button>
+
+                <button>
+
+                    <svg width="19" height="19"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2">
+
+                        <path d="M21 11.5a8.5 8.5 0 01-8.5 8.5H6l-3 2 .5-4.2A8.5 8.5 0 1121 11.5z"/>
+
+                    </svg>
+
+                    18
+
+                </button>
+
+                <button>
+
+                    <svg width="19" height="19"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2">
+
+                        <path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v14"/>
+
+                    </svg>
+
+                    Share
+
+                </button>
+
+            </div>
+
+            <p class="post-caption">
+
+                <b>@weave.ing</b>
+                Finally finished my Gintoki figure after three weeks of evenings —
+                the katana handle nearly broke me. Pattern's live on my shop now!
+
+            </p>
+
+        </div>
+
+
+        <!-- POST 2 -->
+
+        <div class="post-card reveal">
+
+            <div class="post-head">
+
+                <div class="post-avatar">
+
+                    <img th:src="@{/assets/images/pochacco-doll.png}"
+                         alt="">
+
+                </div>
+
+                <div>
+
+                    <div class="post-user">
+                        sujita.crochets
+                    </div>
+
+                    <div class="post-time">
+                        5 hours ago
+                    </div>
+
+                </div>
+
+            </div>
+
+            <img class="post-img"
+                 th:src="@{/assets/images/pochacco-doll.png}"
+                 alt="Finished Pochacco amigurumi doll in a blue sweater">
+
+            <div class="post-actions">
+
+                <button class="like-btn">
+
+                    <svg width="19" height="19"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2">
+
+                        <path d="M12 21s-6.7-4.35-9.3-8.1C.8 9.9 1.6 6.4 4.6 5.1c2.2-.95 4.4.05 5.9 2 1.5-1.95 3.7-2.95 5.9-2 3 1.3 3.8 4.8 1.9 7.8C18.7 16.65 12 21 12 21z"/>
+
+                    </svg>
+
+                    456
+
+                </button>
+
+                <button>
+
+                    <svg width="19" height="19"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2">
+
+                        <path d="M21 11.5a8.5 8.5 0 01-8.5 8.5H6l-3 2 .5-4.2A8.5 8.5 0 1121 11.5z"/>
+
+                    </svg>
+
+                    34
+
+                </button>
+
+                <button>
+
+                    <svg width="19" height="19"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2">
+
+                        <path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v14"/>
+
+                    </svg>
+
+                    Share
+
+                </button>
+
+            </div>
+
+            <p class="post-caption">
+
+                <b>@sujita.crochets</b>
+                Beginner-friendly Pochacco pattern is up!
+                Great starter project if you're new to amigurumi —
+                took me about 4 hours total.
+
+            </p>
+
+        </div>
+
+
+        <!-- POST 3 -->
+
+        <div class="post-card reveal">
+
+            <div class="post-head">
+
+                <div class="post-avatar">
+
+                    <img th:src="@{/assets/images/capybara-keychains.png}"
+                         alt="">
+
+                </div>
+
+                <div>
+
+                    <div class="post-user">
+                        aayusha.designs
+                    </div>
+
+                    <div class="post-time">
+                        1 day ago
+                    </div>
+
+                </div>
+
+            </div>
+
+            <img class="post-img"
+                 th:src="@{/assets/images/capybara-keychains.png}"
+                 alt="Finished pair of crochet capybara keychains">
+
+            <div class="post-actions">
+
+                <button class="like-btn">
+
+                    <svg width="19" height="19"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2">
+
+                        <path d="M12 21s-6.7-4.35-9.3-8.1C.8 9.9 1.6 6.4 4.6 5.1c2.2-.95 4.4.05 5.9 2 1.5-1.95 3.7-2.95 5.9-2 3 1.3 3.8 4.8 1.9 7.8C18.7 16.65 12 21 12 21z"/>
+
+                    </svg>
+
+                    302
+
+                </button>
+
+                <button>
+
+                    <svg width="19" height="19"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2">
+
+                        <path d="M21 11.5a8.5 8.5 0 01-8.5 8.5H6l-3 2 .5-4.2A8.5 8.5 0 1121 11.5z"/>
+
+                    </svg>
+
+                    27
+
+                </button>
+
+                <button>
+
+                    <svg width="19" height="19"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2">
+
+                        <path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v14"/>
+
+                    </svg>
+
+                    Share
+
+                </button>
+
+            </div>
+
+            <p class="post-caption">
+
+                <b>@aayusha.designs</b>
+                Capybara keychains restocked in my shop this weekend —
+                sold out in under an hour last time, so grab one early!
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ============ BUSINESS SPOTLIGHT ============ -->
+
+<section class="home-section container">
+
+    <div class="section-head reveal">
+
+        <div>
+
+            <h2>Business spotlight</h2>
+
+            <p class="subtitle">
+                Shops built by creators who've made weave.ing their storefront.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="biz-row">
+
+
+        <div class="biz-card reveal-scale">
+
+            <div class="biz-top">
+
+                <div class="biz-logo">
+
+                    <img th:src="@{/assets/images/gintoki-doll.png}"
+                         alt="">
+
+                </div>
+
+                <div>
+
+                    <div class="biz-name">
+                        weave.ing Studio
+                    </div>
+
+                    <div class="biz-rating">
+                        ★ 4.9 · Kathmandu
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="biz-stats-row">
+
+                <div>
+                    <span>1.2K</span>
+                    <small>Followers</small>
+                </div>
+
+                <div>
+                    <span>86</span>
+                    <small>Patterns</small>
+                </div>
+
+                <div>
+                    <span>4.9</span>
+                    <small>Rating</small>
+                </div>
+
+            </div>
+
+            <a href="#"
+               class="btn btn-outline"
+               style="width:100%; justify-content:center;">
+                Visit Shop
+            </a>
+
+        </div>
+
+
+        <div class="biz-card reveal-scale">
+
+            <div class="biz-top">
+
+                <div class="biz-logo">
+
+                    <img th:src="@{/assets/images/pompompurin-doll.png}"
+                         alt="">
+
+                </div>
+
+                <div>
+
+                    <div class="biz-name">
+                        Sujita Crochets
+                    </div>
+
+                    <div class="biz-rating">
+                        ★ 4.8 · Kathmandu
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="biz-stats-row">
+
+                <div>
+                    <span>860</span>
+                    <small>Followers</small>
+                </div>
+
+                <div>
+                    <span>54</span>
+                    <small>Patterns</small>
+                </div>
+
+                <div>
+                    <span>4.8</span>
+                    <small>Rating</small>
+                </div>
+
+            </div>
+
+            <a href="#"
+               class="btn btn-outline"
+               style="width:100%; justify-content:center;">
+                Visit Shop
+            </a>
+
+        </div>
+
+
+        <div class="biz-card reveal-scale">
+
+            <div class="biz-top">
+
+                <div class="biz-logo">
+
+                    <img th:src="@{/assets/images/luffy-keychain.png}"
+                         alt="">
+
+                </div>
+
+                <div>
+
+                    <div class="biz-name">
+                        Aayusha Designs
+                    </div>
+
+                    <div class="biz-rating">
+                        ★ 4.9 · Pokhara
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="biz-stats-row">
+
+                <div>
+                    <span>640</span>
+                    <small>Followers</small>
+                </div>
+
+                <div>
+                    <span>39</span>
+                    <small>Patterns</small>
+                </div>
+
+                <div>
+                    <span>4.9</span>
+                    <small>Rating</small>
+                </div>
+
+            </div>
+
+            <a href="#"
+               class="btn btn-outline"
+               style="width:100%; justify-content:center;">
+                Visit Shop
+            </a>
+
+        </div>
+
+
+        <div class="biz-card reveal-scale">
+
+            <div class="biz-top">
+
+                <div class="biz-logo">
+
+                    <img th:src="@{/assets/images/sun-earth-keychains.png}"
+                         alt="">
+
+                </div>
+
+                <div>
+
+                    <div class="biz-name">
+                        Tiem Len Rat Lay
+                    </div>
+
+                    <div class="biz-rating">
+                        ★ 4.7 · Lalitpur
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="biz-stats-row">
+
+                <div>
+                    <span>410</span>
+                    <small>Followers</small>
+                </div>
+
+                <div>
+                    <span>21</span>
+                    <small>Patterns</small>
+                </div>
+
+                <div>
+                    <span>4.7</span>
+                    <small>Rating</small>
+                </div>
+
+            </div>
+
+            <a href="#"
+               class="btn btn-outline"
+               style="width:100%; justify-content:center;">
+                Visit Shop
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ============ LEADERBOARD ============ -->
+
+<section class="home-section container"
+         id="leaderboard">
+
+    <div class="section-head reveal">
+
+        <div>
+
+            <h2>Leaderboard</h2>
+
+            <p class="subtitle">
+                Top creators, ranked by community love this month.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="lb-tabs" id="lbTabs">
+
+        <button class="active">
+            Top Creators
+        </button>
+
+        <button>
+            Top Sellers
+        </button>
+
+        <button>
+            Most Downloaded
+        </button>
+
+        <button>
+            Weekly
+        </button>
+
+        <button>
+            All Time
+        </button>
+
+    </div>
+
+
+    <div class="lb-list">
+
+
+        <div class="lb-item reveal">
+
+            <div class="lb-rank">🥇</div>
+
+            <div class="lb-avatar">
+
+                <img th:src="@{/assets/images/gintoki-doll.png}"
+                     alt="">
+
+            </div>
+
+            <div class="lb-info">
+
+                <div class="name">
+                    Prasangsa B.
+                </div>
+
+                <div class="badge">
+                    Top Designer · Founder
+                </div>
+
+            </div>
+
+            <div class="lb-score">
+                4,820 XP
+            </div>
+
+        </div>
+
+
+        <div class="lb-item reveal">
+
+            <div class="lb-rank">🥈</div>
+
+            <div class="lb-avatar">
+
+                <img th:src="@{/assets/images/pompompurin-doll.png}"
+                     alt="">
+
+            </div>
+
+            <div class="lb-info">
+
+                <div class="name">
+                    Sujita K.
+                </div>
+
+                <div class="badge">
+                    Top Seller
+                </div>
+
+            </div>
+
+            <div class="lb-score">
+                4,105 XP
+            </div>
+
+        </div>
+
+
+        <div class="lb-item reveal">
+
+            <div class="lb-rank">🥉</div>
+
+            <div class="lb-avatar">
+
+                <img th:src="@{/assets/images/luffy-keychain.png}"
+                     alt="">
+
+            </div>
+
+            <div class="lb-info">
+
+                <div class="name">
+                    Aayusha R.
+                </div>
+
+                <div class="badge">
+                    Fast Growing
+                </div>
+
+            </div>
+
+            <div class="lb-score">
+                3,760 XP
+            </div>
+
+        </div>
+
+
+        <div class="lb-item reveal">
+
+            <div class="lb-rank">
+                4
+            </div>
+
+            <div class="lb-avatar">
+
+                <img th:src="@{/assets/images/pochacco-doll.png}"
+                     alt="">
+
+            </div>
+
+            <div class="lb-info">
+
+                <div class="name">
+                    Nisha T.
+                </div>
+
+                <div class="badge">
+                    Community Favorite
+                </div>
+
+            </div>
+
+            <div class="lb-score">
+                3,412 XP
+            </div>
+
+        </div>
+
+
+        <div class="lb-item reveal">
+
+            <div class="lb-rank">
+                5
+            </div>
+
+            <div class="lb-avatar">
+
+                <img th:src="@{/assets/images/capybara-keychains.png}"
+                     alt="">
+
+            </div>
+
+            <div class="lb-info">
+
+                <div class="name">
+                    Bikash M.
+                </div>
+
+                <div class="badge">
+                    Top Designer
+                </div>
+
+            </div>
+
+            <div class="lb-score">
+                2,988 XP
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ============ FOOTER ============ -->
+
+<footer>
+
+    <div class="container">
+
+        <div class="footer-grid">
+
+
+            <div class="footer-brand">
+
+                <a th:href="@{/landing}"
+                   class="logo">
+
+                    <span class="dot"></span>
+                    weave.ing
+
+                </a>
+
+                <p>
+                    Crafted with Care. Shared with Creativity.
+                    Nepal's digital marketplace for crochet creators.
+                </p>
+
+            </div>
+
+
+            <div class="footer-col">
+
+                <h5>Platform</h5>
+
+                <a th:href="@{/home}">
+                    Marketplace
+                </a>
+
+                <a th:href="@{/landing#features}">
+                    Features
+                </a>
+
+                <a href="#leaderboard">
+                    Leaderboard
+                </a>
+
+                <a th:href="@{/vacancies}">
+                    Vacancy Board
+                </a>
+
+            </div>
+
+
+            <div class="footer-col">
+
+                <h5>Sellers</h5>
+
+                <a th:href="@{/auth}">
+                    Become a Seller
+                </a>
+
+                <a th:href="@{/dashboard}">
+                    Dashboard
+                </a>
+
+                <a href="#">
+                    Pricing
+                </a>
+
+            </div>
+
+
+            <div class="footer-col">
+
+                <h5>Company</h5>
+
+                <a href="#">
+                    About
+                </a>
+
+                <a href="#">
+                    Community Guidelines
+                </a>
+
+                <a href="#">
+                    Contact
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>
+                © 2026 weave.ing. All rights reserved.
+            </span>
+
+            <div class="social-row">
+
+                <a href="#"
+                   aria-label="Instagram">
+
+                    <svg width="16" height="16"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <rect x="3" y="3"
+                              width="18"
+                              height="18"
+                              rx="5"/>
+
+                        <circle cx="12"
+                                cy="12"
+                                r="4"/>
+
+                        <circle cx="17.5"
+                                cy="6.5"
+                                r="1"/>
+
+                    </svg>
+
+                </a>
+
+
+                <a href="#"
+                   aria-label="TikTok">
+
+                    <svg width="16" height="16"
+                         viewBox="0 0 24 24"
+                         fill="currentColor">
+
+                        <path d="M14 3c.3 2 1.8 3.6 4 4v3c-1.5 0-2.9-.4-4-1.2V15a5.5 5.5 0 11-5.5-5.5c.3 0 .6 0 .9.1v3.1a2.5 2.5 0 102.1 2.5V3z"/>
+
+                    </svg>
+
+                </a>
+
+
+                <a href="#"
+                   aria-label="Facebook">
+
+                    <svg width="16" height="16"
+                         viewBox="0 0 24 24"
+                         fill="currentColor">
+
+                        <path d="M13 22v-9h3l.5-3.5H13V7.2c0-1 .3-1.7 1.8-1.7H17V2.3C16.6 2.2 15.4 2 14 2c-2.8 0-4.7 1.7-4.7 4.9V9.5H6V13h3.3v9z"/>
+
+                    </svg>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<!-- ============ TOAST ============ -->
+
+<div class="toast" id="toast">
+
+    <span id="toastMsg">
+        Saved to wishlist
+    </span>
+
+</div>
+
+
+<!-- ============ BACK TO TOP ============ -->
+
+<button class="back-to-top"
+        id="backToTop"
+        aria-label="Back to top">
+
+    <svg width="18" height="18"
+         viewBox="0 0 24 24"
+         fill="none"
+         stroke="currentColor"
+         stroke-width="2.4">
+
+        <path d="M12 19V5M5 12l7-7 7 7"/>
+
+    </svg>
+
+</button>
+
+
+<!-- Thymeleaf-compatible external JavaScript -->
+
+<script th:src="@{/assets/js/home.js}"></script>
+
+</body>
+</html>

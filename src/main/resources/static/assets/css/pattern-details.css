@@ -1,0 +1,1047 @@
+/* =========================================================
+   weave.ing — Pattern Details Page
+   ========================================================= */
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.pattern-details-body {
+    min-height: 100vh;
+    background: var(--beige-light);
+    color: var(--text);
+}
+
+
+
+/* =========================================================
+   SIMPLE HEADER
+========================================================= */
+
+.pattern-details-header {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    background: rgba(253, 250, 247, .94);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 5px 25px rgba(74, 56, 48, .05);
+}
+
+.pattern-details-header-inner {
+    min-height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.pattern-details-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    color: var(--brown-dark);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    text-decoration: none;
+}
+
+.pattern-details-brand-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--brown);
+    box-shadow: 0 0 0 5px var(--beige);
+    flex-shrink: 0;
+}
+
+.details-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: .84rem;
+    font-weight: 700;
+    transition:
+            color .2s ease,
+            transform .2s ease;
+}
+
+.details-back-link:hover {
+    color: var(--brown-dark);
+    transform: translateX(-2px);
+}
+
+.details-back-link svg {
+    flex-shrink: 0;
+}
+
+
+
+/* =========================================================
+   MAIN AREA
+========================================================= */
+
+.pattern-details-page {
+    min-height: calc(100vh - 76px);
+    padding: 54px 0 90px;
+
+    background:
+            radial-gradient(
+                    circle at 8% 12%,
+                    rgba(230, 214, 197, .38),
+                    transparent 25%
+            ),
+            var(--beige-light);
+}
+
+.pattern-details-wrap {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.02fr)
+        minmax(0, .98fr);
+
+    gap: 58px;
+
+    align-items: start;
+}
+
+
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+.pattern-details-image-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 12px;
+    box-shadow: var(--shadow-soft);
+}
+
+.pattern-details-image-wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: calc(var(--radius-lg) - 7px);
+    background: var(--beige-mid);
+}
+
+.pattern-details-image {
+    width: 100%;
+    max-height: 680px;
+    object-fit: cover;
+    display: block;
+}
+
+.pattern-details-difficulty {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 2;
+
+    padding: 7px 13px;
+
+    border-radius: var(--radius-pill);
+
+    background: rgba(253, 250, 247, .94);
+
+    color: var(--brown-dark);
+
+    font-size: .72rem;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: .05em;
+
+    box-shadow:
+            0 4px 15px rgba(74, 56, 48, .08);
+}
+
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.pattern-details-content {
+    padding: 12px 0 0;
+}
+
+.pattern-details-category {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 7px 12px;
+
+    border-radius: var(--radius-pill);
+
+    background: var(--beige-mid);
+
+    color: var(--brown-dark);
+
+    font-size: .72rem;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+.pattern-details-content h1 {
+    margin: 16px 0 9px;
+
+    max-width: 680px;
+
+    font-size: clamp(2.1rem, 4vw, 3.25rem);
+    line-height: 1.04;
+
+    color: var(--brown-dark);
+}
+
+.pattern-details-creator {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: .9rem;
+}
+
+.pattern-details-creator strong {
+    color: var(--brown-dark);
+}
+
+.pattern-details-stats {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 20px;
+
+    margin-top: 16px;
+
+    color: var(--muted);
+
+    font-size: .82rem;
+}
+
+.pattern-details-stats span {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 4px;
+}
+
+.pattern-details-stats .stat-icon {
+    color: var(--brown-light);
+    font-size: .9rem;
+}
+
+.pattern-details-stats .download-stat-icon {
+    font-size: 1rem;
+}
+
+.pattern-details-stats strong {
+    color: var(--brown-dark);
+}
+
+.pattern-details-divider {
+    width: 100%;
+    height: 1px;
+
+    background: var(--border);
+
+    margin: 25px 0;
+}
+
+
+
+/* =========================================================
+   PRICE
+========================================================= */
+
+.pattern-details-price-row {
+    margin-bottom: 23px;
+}
+
+.pattern-details-price {
+    color: var(--brown-dark);
+
+    font-size: 1.7rem;
+    font-weight: 900;
+}
+
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.pattern-details-description h2 {
+    margin: 0 0 10px;
+
+    color: var(--brown-dark);
+
+    font-size: 1.08rem;
+}
+
+.pattern-details-description p {
+    margin: 0;
+
+    max-width: 650px;
+
+    color: var(--muted);
+
+    line-height: 1.8;
+
+    font-size: .92rem;
+
+    white-space: pre-line;
+}
+
+
+
+/* =========================================================
+   PURCHASE STATUS — PROMINENT NOTIFICATION
+========================================================= */
+
+.purchase-status-banner {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 14px;
+
+    margin-bottom: 25px;
+
+    padding: 17px 18px;
+
+    border-radius: 16px;
+
+    box-shadow:
+            0 8px 24px rgba(74, 56, 48, .06);
+}
+
+.purchase-created-banner {
+    background: rgba(238, 247, 238, .95);
+
+    border: 1px solid rgba(92, 126, 91, .22);
+
+    color: #4d654b;
+}
+
+.pending-order-banner {
+    background: rgba(252, 246, 235, .96);
+
+    border: 1px solid rgba(166, 127, 76, .22);
+
+    color: #765c3f;
+}
+
+.purchase-status-icon {
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+}
+
+.purchase-created-banner .purchase-status-icon {
+    background: rgba(117, 155, 112, .14);
+
+    color: #5f805b;
+}
+
+.pending-order-banner .purchase-status-icon {
+    background: rgba(180, 141, 82, .14);
+
+    color: #967343;
+}
+
+.purchase-status-content {
+    min-width: 0;
+}
+
+.purchase-status-content strong {
+    display: block;
+
+    margin-top: 1px;
+
+    color: var(--brown-dark);
+
+    font-size: .95rem;
+}
+
+.purchase-status-content p {
+    margin: 5px 0 0;
+
+    color: var(--muted);
+
+    font-size: .82rem;
+
+    line-height: 1.55;
+}
+
+
+
+/* =========================================================
+   ACCESS CARD
+========================================================= */
+
+.pattern-access-card {
+    display: flex;
+
+    gap: 13px;
+
+    align-items: flex-start;
+
+    margin-top: 27px;
+
+    padding: 16px 17px;
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius-md);
+
+    background: rgba(255, 255, 255, .76);
+}
+
+.access-icon {
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: var(--beige-mid);
+
+    color: var(--brown-dark);
+}
+
+.free-access-icon {
+    background: var(--beige-mid);
+}
+
+.pattern-access-card strong {
+    display: block;
+
+    margin-top: 1px;
+
+    color: var(--brown-dark);
+
+    font-size: .9rem;
+}
+
+.pattern-access-card p {
+    margin: 4px 0 0;
+
+    color: var(--muted);
+
+    font-size: .8rem;
+
+    line-height: 1.55;
+}
+
+
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+/*
+ * These are REAL clickable actions now.
+ *
+ * The previous version had:
+ *
+ * cursor: not-allowed;
+ *
+ * and muted colors because the purchase button was still
+ * a placeholder.
+ *
+ * That has now been removed.
+ */
+
+.pattern-primary-action {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 52px;
+
+    padding: 0 22px;
+
+    border: 0;
+
+    border-radius: var(--radius-pill);
+
+    background: var(--brown-dark);
+
+    color: #ffffff;
+
+    font: inherit;
+
+    font-size: .9rem;
+
+    font-weight: 800;
+
+    line-height: 1.2;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    box-sizing: border-box;
+
+    cursor: pointer;
+
+    transition:
+            transform .2s ease,
+            box-shadow .2s ease,
+            background .2s ease,
+            opacity .2s ease;
+}
+
+.pattern-primary-action:hover {
+    background: var(--brown);
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+            0 9px 22px rgba(74, 56, 48, .14);
+}
+
+.pattern-primary-action:active {
+    transform: translateY(0);
+
+    box-shadow:
+            0 4px 12px rgba(74, 56, 48, .10);
+}
+
+.pattern-primary-action:focus-visible,
+.pattern-secondary-action:focus-visible {
+    outline: 2px solid var(--brown);
+
+    outline-offset: 3px;
+}
+
+
+
+/* =========================================================
+   ACTION GROUP
+========================================================= */
+
+.pattern-action-group {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+
+    margin-top: 24px;
+}
+
+.pattern-action-group .pattern-primary-action {
+    margin-top: 0;
+
+    flex: 1 1 230px;
+
+    width: auto;
+}
+
+
+
+/* =========================================================
+   SECONDARY ACTION
+========================================================= */
+
+.pattern-secondary-action {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 52px;
+
+    flex: 1 1 190px;
+
+    padding: 0 22px;
+
+    border: 1px solid rgba(86, 65, 54, 0.18);
+
+    border-radius: var(--radius-pill);
+
+    color: #564136;
+
+    background: rgba(255, 255, 255, 0.72);
+
+    text-decoration: none;
+
+    font-size: .9rem;
+
+    font-weight: 700;
+
+    text-align: center;
+
+    box-sizing: border-box;
+
+    cursor: pointer;
+
+    transition:
+            transform .2s ease,
+            box-shadow .2s ease,
+            background .2s ease,
+            color .2s ease;
+}
+
+.pattern-secondary-action:hover {
+    transform: translateY(-1px);
+
+    color: var(--brown-dark);
+
+    background: #ffffff;
+
+    box-shadow:
+            0 8px 20px rgba(86, 65, 54, 0.08);
+}
+
+.pattern-secondary-action:active {
+    transform: translateY(0);
+}
+
+
+
+/* =========================================================
+   PURCHASE AREA
+========================================================= */
+
+.pattern-purchase-area {
+    margin-top: 24px;
+}
+
+.pattern-purchase-area form {
+    width: 100%;
+
+    margin: 0;
+}
+
+.pattern-purchase-area .pattern-primary-action {
+    width: 100%;
+
+    margin-top: 0;
+}
+
+
+
+/* =========================================================
+   PURCHASE BUTTON
+========================================================= */
+
+.purchase-pattern-button {
+    min-height: 54px;
+
+    font-size: .92rem;
+
+    letter-spacing: .01em;
+}
+
+
+
+/* =========================================================
+   PENDING PURCHASE BOX
+========================================================= */
+
+.pending-purchase-box {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 12px;
+
+    padding: 16px 18px;
+
+    border-radius: 15px;
+
+    background: rgba(252, 246, 235, .92);
+
+    border: 1px solid rgba(166, 127, 76, 0.20);
+
+    color: var(--brown-dark);
+}
+
+.pending-purchase-icon {
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 38px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: rgba(180, 141, 82, .13);
+
+    color: #967343;
+}
+
+.pending-purchase-box strong {
+    display: block;
+
+    margin-top: 1px;
+    margin-bottom: 5px;
+
+    color: var(--brown-dark);
+
+    font-size: .9rem;
+}
+
+.pending-purchase-box p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: .82rem;
+
+    line-height: 1.55;
+}
+
+
+
+/* =========================================================
+   SMALL NOTE
+========================================================= */
+
+.pattern-details-note {
+    margin: 11px 0 0;
+
+    color: var(--muted);
+
+    font-size: .72rem;
+
+    line-height: 1.5;
+
+    text-align: center;
+}
+
+
+
+/* =========================================================
+   RESPONSIVE — TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .pattern-details-wrap {
+        grid-template-columns: 1fr;
+
+        gap: 36px;
+    }
+
+    .pattern-details-content {
+        padding-top: 0;
+    }
+
+    .pattern-details-image {
+        max-height: none;
+    }
+
+}
+
+
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+========================================================= */
+
+@media (max-width: 640px) {
+
+    .pattern-details-header-inner {
+        min-height: 68px;
+    }
+
+    .pattern-details-brand {
+        font-size: 1.3rem;
+    }
+
+    .details-back-link {
+        font-size: .75rem;
+    }
+
+    .details-back-link svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .pattern-details-page {
+        min-height: calc(100vh - 68px);
+
+        padding: 30px 0 60px;
+    }
+
+    .pattern-details-wrap {
+        width: min(100% - 32px, 1240px);
+
+        gap: 28px;
+    }
+
+    .pattern-details-content h1 {
+        font-size: 2rem;
+    }
+
+    .pattern-details-image-card {
+        padding: 8px;
+
+        border-radius: 22px;
+    }
+
+    .pattern-details-difficulty {
+        top: 12px;
+        left: 12px;
+
+        font-size: .66rem;
+    }
+
+    .purchase-status-banner {
+        padding: 15px;
+
+        gap: 11px;
+    }
+
+    .purchase-status-icon {
+        width: 38px;
+        height: 38px;
+
+        flex-basis: 38px;
+    }
+
+    .purchase-status-content strong {
+        font-size: .88rem;
+    }
+
+    .purchase-status-content p {
+        font-size: .77rem;
+    }
+
+    .pattern-action-group {
+        align-items: stretch;
+
+        flex-direction: column;
+
+        gap: 10px;
+    }
+
+    .pattern-action-group .pattern-primary-action,
+    .pattern-secondary-action {
+        width: 100%;
+
+        flex: 1 1 auto;
+    }
+
+    .pending-purchase-box {
+        padding: 15px;
+    }
+
+}
+
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+
+    .pattern-details-header-inner {
+        gap: 12px;
+    }
+
+    .pattern-details-brand {
+        font-size: 1.15rem;
+    }
+
+    .pattern-details-brand-dot {
+        width: 8px;
+        height: 8px;
+    }
+
+    .details-back-link span {
+        display: none;
+    }
+
+    .details-back-link svg {
+        width: 19px;
+        height: 19px;
+    }
+
+}
+
+.pattern-message-button { display:inline-flex; align-items:center; gap:7px; min-height:38px; margin-top:15px; padding:0 14px; border:1px solid var(--border); border-radius:var(--radius-pill); color:var(--brown-dark); background:var(--white); font:700 11px var(--font-body); cursor:pointer; transition:transform .25s var(--ease),background .25s ease,box-shadow .25s ease; }
+.pattern-message-button:hover { background:var(--beige-light); transform:translateY(-1px); box-shadow:var(--shadow-soft); }
+.messaging-coming-soon { position:fixed; inset:0; z-index:3000; display:none; align-items:center; justify-content:center; padding:20px; }
+.messaging-coming-soon.open { display:flex; }
+.messaging-coming-soon-backdrop { position:absolute; inset:0; background:rgba(74,56,48,.28); backdrop-filter:blur(5px); }
+.messaging-coming-soon-card { position:relative; width:min(450px,100%); padding:34px; border:1px solid var(--border); border-radius:var(--radius-lg); background:var(--offwhite); box-shadow:var(--shadow-med); text-align:center; }
+.messaging-coming-soon-close { position:absolute; top:12px; right:14px; width:34px; height:34px; border:0; border-radius:50%; color:var(--brown-dark); background:transparent; font-size:24px; cursor:pointer; }
+.messaging-coming-soon-kicker { color:var(--brown-light); font-size:9px; font-weight:800; letter-spacing:1.4px; }
+.messaging-coming-soon-icon { width:62px; height:62px; display:flex; align-items:center; justify-content:center; margin:17px auto; border-radius:50%; color:var(--brown); background:var(--beige-light); font-size:23px; }
+.messaging-coming-soon-card h2 { margin:0 0 9px; color:var(--brown-dark); font-family:var(--font-display); font-size:29px; }
+.messaging-coming-soon-card p { margin:0 0 22px; color:var(--muted); font-size:12px; line-height:1.8; }
+body.modal-open { overflow:hidden; }
+
+.related-patterns-section {
+    padding-top: 15px;
+    padding-bottom: 80px;
+}
+
+.related-patterns-heading {
+    margin-bottom: 24px;
+}
+
+.related-patterns-heading h2 {
+    margin: 5px 0 7px;
+    color: var(--brown-dark);
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.related-patterns-heading p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.related-patterns-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.related-pattern-card {
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow-soft);
+    transition: transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+
+.related-pattern-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-med);
+}
+
+.related-pattern-image-wrap {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--beige-light);
+}
+
+.related-pattern-image-wrap img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.related-free-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--brown-dark);
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.related-pattern-copy {
+    padding: 15px;
+}
+
+.related-pattern-copy h3 {
+    margin: 0 0 5px;
+    color: var(--brown-dark);
+    font-family: var(--font-display);
+    font-size: 18px;
+    line-height: 1.15;
+}
+
+.related-pattern-copy p {
+    margin: 0 0 9px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.related-pattern-copy strong {
+    color: var(--brown-dark);
+    font-size: 12px;
+}
+
+@media (max-width: 900px) {
+    .related-patterns-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 520px) {
+    .related-patterns-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.details-back-link {
+    padding: 9px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: rgba(255,255,255,.82);
+    transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+}
+
+.details-back-link:hover {
+    transform: translateY(-1px);
+    background: var(--beige-light);
+    box-shadow: var(--shadow-soft);
+}
+
+.site-logo-image {
+    display: block;
+    width: 132px;
+    height: auto;
+    max-height: 42px;
+    object-fit: contain;
+}
+
+/* Consistent site logo sizing */
+.site-logo-image {
+    display: block;
+    width: 190px;
+    height: auto;
+    max-height: none;
+    object-fit: contain;
+}
+
+@media (max-width: 760px) {
+    .site-logo-image {
+        width: 170px;
+        max-height: none;
+    }
+}
+

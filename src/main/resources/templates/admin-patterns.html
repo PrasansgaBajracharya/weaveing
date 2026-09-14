@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Pattern Management — weave.ing</title>
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/admin-dashboard.css}">
+
+</head>
+
+
+<body>
+
+
+<!--ADMIN NAVBAR -->
+
+<nav class="admin-nav">
+
+    <div class="nav-left">
+
+        <a th:href="@{/home}"
+           class="logo">
+            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
+        </a>
+
+    </div>
+
+
+    <div class="nav-right">
+
+        <a th:href="@{/admin}"
+           class="marketplace-link">
+
+            ← Admin Dashboard
+
+        </a>
+
+        <span class="admin-badge">
+            ADMIN
+        </span>
+
+
+        <form th:action="@{/logout}"
+              method="post">
+
+            <button type="submit"
+                    class="logout-button">
+
+                Log out
+
+            </button>
+
+        </form>
+
+    </div>
+
+</nav>
+
+
+
+<!-- MAIN-->
+
+<main class="admin-main">
+
+
+    <!-- PAGE HEADER -->
+
+    <section class="admin-heading">
+
+        <p class="eyebrow">
+            CONTENT MANAGEMENT
+        </p>
+
+        <h1>
+            Pattern Management
+        </h1>
+
+        <p>
+            Review submitted patterns before they are published
+            on the weave.ing marketplace.
+        </p>
+
+    </section>
+
+
+
+    <!-- SUMMARY-->
+
+    <section class="admin-stats">
+
+
+        <div class="stat-card">
+
+            <span class="stat-label">
+                Pending
+            </span>
+
+            <strong th:text="${pendingPatterns.size()}">
+                0
+            </strong>
+
+            <span class="stat-note">
+                Need review
+            </span>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span class="stat-label">
+                Approved
+            </span>
+
+            <strong th:text="${approvedPatterns.size()}">
+                0
+            </strong>
+
+            <span class="stat-note">
+                Published
+            </span>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span class="stat-label">
+                Rejected
+            </span>
+
+            <strong th:text="${rejectedPatterns.size()}">
+                0
+            </strong>
+
+            <span class="stat-note">
+                Not published
+            </span>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- PENDING PATTERNS-->
+
+    <section class="admin-section">
+
+
+        <div class="section-heading">
+
+            <p class="section-kicker">
+                NEEDS ATTENTION
+            </p>
+
+            <h2>
+                Pending Patterns
+            </h2>
+
+            <p>
+                Review the PDF and cover image, then approve or
+                reject each submission.
+            </p>
+
+        </div>
+
+
+
+        <!-- EMPTY STATE -->
+
+        <div th:if="${pendingPatterns.isEmpty()}"
+             class="empty-card">
+
+            <div class="empty-icon">
+                ✓
+            </div>
+
+            <h3>
+                No pending patterns
+            </h3>
+
+            <p>
+                New pattern submissions will appear here automatically.
+            </p>
+
+        </div>
+
+
+
+        <!-- PENDING LIST -->
+
+        <div th:unless="${pendingPatterns.isEmpty()}"
+             class="review-list">
+
+
+            <article class="review-card"
+                     th:each="pattern : ${pendingPatterns}">
+
+
+                <!-- IMAGE -->
+
+                <div class="review-image">
+
+                    <img th:if="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}"
+                         th:src="@{${pattern.imagePath}}"
+                         th:alt="${pattern.title}">
+
+                    <div th:unless="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}"
+                         class="image-placeholder">
+
+                        ✦
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- CONTENT -->
+
+                <div class="review-content">
+
+
+                    <div class="review-top">
+
+                        <div>
+
+                            <p class="review-category"
+                               th:text="${pattern.categoryLabel}">
+
+                                Amigurumi
+
+                            </p>
+
+                            <h3 th:text="${pattern.title}">
+
+                                Pattern Title
+
+                            </h3>
+
+                            <p class="creator">
+
+                                by @<span th:text="${pattern.creator.username}">
+                                    username
+                                </span>
+
+                            </p>
+
+                        </div>
+
+
+                        <span class="status pending">
+                            PENDING
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- META -->
+
+                    <div class="review-meta">
+
+                        <span th:text="${pattern.difficulty}">
+                            Beginner
+                        </span>
+
+                        <span th:if="${pattern.free}">
+                            Free
+                        </span>
+
+                        <span th:unless="${pattern.free}"
+                              th:text="'Rs ' + ${pattern.price}">
+                            Rs 0
+                        </span>
+
+                        <span th:text="${#temporals.format(pattern.submittedAt, 'dd MMM yyyy')}">
+                            02 Sep 2026
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="description-box">
+
+                        <p th:text="${pattern.description}">
+                            Pattern description
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="review-actions">
+
+
+                        <!-- REVIEW PDF -->
+
+                        <a th:if="${pattern.filePath != null and !#strings.isEmpty(pattern.filePath)}"
+                           th:href="@{'/admin/patterns/' + ${pattern.id} + '/review'}"
+                           target="_blank"
+                           rel="noopener"
+                           class="review-pdf-button">
+
+                            <span>
+                                ▣
+                            </span>
+
+                            Review PDF
+
+                        </a>
+
+
+
+                        <!-- APPROVE -->
+
+                        <form th:action="@{'/admin/patterns/' + ${pattern.id} + '/approve'}"
+                              method="post">
+
+                            <button type="submit"
+                                    class="approve-button">
+
+                                ✓ Approve
+
+                            </button>
+
+                        </form>
+
+
+
+                        <!-- REJECT -->
+
+                        <form th:action="@{'/admin/patterns/' + ${pattern.id} + '/reject'}"
+                              method="post"
+                              class="reject-form">
+
+                            <textarea name="rejectionReason"
+                                      placeholder="Reason for rejection (optional)"
+                                      rows="2"></textarea>
+
+                            <button type="submit"
+                                    class="reject-button">
+
+                                × Reject
+
+                            </button>
+
+                        </form>
+
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ========================================================
+         APPROVED PATTERNS
+         ======================================================== -->
+
+    <section class="admin-section secondary-section">
+
+
+        <div class="section-heading">
+
+            <p class="section-kicker">
+                PUBLISHED
+            </p>
+
+            <h2>
+                Approved Patterns
+            </h2>
+
+        </div>
+
+
+        <div th:if="${approvedPatterns.isEmpty()}"
+             class="simple-empty">
+
+            No approved patterns yet.
+
+        </div>
+
+
+        <div th:unless="${approvedPatterns.isEmpty()}"
+             class="compact-list">
+
+
+            <div class="compact-card"
+                 th:each="pattern : ${approvedPatterns}">
+
+
+                <div>
+
+                    <strong th:text="${pattern.title}">
+                        Pattern Title
+                    </strong>
+
+                    <span>
+
+                        by @<span th:text="${pattern.creator.username}">
+                            username
+                        </span>
+
+                    </span>
+
+                </div>
+
+
+                <span class="status approved">
+                    APPROVED
+                </span>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ========================================================
+         REJECTED PATTERNS
+         ======================================================== -->
+
+    <section class="admin-section secondary-section">
+
+
+        <div class="section-heading">
+
+            <p class="section-kicker">
+                REVIEW HISTORY
+            </p>
+
+            <h2>
+                Rejected Patterns
+            </h2>
+
+        </div>
+
+
+        <div th:if="${rejectedPatterns.isEmpty()}"
+             class="simple-empty">
+
+            No rejected patterns yet.
+
+        </div>
+
+
+        <div th:unless="${rejectedPatterns.isEmpty()}"
+             class="compact-list">
+
+
+            <div class="compact-card"
+                 th:each="pattern : ${rejectedPatterns}">
+
+
+                <div>
+
+                    <strong th:text="${pattern.title}">
+                        Pattern Title
+                    </strong>
+
+                    <span>
+
+                        by @<span th:text="${pattern.creator.username}">
+                            username
+                        </span>
+
+                    </span>
+
+
+                    <small th:if="${pattern.rejectionReason != null}"
+                           th:text="${pattern.rejectionReason}">
+
+                        Rejection reason
+
+                    </small>
+
+                </div>
+
+
+                <span class="status rejected">
+                    REJECTED
+                </span>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+</body>
+
+</html>

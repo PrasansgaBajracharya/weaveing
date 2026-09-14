@@ -1,0 +1,286 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+/* Application status */
+
+.application-area {
+    display: block !important;
+    width: 100%;
+    margin-top: 10px;
+    padding-top: 28px;
+}
+
+.application-area > .your-application-card {
+    width: 100%;
+    display: block;
+    background: var(--beige-light);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 26px;
+    box-sizing: border-box;
+    box-shadow: var(--shadow-soft);
+}
+
+.application-apply-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.application-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.application-card-header .vacancy-eyebrow {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--brown-light);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+}
+
+.application-card-header h3 {
+    margin: 0;
+    color: var(--brown-dark);
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 600;
+}
+
+.application-status-icon {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--beige);
+    color: var(--brown-dark);
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.application-status-icon.accepted {
+    background: #dfe8dc;
+    color: #52664d;
+}
+
+.application-status-icon.rejected {
+    background: #f0dada;
+    color: var(--danger);
+}
+
+.application-status-icon.pending {
+    background: #eee2d2;
+    color: var(--brown);
+}
+
+.application-status-content {
+    padding: 20px 0;
+}
+
+.application-status-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.application-status-label {
+    color: var(--muted);
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .14em;
+}
+
+.application-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+}
+
+.application-status.pending {
+    background: #eee2d2;
+    color: var(--brown);
+}
+
+.application-status.accepted {
+    background: #dfe8dc;
+    color: #52664d;
+}
+
+.application-status.rejected {
+    background: #f0dada;
+    color: var(--danger);
+}
+
+.application-status-message {
+    margin-top: 14px;
+}
+
+.application-status-message p {
+    margin: 0;
+    color: var(--muted);
+    font-size: .9rem;
+    line-height: 1.7;
+}
+
+.application-card-footer {
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.application-card-footer span {
+    color: var(--muted);
+    font-size: .76rem;
+}
+
+.vacancy-closed-card {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 22px;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: var(--beige-mid);
+}
+
+.closed-icon {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--beige);
+    color: var(--brown);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.vacancy-closed-card .vacancy-eyebrow {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.vacancy-closed-card h3 {
+    margin: 0;
+    color: var(--brown-dark);
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.vacancy-closed-card p {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: .86rem;
+    line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+    .application-area {
+        padding-top: 22px;
+    }
+
+    .application-area > .your-application-card {
+        padding: 20px;
+        border-radius: 18px;
+    }
+
+    .application-card-header {
+        gap: 14px;
+    }
+
+    .application-card-header h3 {
+        font-size: 1.25rem;
+    }
+
+    .application-status-icon {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
+    }
+
+    .application-status-main {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .vacancy-closed-card {
+        padding: 18px;
+    }
+
+    .vacancy-closed-card h3 {
+        font-size: 1.05rem;
+    }
+}
+
+
+.application-area > .your-application-card {
+    background: linear-gradient(145deg, #fffdfb 0%, var(--beige-light) 100%);
+    box-shadow: 0 12px 34px rgba(74,56,48,.08);
+}
+
+.application-card-header h3 {
+    font-size: 1.55rem;
+}
+
+.application-status-icon {
+    border: 1px solid rgba(99,77,64,.10);
+}
+
+.application-status.pending {
+    background: #f4eadc;
+    color: var(--brown);
+}
+
+.application-status.accepted {
+    background: #e3efe5;
+    color: #45634d;
+}
+
+.application-status.rejected {
+    background: #f7e1df;
+    color: #9a403b;
+}
+
+.vacancy-closed-card {
+    background: #fbefed;
+    border-color: rgba(178,58,58,.16);
+}
+
+.vacancy-closed-card .closed-icon {
+    background: #f3d8d5;
+    color: var(--danger);
+}
+
+
+.application-area .vacancy-eyebrow {
+    color: var(--brown-light);
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.application-area .application-status-icon {
+    box-shadow: none;
+}

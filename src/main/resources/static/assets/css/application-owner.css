@@ -1,0 +1,274 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+.owner-applications {
+    margin-top: 56px;
+    padding-top: 42px;
+    border-top: 1px solid var(--border);
+}
+
+.owner-applications .applications-heading {
+    margin-bottom: 28px;
+}
+
+.applications-heading-copy {
+    width: 100%;
+}
+
+.applications-title-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 6px 0 8px;
+}
+
+.owner-applications .applications-heading h2 {
+    margin: 0;
+    color: var(--brown-dark);
+    font-family: var(--font-display);
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 500;
+    line-height: 1.05;
+}
+
+.owner-applications .applications-heading p {
+    max-width: 650px;
+    margin: 12px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.owner-applications .application-count {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 11px;
+    border: 1px solid var(--border);
+    background: var(--beige-light);
+    color: var(--brown);
+    font-size: 12px;
+}
+
+.owner-applications .applications-list {
+    gap: 18px;
+}
+
+.owner-application-card {
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: var(--white);
+    box-shadow: 0 10px 32px rgba(74, 56, 48, .07);
+}
+
+.owner-application-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 22px 24px;
+    background: linear-gradient(135deg, var(--beige-light), var(--white));
+    border-bottom: 1px solid var(--border);
+}
+
+.owner-application-card .application-applicant {
+    gap: 14px;
+}
+
+.owner-application-card .application-avatar {
+    width: 48px;
+    height: 48px;
+    background: var(--beige);
+    border: 3px solid var(--white);
+    box-shadow: 0 4px 12px rgba(74, 56, 48, .08);
+    font-size: 16px;
+}
+
+.owner-application-card .applicant-info {
+    gap: 4px;
+}
+
+.owner-application-card .application-applicant strong {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--brown-dark);
+}
+
+.owner-application-card .application-applicant span {
+    font-size: 10px;
+    color: var(--muted);
+}
+
+.owner-application-card .application-status {
+    min-width: 86px;
+    justify-content: center;
+    padding: 8px 13px;
+    font-size: 9px;
+    letter-spacing: .08em;
+}
+
+.owner-application-card .application-status.pending {
+    background: #f3eadf;
+    color: var(--brown);
+}
+
+.owner-application-card .application-status.accepted {
+    background: #e2ebde;
+    color: #52664d;
+}
+
+.owner-application-card .application-status.rejected {
+    background: #f3dddd;
+    color: var(--danger);
+}
+
+.owner-application-card .application-message {
+    margin: 0;
+    padding: 22px 24px;
+    border-top: 0;
+}
+
+.application-message-label {
+    display: block;
+    margin-bottom: 9px;
+    color: var(--brown-light);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.owner-application-card .application-message p {
+    color: var(--text);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.application-decision {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 0 24px 24px;
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    background: var(--offwhite);
+}
+
+.decision-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.decision-copy strong {
+    color: var(--brown-dark);
+    font-size: 11px;
+}
+
+.decision-copy span {
+    color: var(--muted);
+    font-size: 9px;
+}
+
+.application-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.application-actions form {
+    margin: 0;
+}
+
+.application-action {
+    min-height: 38px;
+    padding: 0 14px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.application-action span {
+    margin-right: 5px;
+    font-size: 12px;
+}
+
+.accept-button {
+    color: #52664d;
+    background: #e2ebde;
+    border-color: rgba(82, 102, 77, .12);
+}
+
+.accept-button:hover {
+    background: #d5e2d0;
+    transform: translateY(-1px);
+}
+
+.reject-button {
+    color: var(--danger);
+    background: #f5e4e4;
+    border-color: rgba(178, 58, 58, .12);
+}
+
+.reject-button:hover {
+    background: #efd6d6;
+    transform: translateY(-1px);
+}
+
+.application-decision.resolved {
+    justify-content: flex-start;
+    margin-top: 0;
+    color: var(--muted);
+    font-size: 9px;
+    background: var(--beige-light);
+}
+
+.application-decision.resolved span:first-child {
+    color: #52664d;
+}
+
+@media (max-width: 700px) {
+    .owner-applications {
+        margin-top: 40px;
+        padding-top: 30px;
+    }
+
+    .owner-application-top {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+        padding: 19px;
+    }
+
+    .owner-application-card .application-status {
+        align-self: flex-start;
+    }
+
+    .owner-application-card .application-message {
+        padding: 19px;
+    }
+
+    .application-decision {
+        align-items: stretch;
+        flex-direction: column;
+        margin: 0 19px 19px;
+    }
+
+    .application-actions {
+        width: 100%;
+    }
+
+    .application-actions form {
+        flex: 1;
+    }
+
+    .application-action {
+        width: 100%;
+    }
+}

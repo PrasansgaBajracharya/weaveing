@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Payments &amp; Transactions — weave.ing</title>
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/admin-dashboard.css}">
+
+</head>
+
+
+<body>
+
+
+<!-- ============================================================
+     ADMIN NAVBAR
+     ============================================================ -->
+
+<nav class="admin-nav">
+
+    <div class="nav-left">
+
+        <a th:href="@{/home}"
+           class="logo">
+            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
+        </a>
+
+    </div>
+
+
+    <div class="nav-right">
+
+        <a th:href="@{/admin}"
+           class="marketplace-link">
+
+            ← Admin Dashboard
+
+        </a>
+
+        <span class="admin-badge">
+            ADMIN
+        </span>
+
+
+        <form th:action="@{/logout}"
+              method="post">
+
+            <button type="submit"
+                    class="logout-button">
+
+                Log out
+
+            </button>
+
+        </form>
+
+    </div>
+
+</nav>
+
+
+
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+
+<main class="admin-main">
+
+
+    <section class="admin-heading">
+
+        <p class="eyebrow">
+            FINANCE
+        </p>
+
+        <h1>
+            Payments &amp; Transactions
+        </h1>
+
+        <p>
+            Transaction management will be connected when the
+            simulated payment flow is implemented.
+        </p>
+
+    </section>
+
+
+
+    <!-- PLACEHOLDER -->
+
+    <section class="empty-card feature-placeholder">
+
+
+        <div class="empty-icon">
+            ₹
+        </div>
+
+
+        <h3>
+            Payment tools are coming next
+        </h3>
+
+
+        <p>
+            This section is ready for simulated payment and
+            transaction records.
+        </p>
+
+
+        <a th:href="@{/admin}"
+           class="back-dashboard-button">
+
+            ← Back to Admin Dashboard
+
+        </a>
+
+
+    </section>
+
+
+</main>
+
+</body>
+
+</html>

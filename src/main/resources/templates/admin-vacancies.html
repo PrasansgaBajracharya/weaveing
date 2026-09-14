@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Vacancy Management · weave.ing</title>
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/admin-dashboard.css}">
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/admin-vacancies.css}">
+</head>
+
+<body>
+
+<nav class="admin-nav">
+
+    <div class="nav-left">
+        <a th:href="@{/home}"
+           class="logo">
+            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
+        </a>
+    </div>
+
+    <div class="nav-right">
+
+        <a th:href="@{/admin}"
+           class="marketplace-link">
+            ← Admin Dashboard
+        </a>
+
+        <span class="admin-badge">
+            ADMIN
+        </span>
+
+        <form th:action="@{/logout}"
+              method="post">
+            <button type="submit"
+                    class="logout-button">
+                Log out
+            </button>
+        </form>
+
+    </div>
+
+</nav>
+
+<main class="admin-main vacancy-admin-page">
+
+    <section class="admin-heading vacancy-admin-heading">
+        <p class="eyebrow">
+            OPPORTUNITY MODERATION
+        </p>
+
+        <h1>
+            Vacancy Management
+        </h1>
+
+        <p>
+            Review community opportunities, manage their visibility,
+            and respond to reports from weave.ing users.
+        </p>
+    </section>
+
+    <section class="vacancy-admin-stats">
+
+        <div class="vacancy-stat">
+            <span>Total vacancies</span>
+            <strong th:text="${vacancyCount}">0</strong>
+            <small>All community submissions</small>
+        </div>
+
+        <div class="vacancy-stat">
+            <span>Open</span>
+            <strong th:text="${openCount}">0</strong>
+            <small>Currently accepting applications</small>
+        </div>
+
+        <div class="vacancy-stat">
+            <span>Closed</span>
+            <strong th:text="${closedCount}">0</strong>
+            <small>Visible but not accepting applications</small>
+        </div>
+
+        <div class="vacancy-stat report-stat">
+            <span>Pending reports</span>
+            <strong th:text="${pendingReportCount}">0</strong>
+            <small>Need moderation review</small>
+        </div>
+
+    </section>
+
+    <section class="admin-section">
+
+        <div class="section-heading vacancy-section-heading">
+            <div>
+                <p class="section-kicker">
+                    COMMUNITY BOARD
+                </p>
+                <h2>
+                    Vacancies
+                </h2>
+                <p>
+                    Admin controls affect visibility and moderation only.
+                    Users still manage their own applications and opportunities.
+                </p>
+            </div>
+
+            <span class="section-count"
+                  th:text="${vacancyCount} + ' total'">
+                0 total
+            </span>
+        </div>
+
+        <div class="admin-table-wrap">
+
+            <table class="vacancy-admin-table">
+
+                <thead>
+                <tr>
+                    <th>Vacancy</th>
+                    <th>Posted by</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                    <th>Reports</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="vacancy : ${vacancies}">
+
+                    <td class="vacancy-title-cell">
+                        <strong th:text="${vacancy.title}">
+                            Vacancy title
+                        </strong>
+                        <span th:text="${vacancy.description}">
+                            Description
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="user-handle"
+                              th:text="'@' + ${vacancy.postedBy.username}">
+                            @username
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="table-date"
+                              th:text="${vacancy.deadline}">
+                            2026-09-30
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="admin-status"
+                              th:classappend="${vacancy.removed} ? ' removed' : (${vacancy.status.name() == 'OPEN'} ? ' open' : ' closed')"
+                              th:text="${vacancy.removed ? 'REMOVED' : vacancy.status}">
+                            OPEN
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="report-number"
+                              th:text="${reportCounts[vacancy.id] != null ? reportCounts[vacancy.id] : 0}">
+                            0
+                        </span>
+                    </td>
+
+                    <td>
+                        <div class="table-actions">
+
+                            <a th:href="@{/vacancies/{id}(id=${vacancy.id})}"
+                               class="table-button view">
+                                View
+                            </a>
+
+                            <form th:if="${!vacancy.removed and vacancy.status.name() == 'OPEN'}"
+                                  th:action="@{/admin/vacancies/{id}/close(id=${vacancy.id})}"
+                                  method="post">
+                                <button type="submit"
+                                        class="table-button neutral">
+                                    Close
+                                </button>
+                            </form>
+
+                            <form th:if="${!vacancy.removed and vacancy.status.name() == 'CLOSED'}"
+                                  th:action="@{/admin/vacancies/{id}/open(id=${vacancy.id})}"
+                                  method="post">
+                                <button type="submit"
+                                        class="table-button neutral">
+                                    Reopen
+                                </button>
+                            </form>
+
+                            <form th:if="${!vacancy.removed}"
+                                  th:action="@{/admin/vacancies/{id}/remove(id=${vacancy.id})}"
+                                  method="post">
+                                <button type="submit"
+                                        class="table-button danger">
+                                    Remove
+                                </button>
+                            </form>
+
+                        </div>
+                    </td>
+
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(vacancies)}">
+                    <td colspan="6"
+                        class="admin-table-empty">
+                        No vacancies have been posted yet.
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    <section class="admin-section reports-admin-section">
+
+        <div class="section-heading vacancy-section-heading">
+            <div>
+                <p class="section-kicker">
+                    COMMUNITY SAFETY
+                </p>
+                <h2>
+                    Vacancy reports
+                </h2>
+                <p>
+                    Review reports before taking moderation action.
+                </p>
+            </div>
+
+            <span class="section-count"
+                  th:text="${pendingReportCount} + ' pending'">
+                0 pending
+            </span>
+        </div>
+
+        <div class="report-admin-list">
+
+            <article class="admin-report-card"
+                     th:each="report : ${reports}"
+                     th:classappend="${report.status.name() == 'PENDING'} ? ' is-pending' : ''">
+
+                <div class="admin-report-top">
+
+                    <div>
+                        <span class="report-card-kicker"
+                              th:text="${report.status}">
+                            PENDING
+                        </span>
+
+                        <h3 th:text="${report.vacancy.title}">
+                            Vacancy title
+                        </h3>
+                    </div>
+
+                    <span class="report-status"
+                          th:classappend="${report.status.name() == 'PENDING'} ? ' pending' : (${report.status.name() == 'DISMISSED'} ? ' dismissed' : ' action-taken')"
+                          th:text="${report.status}">
+                        PENDING
+                    </span>
+
+                </div>
+
+                <div class="report-meta-grid">
+
+                    <div>
+                        <span>Posted by</span>
+                        <strong th:text="'@' + ${report.vacancy.postedBy.username}">
+                            @owner
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Reported by</span>
+                        <strong th:text="'@' + ${report.reportedBy.username}">
+                            @reporter
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Reason</span>
+                        <strong th:text="${report.reason.name() == 'SPAM' ? 'Spam' : (report.reason.name() == 'MISLEADING' ? 'Misleading information' : (report.reason.name() == 'INAPPROPRIATE' ? 'Inappropriate content' : (report.reason.name() == 'UNRELATED' ? 'Unrelated to crochet' : 'Other')))}">
+                            Spam
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Reported</span>
+                        <strong th:text="${report.reportedAt}">
+                            Date
+                        </strong>
+                    </div>
+
+                </div>
+
+                <div class="admin-report-details">
+                    <span>Reporter details</span>
+                    <p th:text="${report.details != null and !report.details.isBlank() ? report.details : 'No additional details were provided.'}">
+                        No additional details were provided.
+                    </p>
+                </div>
+
+                <div class="admin-report-actions"
+                     th:if="${report.status.name() == 'PENDING'}">
+
+                    <form th:action="@{/admin/vacancy-reports/{id}/dismiss(id=${report.id})}"
+                          method="post">
+                        <button type="submit"
+                                class="moderation-button dismiss">
+                            Dismiss report
+                        </button>
+                    </form>
+
+                    <form th:action="@{/admin/vacancy-reports/{id}/warn(id=${report.id})}"
+                          method="post">
+                        <button type="submit"
+                                class="moderation-button warn">
+                            Warn user
+                        </button>
+                    </form>
+
+                    <form th:action="@{/admin/vacancy-reports/{id}/remove(id=${report.id})}"
+                          method="post">
+                        <button type="submit"
+                                class="moderation-button remove">
+                            Remove vacancy
+                        </button>
+                    </form>
+
+                </div>
+
+                <div class="report-action-note"
+                     th:if="${report.status.name() != 'PENDING'}">
+                    This report has already been reviewed.
+                </div>
+
+            </article>
+
+            <div class="reports-empty"
+                 th:if="${#lists.isEmpty(reports)}">
+                <span>♡</span>
+                <h3>No vacancy reports yet.</h3>
+                <p>
+                    Reported community content will appear here for moderation.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

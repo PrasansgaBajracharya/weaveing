@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Post a Pattern — weave.ing</title>
+
+    <meta name="description"
+          content="Share your crochet pattern on weave.ing.">
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/pattern-form.css}">
+
+</head>
+
+
+<body>
+
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+
+<nav class="pattern-nav">
+
+    <a th:href="@{/dashboard}"
+       class="nav-back">
+
+        ← Dashboard
+
+    </a>
+
+
+    <a th:href="@{/home}"
+       class="logo">
+            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
+        </a>
+
+
+    <div class="nav-spacer"></div>
+
+</nav>
+
+
+
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+
+<main class="pattern-page">
+
+
+    <!-- ========================================================
+         PAGE INTRO
+         ======================================================== -->
+
+    <section class="page-intro">
+
+        <p class="eyebrow">
+            SHARE YOUR WORK
+        </p>
+
+        <h1>
+            Post a pattern
+        </h1>
+
+        <p>
+            Share your crochet pattern with the weave.ing community.
+            Your submission will be reviewed before it appears in the marketplace.
+        </p>
+
+    </section>
+
+
+
+    <!-- ========================================================
+         FORM
+         ======================================================== -->
+
+    <form class="pattern-form"
+          th:action="@{/patterns/new}"
+          method="post"
+          enctype="multipart/form-data">
+
+
+        <!-- ====================================================
+             BASIC INFORMATION
+             ==================================================== -->
+
+        <section class="form-card">
+
+
+            <div class="form-card-heading">
+
+                <span class="step-number">
+                    01
+                </span>
+
+                <div>
+
+                    <h2>
+                        Pattern details
+                    </h2>
+
+                    <p>
+                        Tell buyers what your pattern is about.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TITLE -->
+
+            <div class="form-group">
+
+                <label for="title">
+                    Pattern title
+                    <span>*</span>
+                </label>
+
+                <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        placeholder="e.g. Tiny Strawberry Keychain"
+                        maxlength="100"
+                        required>
+
+                <small>
+                    Choose a clear and descriptive name.
+                </small>
+
+            </div>
+
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group">
+
+                <label for="description">
+                    Description
+                    <span>*</span>
+                </label>
+
+                <textarea
+                        id="description"
+                        name="description"
+                        rows="6"
+                        maxlength="2000"
+                        placeholder="Describe what buyers will make, what is included in the pattern, and anything they should know..."
+                        required></textarea>
+
+                <small>
+                    Give buyers enough information to understand the pattern.
+                </small>
+
+            </div>
+
+
+
+            <!-- CATEGORY + DIFFICULTY -->
+
+            <div class="form-row">
+
+
+                <div class="form-group">
+
+                    <label for="category">
+                        Category
+                        <span>*</span>
+                    </label>
+
+                    <select
+                            id="category"
+                            name="category"
+                            required>
+
+                        <option value=""
+                                selected
+                                disabled>
+                            Select a category
+                        </option>
+
+                        <option th:each="category : ${categories}"
+                                th:value="${category}"
+                                th:text="${category}">
+                            Category
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="difficulty">
+                        Difficulty
+                        <span>*</span>
+                    </label>
+
+                    <select
+                            id="difficulty"
+                            name="difficulty"
+                            required>
+
+                        <option value=""
+                                selected
+                                disabled>
+
+                            Select difficulty
+
+                        </option>
+
+                        <option value="Beginner">
+                            Beginner
+                        </option>
+
+                        <option value="Intermediate">
+                            Intermediate
+                        </option>
+
+                        <option value="Advanced">
+                            Advanced
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ====================================================
+             PRICING
+             ==================================================== -->
+
+        <section class="form-card">
+
+
+            <div class="form-card-heading">
+
+                <span class="step-number">
+                    02
+                </span>
+
+                <div>
+
+                    <h2>
+                        Pricing
+                    </h2>
+
+                    <p>
+                        Decide whether your pattern is free or paid.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="pricing-options">
+
+
+                <!-- FREE -->
+
+                <label class="pricing-option">
+
+                    <input
+                            type="radio"
+                            name="priceType"
+                            value="free"
+                            checked>
+
+                    <span class="pricing-radio"></span>
+
+                    <span class="pricing-content">
+
+                        <strong>
+                            Free pattern
+                        </strong>
+
+                        <small>
+                            Anyone can access the pattern for free.
+                        </small>
+
+                    </span>
+
+                </label>
+
+
+
+                <!-- PAID -->
+
+                <label class="pricing-option">
+
+                    <input
+                            type="radio"
+                            name="priceType"
+                            value="paid">
+
+                    <span class="pricing-radio"></span>
+
+                    <span class="pricing-content">
+
+                        <strong>
+                            Paid pattern
+                        </strong>
+
+                        <small>
+                            Set a price and earn from your pattern.
+                        </small>
+
+                    </span>
+
+                </label>
+
+            </div>
+
+
+
+            <!-- PRICE -->
+
+            <div class="form-group price-group">
+
+                <label for="price">
+                    Price
+                </label>
+
+
+                <div class="price-input">
+
+                    <span>
+                        Rs
+                    </span>
+
+                    <input
+                            type="number"
+                            id="price"
+                            name="price"
+                            min="0"
+                            max="999999"
+                            step="0.01"
+                            value="0"
+                            placeholder="0.00">
+
+                </div>
+
+
+                <small>
+                    Leave as Rs 0 for a free pattern.
+                </small>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ====================================================
+             FILES
+             ==================================================== -->
+
+        <section class="form-card">
+
+
+            <div class="form-card-heading">
+
+                <span class="step-number">
+                    03
+                </span>
+
+                <div>
+
+                    <h2>
+                        Pattern files
+                    </h2>
+
+                    <p>
+                        Upload the files buyers will receive.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- COVER IMAGE -->
+
+            <div class="upload-group">
+
+                <label for="image">
+                    Pattern cover image
+                    <span>*</span>
+                </label>
+
+
+                <label for="image"
+                       class="upload-box">
+
+                    <span class="upload-icon">
+                        ◇
+                    </span>
+
+
+                    <strong>
+                        Choose a cover image
+                    </strong>
+
+
+                    <small>
+                        PNG, JPG or WEBP · Recommended 1200 × 1200 px
+                    </small>
+
+                </label>
+
+
+                <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/png,image/jpeg,image/webp"
+                        required>
+
+            </div>
+
+
+
+            <!-- PATTERN FILE -->
+
+            <div class="upload-group">
+
+                <label for="patternFile">
+                    Digital pattern file
+                    <span>*</span>
+                </label>
+
+
+                <label for="patternFile"
+                       class="upload-box">
+
+                    <span class="upload-icon">
+                        ↓
+                    </span>
+
+
+                    <strong>
+                        Choose your pattern file
+                    </strong>
+
+
+                    <small>
+                        PDF recommended · This is the digital file buyers will receive
+                    </small>
+
+                </label>
+
+
+                <input
+                        type="file"
+                        id="patternFile"
+                        name="patternFile"
+                        accept=".pdf"
+                        required>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ====================================================
+             REVIEW NOTICE
+             ==================================================== -->
+
+        <section class="review-notice">
+
+
+            <div class="notice-icon">
+                ✓
+            </div>
+
+
+            <div>
+
+                <h3>
+                    Your pattern will be reviewed
+                </h3>
+
+                <p>
+                    Every submitted pattern is reviewed before publication.
+                    We check that the pattern is valid, original, and suitable
+                    for the weave.ing marketplace.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ====================================================
+             FORM ACTIONS
+             ==================================================== -->
+
+        <div class="form-actions">
+
+
+            <a th:href="@{/dashboard}"
+               class="cancel-button">
+
+                Cancel
+
+            </a>
+
+
+            <button
+                    type="submit"
+                    class="submit-button">
+
+                Submit Pattern
+
+                <span>
+                    →
+                </span>
+
+            </button>
+
+        </div>
+
+
+    </form>
+
+</main>
+
+
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+
+<script th:src="@{/assets/js/pattern-form.js}"></script>
+
+</body>
+
+</html>

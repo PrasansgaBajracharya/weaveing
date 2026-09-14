@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Wishlist Checkout · weave.ing</title>
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/payment.css}">
+
+</head>
+
+<body class="payment-body wishlist-payment-page">
+
+<header class="payment-header">
+
+    <div class="container payment-header-inner">
+
+        <a th:href="@{/home}"
+           class="payment-brand"
+           aria-label="weave.ing home">
+            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
+        </a>
+
+
+        <a th:href="@{/wishlist}"
+           class="payment-back-link">
+
+            <span>←</span>
+            Wishlist
+
+        </a>
+
+    </div>
+
+</header>
+
+
+<main class="payment-page">
+
+    <section class="container payment-container">
+
+
+        <div class="payment-heading">
+
+            <span class="wishlist-checkout-eyebrow">
+                WISHLIST CHECKOUT
+            </span>
+
+            <h1>
+                Complete your purchase
+            </h1>
+
+            <p>
+                One simulated payment for all the patterns you've saved
+                and are ready to make.
+            </p>
+
+        </div>
+
+
+        <div class="payment-layout wishlist-payment-layout">
+
+
+            <!-- Payment -->
+
+            <section class="payment-card wishlist-payment-card">
+
+                <div class="payment-card-heading">
+
+                    <div>
+
+                        <span class="payment-label">
+                            PAYMENT METHOD
+                        </span>
+
+                        <h2>
+                            Choose how you'd like to pay
+                        </h2>
+
+                    </div>
+
+                    <span class="wishlist-demo-badge">
+                        DEMO
+                    </span>
+
+                </div>
+
+
+                <form th:action="@{/payment/wishlist/process}"
+                      method="post"
+                      class="payment-form">
+
+
+                    <div class="payment-methods">
+
+
+                        <label class="payment-method wishlist-method">
+
+                            <input type="radio"
+                                   name="paymentMethod"
+                                   value="esewa"
+                                   checked>
+
+                            <span class="wishlist-method-left">
+
+                                <span class="wishlist-method-icon esewa-icon">
+                                    eS
+                                </span>
+
+                                <span class="wishlist-method-copy">
+
+                                    <strong>
+                                        eSewa
+                                    </strong>
+
+                                    <small>
+                                        Simulated wallet payment
+                                    </small>
+
+                                </span>
+
+                            </span>
+
+
+                            <span class="payment-radio"></span>
+
+                        </label>
+
+
+                        <label class="payment-method wishlist-method">
+
+                            <input type="radio"
+                                   name="paymentMethod"
+                                   value="khalti">
+
+                            <span class="wishlist-method-left">
+
+                                <span class="wishlist-method-icon khalti-icon">
+                                    K
+                                </span>
+
+                                <span class="wishlist-method-copy">
+
+                                    <strong>
+                                        Khalti
+                                    </strong>
+
+                                    <small>
+                                        Simulated wallet payment
+                                    </small>
+
+                                </span>
+
+                            </span>
+
+
+                            <span class="payment-radio"></span>
+
+                        </label>
+
+
+                        <label class="payment-method wishlist-method">
+
+                            <input type="radio"
+                                   name="paymentMethod"
+                                   value="fonepay">
+
+                            <span class="wishlist-method-left">
+
+                                <span class="wishlist-method-icon fonepay-icon">
+                                    F
+                                </span>
+
+                                <span class="wishlist-method-copy">
+
+                                    <strong>
+                                        Fonepay
+                                    </strong>
+
+                                    <small>
+                                        Simulated digital payment
+                                    </small>
+
+                                </span>
+
+                            </span>
+
+
+                            <span class="payment-radio"></span>
+
+                        </label>
+
+
+                        <label class="payment-method wishlist-method">
+
+                            <input type="radio"
+                                   name="paymentMethod"
+                                   value="bank">
+
+                            <span class="wishlist-method-left">
+
+                                <span class="wishlist-method-icon bank-icon">
+                                    ₨
+                                </span>
+
+                                <span class="wishlist-method-copy">
+
+                                    <strong>
+                                        Bank / QR
+                                    </strong>
+
+                                    <small>
+                                        Simulated bank payment
+                                    </small>
+
+                                </span>
+
+                            </span>
+
+
+                            <span class="payment-radio"></span>
+
+                        </label>
+
+
+                    </div>
+
+
+                    <div class="wishlist-demo-note">
+
+                        <span class="wishlist-note-icon">
+
+                            <svg width="17"
+                                 height="17"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.8"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 aria-hidden="true">
+
+                                <circle cx="12"
+                                        cy="12"
+                                        r="9"/>
+
+                                <path d="M12 10v6"/>
+
+                                <path d="M12 7h.01"/>
+
+                            </svg>
+
+                        </span>
+
+
+                        <p>
+                            This is a demo checkout. No real payment service
+                            is connected and no real money will be charged.
+                        </p>
+
+                    </div>
+
+
+                    <div class="payment-actions wishlist-payment-actions">
+
+                        <button type="submit"
+                                name="result"
+                                value="success"
+                                class="payment-success-button">
+
+                            <span>
+                                Simulate successful payment
+                            </span>
+
+                            <svg width="17"
+                                 height="17"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 aria-hidden="true">
+
+                                <path d="M5 12h14"/>
+
+                                <path d="m13 6 6 6-6 6"/>
+
+                            </svg>
+
+                        </button>
+
+
+                        <button type="submit"
+                                name="result"
+                                value="failed"
+                                class="payment-failed-button">
+
+                            Simulate failed payment
+
+                        </button>
+
+                    </div>
+
+
+                </form>
+
+            </section>
+
+
+            <!-- Order summary -->
+
+            <aside class="payment-summary wishlist-order-summary">
+
+
+                <div class="wishlist-summary-header">
+
+                    <div>
+
+                        <span class="payment-label">
+                            YOUR ORDER
+                        </span>
+
+                        <h2>
+                            Saved patterns
+                        </h2>
+
+                    </div>
+
+
+                    <span class="wishlist-item-count"
+                          th:text="${#lists.size(wishlistPurchases)}">
+
+                        0
+
+                    </span>
+
+                </div>
+
+
+                <div class="wishlist-payment-list">
+
+
+                    <div class="wishlist-payment-item"
+                         th:each="purchase : ${wishlistPurchases}">
+
+
+                        <div class="wishlist-summary-pattern">
+
+
+                            <div class="wishlist-summary-image">
+
+                                <img th:if="${purchase.pattern.imagePath != null}"
+                                     th:src="${purchase.pattern.imagePath}"
+                                     th:alt="${purchase.pattern.title}">
+
+                                <span th:unless="${purchase.pattern.imagePath != null}">
+                                    ♡
+                                </span>
+
+                            </div>
+
+
+                            <div class="wishlist-summary-info">
+
+                                <strong th:text="${purchase.pattern.title}">
+                                    Pattern
+                                </strong>
+
+                                <small th:text="'@' + ${purchase.pattern.creator.username}">
+                                    @creator
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <strong class="wishlist-summary-price"
+                                th:text="'Rs ' + ${#numbers.formatDecimal(purchase.amount, 0, 0)}">
+
+                            Rs 0
+
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="payment-summary-total wishlist-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong th:text="'Rs ' + ${#numbers.formatDecimal(wishlistTotal, 0, 0)}">
+                        Rs 0
+                    </strong>
+
+                </div>
+
+
+                <div class="wishlist-after-payment">
+
+                    <div class="wishlist-after-payment-icon">
+
+                        <svg width="17"
+                             height="17"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8"
+                             stroke-linecap="round"
+                             stroke-linejoin="round"
+                             aria-hidden="true">
+
+                            <path d="M4 5h16v14H4z"/>
+
+                            <path d="M8 9h8"/>
+
+                            <path d="M8 13h5"/>
+
+                        </svg>
+
+                    </div>
+
+
+                    <p>
+                        After a successful payment, your patterns will be
+                        added to <strong>My Library</strong> and a purchase
+                        confirmation will be sent to your email.
+                    </p>
+
+                </div>
+
+
+            </aside>
+
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

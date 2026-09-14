@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard — weave.ing</title>
+
+    <meta name="description"
+          content="Your weave.ing seller dashboard.">
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/dashboard.css}">
+
+</head>
+
+<body>
+
+<nav class="dashboard-nav">
+
+    <div class="nav-left">
+
+        <a th:href="@{/home}"
+           class="logo">
+
+            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
+
+        </a>
+
+    </div>
+
+    <div class="nav-right">
+
+        <a th:href="@{/home}"
+           class="back-home">
+
+            ← Marketplace
+
+        </a>
+
+        <a th:href="@{/profile}"
+           class="nav-user">
+
+            <div class="nav-avatar">
+
+                <img th:if="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
+                     th:src="${user.profileImagePath}"
+                     alt="Profile">
+
+                <span th:unless="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
+                      class="avatar-initial"
+                      th:text="${#strings.substring(user.username, 0, 1).toUpperCase()}">
+                    U
+                </span>
+
+            </div>
+
+            <span th:text="${user.username}">
+                username
+            </span>
+
+        </a>
+
+    </div>
+
+</nav>
+
+<div class="dashboard-layout">
+
+    <aside class="dashboard-sidebar">
+
+        <div class="sidebar-profile">
+
+            <div class="profile-avatar">
+
+                <img th:if="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
+                     th:src="${user.profileImagePath}"
+                     alt="Profile picture">
+
+                <span th:unless="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
+                      class="avatar-initial"
+                      th:text="${#strings.substring(user.username, 0, 1).toUpperCase()}">
+                    U
+                </span>
+
+            </div>
+
+            <h2 th:text="${user.name}">
+                User Name
+            </h2>
+
+            <p th:text="'@' + ${user.username}">
+                @username
+            </p>
+
+        </div>
+
+        <div class="sidebar-section">
+
+            <p class="sidebar-label">
+                Dashboard
+            </p>
+
+            <a th:href="@{/dashboard}"
+               class="sidebar-link active">
+
+                <span class="sidebar-icon">⌂</span>
+                Overview
+
+            </a>
+
+            <a href="#insights"
+               class="sidebar-link">
+
+                <span class="sidebar-icon">◫</span>
+                Insights
+
+            </a>
+
+        </div>
+
+        <div class="sidebar-section">
+
+            <p class="sidebar-label">
+                Selling
+            </p>
+
+            <a href="#earnings"
+               class="sidebar-link">
+
+                <span class="sidebar-icon">₨</span>
+                Earnings
+
+            </a>
+
+            <a href="#withdrawals"
+               class="sidebar-link">
+
+                <span class="sidebar-icon">↗</span>
+                Withdrawals
+
+            </a>
+
+        </div>
+
+        <div class="sidebar-section">
+
+            <p class="sidebar-label">
+                Account
+            </p>
+
+            <a th:href="@{/profile}"
+               class="sidebar-link">
+
+                <span class="sidebar-icon">◯</span>
+                Profile
+
+            </a>
+
+        </div>
+
+        <div class="sidebar-bottom">
+
+            <a th:href="@{/home}"
+               class="sidebar-link">
+
+                <span class="sidebar-icon">←</span>
+                Back to Marketplace
+
+            </a>
+
+        </div>
+
+    </aside>
+
+    <main class="dashboard-main">
+
+        <div class="page-heading">
+
+            <div>
+
+                <p class="eyebrow">
+                    SELLER DASHBOARD
+                </p>
+
+                <h1>
+                    Welcome back,
+                    <span th:text="${user.name}">
+                        User
+                    </span>
+                    ♡
+                </h1>
+
+                <p>
+                    Track your pattern performance, sales, earnings, and withdrawals.
+                </p>
+
+            </div>
+
+            <a th:href="@{/patterns/new}"
+               class="primary-button">
+
+                + Post Pattern
+
+            </a>
+
+        </div>
+
+        <section id="overview"
+                 class="dashboard-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Overview
+                    </h2>
+
+                    <p>
+                        A quick look at how your patterns are performing.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ₨
+                    </div>
+
+                    <div>
+
+                        <span class="stat-number"
+                              th:text="'Rs ' + ${#numbers.formatDecimal(totalEarnings, 0, 0)}">
+                            Rs 0
+                        </span>
+
+                        <span class="stat-label">
+                            Total Earnings
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ↗
+                    </div>
+
+                    <div>
+
+                        <span class="stat-number"
+                              th:text="${patternsSold}">
+                            0
+                        </span>
+
+                        <span class="stat-label">
+                            Patterns Sold
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ↓
+                    </div>
+
+                    <div>
+
+                        <span class="stat-number"
+                              th:text="${totalDownloads}">
+                            0
+                        </span>
+
+                        <span class="stat-label">
+                            Downloads
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ♡
+                    </div>
+
+                    <div>
+
+                        <span class="stat-number"
+                              th:text="${totalSaves}">
+                            0
+                        </span>
+
+                        <span class="stat-label">
+                            Wishlist Saves
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section id="insights"
+                 class="dashboard-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Insights
+                    </h2>
+
+                    <p>
+                        Understand your pattern catalogue at a glance.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="insight-grid">
+
+                <div class="insight-card">
+
+                    <span class="insight-label">
+                        Published
+                    </span>
+
+                    <strong th:text="${approvedPatterns}">
+                        0
+                    </strong>
+
+                    <p>
+                        approved patterns
+                    </p>
+
+                </div>
+
+                <div class="insight-card">
+
+                    <span class="insight-label">
+                        Under Review
+                    </span>
+
+                    <strong th:text="${pendingPatterns}">
+                        0
+                    </strong>
+
+                    <p>
+                        patterns awaiting approval
+                    </p>
+
+                </div>
+
+                <div class="insight-card">
+
+                    <span class="insight-label">
+                        Needs Attention
+                    </span>
+
+                    <strong th:text="${rejectedPatterns}">
+                        0
+                    </strong>
+
+                    <p>
+                        rejected patterns
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="performance-card">
+
+                <div>
+
+                    <span class="card-label">
+                        Pattern catalogue
+                    </span>
+
+                    <strong th:text="${myPatterns.size()}">
+                        0
+                    </strong>
+
+                    <p>
+                        total patterns submitted to weave.ing
+                    </p>
+
+                </div>
+
+                <a th:href="@{/profile#patterns}"
+                   class="secondary-button">
+
+                    View My Patterns
+
+                </a>
+
+            </div>
+
+        </section>
+
+        <section id="earnings"
+                 class="dashboard-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Earnings
+                    </h2>
+
+                    <p>
+                        Your verified pattern sales and current earnings total.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="earnings-card">
+
+                <div>
+
+                    <span class="card-label">
+                        Total earnings
+                    </span>
+
+                    <strong th:text="'Rs ' + ${#numbers.formatDecimal(totalEarnings, 0, 0)}">
+                        Rs 0
+                    </strong>
+
+                </div>
+
+                <div class="earnings-divider"></div>
+
+                <div>
+
+                    <span class="card-label">
+                        Verified sales
+                    </span>
+
+                    <strong th:text="${patternsSold}">
+                        0
+                    </strong>
+
+                </div>
+
+                <div class="earnings-action">
+
+                    <a href="#withdrawals"
+                       class="secondary-button">
+
+                        Withdraw Money
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section id="withdrawals"
+                 class="dashboard-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Withdrawals
+                    </h2>
+
+                    <p>
+                        Manage simulated withdrawals from your weave.ing earnings.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="withdrawal-card">
+
+                <div class="withdrawal-balance">
+
+                    <span class="card-label">
+                        Available balance
+                    </span>
+
+                    <strong th:text="'Rs ' + ${#numbers.formatDecimal(totalEarnings, 0, 0)}">
+                        Rs 0
+                    </strong>
+
+                </div>
+
+                <div class="withdrawal-copy">
+
+                    <h3>
+                        Withdrawal system
+                    </h3>
+
+                    <p>
+                        The withdrawal flow will be connected here next. For now, your verified sales balance is shown above.
+                    </p>
+
+                </div>
+
+                <button type="button"
+                        class="primary-button"
+                        disabled>
+
+                    Withdraw
+
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

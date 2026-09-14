@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Apply — weave.ing</title>
+
+    <link rel="stylesheet"
+          th:href="@{/assets/css/vacancies.css}">
+
+</head>
+
+<body>
+
+<nav class="vacancy-nav">
+
+    <div class="vacancy-nav-inner">
+
+        <a th:href="@{/home}"
+           class="vacancy-logo">
+
+            <img class="vacancy-logo-image"
+                 th:src="@{/assets/images/logo.png}"
+                 alt="weave.ing">
+
+        </a>
+
+        <a th:href="@{/vacancies}"
+           class="nav-link">
+
+            ← Vacancy Board
+
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main class="form-page">
+
+    <section class="form-card">
+
+        <a th:href="@{/vacancies/{id}(id=${vacancy.id})}"
+           class="back-link">
+
+            ← Back to vacancy
+
+        </a>
+
+
+        <div class="form-heading">
+
+            <span class="eyebrow">
+                APPLICATION
+            </span>
+
+            <h1>
+                Apply for this opportunity
+            </h1>
+
+            <p>
+                Introduce yourself and let the vacancy poster
+                know why you'd be a good fit.
+            </p>
+
+        </div>
+
+
+        <div class="application-vacancy-preview">
+
+            <span class="vacancy-tag">
+                OPEN
+            </span>
+
+            <h3 th:text="${vacancy.title}">
+                Vacancy title
+            </h3>
+
+            <p>
+                Posted by
+                <strong th:text="${vacancy.postedBy.username}">
+                    username
+                </strong>
+            </p>
+
+        </div>
+
+
+        <form th:action="@{/vacancies/{id}/apply(id=${vacancy.id})}"
+              th:object="${application}"
+              method="post"
+              class="vacancy-form">
+
+
+            <div class="form-field">
+
+                <label for="message">
+                    Your message
+                </label>
+
+                <p class="field-help">
+                    Keep it short and personal. Tell the poster
+                    about yourself, your relevant experience,
+                    and why you're interested.
+                </p>
+
+                <textarea id="message"
+                          th:field="*{message}"
+                          rows="8"
+                          maxlength="1000"
+                          placeholder="Hi! I'm interested in this opportunity because..."
+                          required></textarea>
+
+                <p class="field-error"
+                   th:if="${error}"
+                   th:text="${error}">
+                    Please add a message.
+                </p>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a th:href="@{/vacancies/{id}(id=${vacancy.id})}"
+                   class="cancel-button">
+
+                    Cancel
+
+                </a>
+
+                <button type="submit"
+                        class="primary-button">
+
+                    Submit Application
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+</body>
+
+</html>
