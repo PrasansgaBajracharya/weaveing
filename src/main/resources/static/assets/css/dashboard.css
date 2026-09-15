@@ -988,3 +988,208 @@ h4 {
     }
 }
 
+
+
+.withdrawal-message {
+    margin-bottom: 16px;
+    padding: 13px 16px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.withdrawal-message.success {
+    background: rgba(72, 139, 92, .10);
+    border: 1px solid rgba(72, 139, 92, .20);
+    color: #356844;
+}
+
+.withdrawal-message.error {
+    background: rgba(178, 58, 58, .08);
+    border: 1px solid rgba(178, 58, 58, .18);
+    color: var(--danger);
+}
+
+.withdrawal-balance small {
+    display: block;
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.withdrawal-form {
+    margin-top: 18px;
+}
+
+.withdrawal-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.withdrawal-form label {
+    display: block;
+}
+
+.withdrawal-form label > span {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--brown-dark);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.withdrawal-form input,
+.withdrawal-form select {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+    background: var(--offwhite);
+    color: var(--text);
+    font: inherit;
+    font-size: 11px;
+    transition: .2s ease;
+}
+
+.withdrawal-form input:focus,
+.withdrawal-form select:focus {
+    border-color: var(--brown-light);
+    box-shadow: 0 0 0 3px rgba(99, 77, 64, .08);
+}
+
+.input-with-prefix {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    min-height: 42px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--offwhite);
+}
+
+.input-with-prefix > span {
+    margin: 0;
+    padding-left: 12px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.input-with-prefix input {
+    min-height: 40px;
+    padding-left: 7px;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+.input-with-prefix:focus-within {
+    border-color: var(--brown-light);
+    box-shadow: 0 0 0 3px rgba(99, 77, 64, .08);
+}
+
+.withdrawal-form .primary-button {
+    margin-top: 14px;
+}
+
+.withdrawal-form .primary-button:disabled {
+    cursor: not-allowed;
+    opacity: .45;
+    transform: none;
+}
+
+.withdrawal-history {
+    margin-top: 22px;
+    padding: 24px 27px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: rgba(255,255,255,.72);
+}
+
+.withdrawal-history-heading h3 {
+    margin-top: 4px;
+    color: var(--brown-dark);
+    font-size: 17px;
+}
+
+.withdrawal-history-list {
+    margin-top: 16px;
+}
+
+.withdrawal-history-row {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr auto;
+    align-items: center;
+    gap: 20px;
+    padding: 15px 0;
+    border-top: 1px solid var(--border);
+}
+
+.withdrawal-history-row > div:first-child strong {
+    display: block;
+    color: var(--brown-dark);
+    font-size: 14px;
+}
+
+.withdrawal-history-row > div:first-child span {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.withdrawal-history-row > div:nth-child(2) span {
+    display: block;
+    overflow: hidden;
+    color: var(--text);
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.withdrawal-history-row > div:nth-child(2) small {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 9px;
+}
+
+.withdrawal-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 78px;
+    padding: 6px 9px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.withdrawal-status.completed {
+    background: rgba(72, 139, 92, .10);
+    color: #356844;
+}
+
+@media (max-width: 760px) {
+    .withdrawal-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .withdrawal-history {
+        padding: 21px;
+    }
+
+    .withdrawal-history-row {
+        grid-template-columns: 1fr;
+        gap: 9px;
+    }
+
+    .withdrawal-status {
+        justify-self: start;
+    }
+}

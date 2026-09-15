@@ -3,10 +3,12 @@ package com.weaveing.controller;
 import com.weaveing.entity.Pattern;
 import com.weaveing.entity.Purchase;
 import com.weaveing.entity.User;
+import com.weaveing.entity.Withdrawal;
 import com.weaveing.repository.PatternRepository;
 import com.weaveing.repository.PurchaseRepository;
 import com.weaveing.repository.UserRepository;
 import com.weaveing.repository.WishlistRepository;
+import com.weaveing.repository.WithdrawalRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
@@ -19,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -38,6 +41,7 @@ public class DashboardController {
     private final PatternRepository patternRepository;
     private final PurchaseRepository purchaseRepository;
     private final WishlistRepository wishlistRepository;
+    private final WithdrawalRepository withdrawalRepository;
     private final SecurityContextRepository securityContextRepository =
             new HttpSessionSecurityContextRepository();
 
@@ -45,12 +49,14 @@ public class DashboardController {
             UserRepository userRepository,
             PatternRepository patternRepository,
             PurchaseRepository purchaseRepository,
-            WishlistRepository wishlistRepository) {
+            WishlistRepository wishlistRepository,
+            WithdrawalRepository withdrawalRepository) {
 
         this.userRepository = userRepository;
         this.patternRepository = patternRepository;
         this.purchaseRepository = purchaseRepository;
         this.wishlistRepository = wishlistRepository;
+        this.withdrawalRepository = withdrawalRepository;
     }
 
     @GetMapping("/dashboard")
@@ -108,6 +114,19 @@ public class DashboardController {
                         .mapToDouble(Purchase::getAmount)
                         .sum();
 
+        List<Withdrawal> withdrawals =
+                withdrawalRepository.findByUserOrderByRequestedAtDesc(user);
+
+        double totalWithdrawn =
+                withdrawals.stream()
+                        .filter(withdrawal ->
+                                withdrawal.getStatus() == Withdrawal.Status.COMPLETED)
+                        .mapToDouble(Withdrawal::getAmount)
+                        .sum();
+
+        double availableBalance =
+                Math.max(0.0, totalEarnings - totalWithdrawn);
+
         long approvedPatterns =
                 myPatterns.stream()
                         .filter(pattern ->
@@ -138,6 +157,9 @@ public class DashboardController {
         );
         model.addAttribute("sales", sales);
         model.addAttribute("totalEarnings", totalEarnings);
+        model.addAttribute("totalWithdrawn", totalWithdrawn);
+        model.addAttribute("availableBalance", availableBalance);
+        model.addAttribute("withdrawals", withdrawals);
         model.addAttribute("patternsSold", sales.size());
         model.addAttribute("totalDownloads", totalDownloads);
         model.addAttribute("totalSaves", totalSaves);
@@ -146,6 +168,121 @@ public class DashboardController {
         model.addAttribute("rejectedPatterns", rejectedPatterns);
 
         return "dashboard";
+    }
+
+    @PostMapping("/dashboard/withdraw")
+    public String withdraw(
+            Authentication authentication,
+            @RequestParam("amount") double amount,
+            @RequestParam("paymentMethod") String paymentMethod,
+            @RequestParam("accountIdentifier") String accountIdentifier,
+            RedirectAttributes redirectAttributes) {
+
+        User user = getCurrentUser(authentication);
+
+        if (user.isAdmin()) {
+            return "redirect:/admin";
+        }
+
+        List<Pattern> myPatterns =
+                patternRepository.findByCreator(user);
+
+        double totalEarnings =
+                myPatterns.stream()
+                        .flatMap(pattern ->
+                                purchaseRepository.findByPatternAndPaymentStatus(
+                                        pattern,
+                                        Purchase.PaymentStatus.VERIFIED
+                                ).stream())
+                        .mapToDouble(Purchase::getAmount)
+                        .sum();
+
+        double totalWithdrawn =
+                withdrawalRepository
+                        .findByUserAndStatus(
+                                user,
+                                Withdrawal.Status.COMPLETED
+                        )
+                        .stream()
+                        .mapToDouble(Withdrawal::getAmount)
+                        .sum();
+
+        double availableBalance =
+                Math.max(0.0, totalEarnings - totalWithdrawn);
+
+        if (amount <= 0) {
+            redirectAttributes.addFlashAttribute(
+                    "withdrawalError",
+                    "Please enter a withdrawal amount greater than Rs 0."
+            );
+            return "redirect:/dashboard#withdrawals";
+        }
+
+        if (amount > availableBalance) {
+            redirectAttributes.addFlashAttribute(
+                    "withdrawalError",
+                    "The withdrawal amount cannot be greater than your available balance."
+            );
+            return "redirect:/dashboard#withdrawals";
+        }
+
+        String normalizedMethod =
+                paymentMethod == null
+                        ? ""
+                        : paymentMethod.trim().toUpperCase();
+
+        Withdrawal.PaymentMethod selectedMethod;
+
+        try {
+            selectedMethod =
+                    Withdrawal.PaymentMethod.valueOf(normalizedMethod);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute(
+                    "withdrawalError",
+                    "Please select a valid withdrawal method."
+            );
+            return "redirect:/dashboard#withdrawals";
+        }
+
+        String identifier =
+                accountIdentifier == null
+                        ? ""
+                        : accountIdentifier.trim();
+
+        if (identifier.isBlank()) {
+            redirectAttributes.addFlashAttribute(
+                    "withdrawalError",
+                    "Please enter your payment account or bank account."
+            );
+            return "redirect:/dashboard#withdrawals";
+        }
+
+        if (identifier.length() > 150) {
+            redirectAttributes.addFlashAttribute(
+                    "withdrawalError",
+                    "The account information is too long."
+            );
+            return "redirect:/dashboard#withdrawals";
+        }
+
+        Withdrawal withdrawal = new Withdrawal();
+        withdrawal.setUser(user);
+        withdrawal.setAmount(amount);
+        withdrawal.setPaymentMethod(selectedMethod);
+        withdrawal.setAccountIdentifier(identifier);
+        withdrawal.setStatus(Withdrawal.Status.COMPLETED);
+        withdrawalRepository.save(withdrawal);
+
+        redirectAttributes.addFlashAttribute(
+                "withdrawalSuccess",
+                "Withdrawal successful. Rs " +
+                        String.format("%.0f", amount) +
+                        " has been simulated through " +
+                        selectedMethod.name() +
+                        "."
+        );
+
+        return "redirect:/dashboard#withdrawals";
     }
 
     @GetMapping("/profile")

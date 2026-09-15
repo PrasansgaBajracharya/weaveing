@@ -494,11 +494,23 @@
                     </h2>
 
                     <p>
-                        Manage simulated withdrawals from your weave.ing earnings.
+                        Simulate withdrawing your weave.ing earnings.
                     </p>
 
                 </div>
 
+            </div>
+
+            <div th:if="${withdrawalSuccess != null}"
+                 class="withdrawal-message success"
+                 th:text="${withdrawalSuccess}">
+                Withdrawal successful.
+            </div>
+
+            <div th:if="${withdrawalError != null}"
+                 class="withdrawal-message error"
+                 th:text="${withdrawalError}">
+                Withdrawal error.
             </div>
 
             <div class="withdrawal-card">
@@ -509,31 +521,127 @@
                         Available balance
                     </span>
 
-                    <strong th:text="'Rs ' + ${#numbers.formatDecimal(totalEarnings, 0, 0)}">
+                    <strong th:text="'Rs ' + ${#numbers.formatDecimal(availableBalance, 0, 0)}">
                         Rs 0
                     </strong>
+
+                    <small th:text="'Rs ' + ${#numbers.formatDecimal(totalWithdrawn, 0, 0)} + ' withdrawn so far'">
+                        Rs 0 withdrawn so far
+                    </small>
 
                 </div>
 
                 <div class="withdrawal-copy">
 
                     <h3>
-                        Withdrawal system
+                        Simulated withdrawal
                     </h3>
 
                     <p>
-                        The withdrawal flow will be connected here next. For now, your verified sales balance is shown above.
+                        Choose a Nepal payment method and enter the account information where the simulated withdrawal would be sent.
                     </p>
+
+                    <form th:action="@{/dashboard/withdraw}"
+                          method="post"
+                          class="withdrawal-form">
+
+                        <div class="withdrawal-form-grid">
+
+                            <label>
+                                <span>Amount</span>
+                                <div class="input-with-prefix">
+                                    <span>Rs</span>
+                                    <input type="number"
+                                           name="amount"
+                                           min="1"
+                                           step="1"
+                                           th:max="${availableBalance}"
+                                           required>
+                                </div>
+                            </label>
+
+                            <label>
+                                <span>Payment method</span>
+                                <select name="paymentMethod"
+                                        required>
+                                    <option value="">Select method</option>
+                                    <option value="ESEWA">eSewa</option>
+                                    <option value="KHALTI">Khalti</option>
+                                    <option value="FONEPAY">Fonepay</option>
+                                    <option value="BANK">Bank</option>
+                                </select>
+                            </label>
+
+                        </div>
+
+                        <label>
+                            <span>Account / bank information</span>
+                            <input type="text"
+                                   name="accountIdentifier"
+                                   maxlength="150"
+                                   placeholder="eSewa/Khalti number or bank account"
+                                   required>
+                        </label>
+
+                        <button type="submit"
+                                class="primary-button"
+                                th:disabled="${availableBalance <= 0}">
+                            Withdraw
+                        </button>
+
+                    </form>
 
                 </div>
 
-                <button type="button"
-                        class="primary-button"
-                        disabled>
+            </div>
 
-                    Withdraw
+            <div class="withdrawal-history"
+                 th:if="${!withdrawals.isEmpty()}">
 
-                </button>
+                <div class="withdrawal-history-heading">
+                    <div>
+                        <span class="card-label">
+                            HISTORY
+                        </span>
+                        <h3>
+                            Recent withdrawals
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="withdrawal-history-list">
+
+                    <div class="withdrawal-history-row"
+                         th:each="withdrawal : ${withdrawals}">
+
+                        <div>
+                            <strong th:text="'Rs ' + ${#numbers.formatDecimal(withdrawal.amount, 0, 0)}">
+                                Rs 0
+                            </strong>
+
+                            <span th:text="${#strings.capitalize(#strings.toLowerCase(withdrawal.paymentMethod.name()))}">
+                                eSewa
+                            </span>
+                        </div>
+
+                        <div>
+                            <span th:text="${withdrawal.accountIdentifier}">
+                                Account
+                            </span>
+
+                            <small th:text="${#temporals.format(withdrawal.requestedAt, 'dd MMM yyyy, hh:mm a')}">
+                                03 Sep 2026, 08:00 PM
+                            </small>
+                        </div>
+
+                        <span class="withdrawal-status completed"
+                              th:text="${withdrawal.status}">
+                            COMPLETED
+                        </span>
+
+                    </div>
+
+                </div>
 
             </div>
 
