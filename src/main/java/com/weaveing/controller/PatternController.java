@@ -2,9 +2,11 @@ package com.weaveing.controller;
 
 import com.weaveing.entity.Pattern;
 import com.weaveing.entity.Purchase;
+import com.weaveing.entity.Review;
 import com.weaveing.entity.User;
 import com.weaveing.repository.PatternRepository;
 import com.weaveing.repository.PurchaseRepository;
+import com.weaveing.repository.ReviewRepository;
 import com.weaveing.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.io.FileSystemResource;
@@ -37,17 +39,20 @@ public class PatternController {
     private final PatternRepository patternRepository;
     private final UserRepository userRepository;
     private final PurchaseRepository purchaseRepository;
+    private final ReviewRepository reviewRepository;
     private final EmailService emailService;
 
     public PatternController(
             PatternRepository patternRepository,
             UserRepository userRepository,
             PurchaseRepository purchaseRepository,
+            ReviewRepository reviewRepository,
             EmailService emailService) {
 
         this.patternRepository = patternRepository;
         this.userRepository = userRepository;
         this.purchaseRepository = purchaseRepository;
+        this.reviewRepository = reviewRepository;
         this.emailService = emailService;
     }
 
@@ -407,6 +412,45 @@ public class PatternController {
                 "relatedPatterns",
                 relatedPatterns
         );
+
+        java.util.List<Review> reviews =
+                reviewRepository.findByPatternOrderByCreatedAtDesc(pattern);
+
+        Double averageRating =
+                reviewRepository.getAverageRatingByPattern(pattern);
+
+        Review currentUserReview = null;
+        boolean canReview = false;
+
+        if (user != null &&
+                pattern.getCreator() != null &&
+                !pattern.getCreator().getId().equals(user.getId())) {
+
+            currentUserReview =
+                    reviewRepository
+                            .findByReviewerAndPattern(user, pattern)
+                            .orElse(null);
+
+            canReview =
+                    purchaseRepository
+                            .existsByBuyerAndPatternAndPaymentStatus(
+                                    user,
+                                    pattern,
+                                    Purchase.PaymentStatus.VERIFIED
+                            );
+        }
+
+        model.addAttribute("reviews", reviews);
+        model.addAttribute(
+                "averageRating",
+                averageRating == null ? 0.0 : averageRating
+        );
+        model.addAttribute(
+                "reviewCount",
+                reviews.size()
+        );
+        model.addAttribute("currentUserReview", currentUserReview);
+        model.addAttribute("canReview", canReview);
 
         return "pattern-details";
     }

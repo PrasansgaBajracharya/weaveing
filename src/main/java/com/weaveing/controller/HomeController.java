@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -66,6 +67,8 @@ public class HomeController {
         if (cleanSearch.length() > 100) {
             cleanSearch = cleanSearch.substring(0, 100);
         }
+
+        final String searchTerm = cleanSearch;
 
         if (!Pattern.CATEGORIES.contains(category)) {
             if (!"all".equals(category)) {
@@ -141,12 +144,16 @@ public class HomeController {
         List<Pattern> approvedPatterns =
                 patternRepository.searchApprovedPatterns(
                         Pattern.ApprovalStatus.APPROVED,
-                        cleanSearch.toLowerCase(),
                         category,
                         difficulty,
                         priceType,
                         patternSort
                 );
+
+        approvedPatterns =
+                approvedPatterns.stream()
+                        .filter(pattern -> matchesSearch(pattern, searchTerm))
+                        .toList();
 
         for (Pattern pattern : approvedPatterns) {
 
@@ -180,6 +187,7 @@ public class HomeController {
 
         model.addAttribute("user", user);
         model.addAttribute("approvedPatterns", approvedPatterns);
+        model.addAttribute("resultCount", approvedPatterns.size());
         model.addAttribute("wishlistPatternIds", wishlistPatternIds);
         model.addAttribute("wishlistCounts", wishlistCounts);
         model.addAttribute("categories", Pattern.CATEGORIES);
@@ -256,6 +264,37 @@ public class HomeController {
         );
 
         return "home";
+    }
+
+    private boolean matchesSearch(
+            Pattern pattern,
+            String search) {
+
+        if (search == null || search.isBlank()) {
+            return true;
+        }
+
+        String[] terms =
+                search.toLowerCase(Locale.ROOT)
+                        .trim()
+                        .split("\\s+");
+
+        String searchableText =
+                String.join(" ",
+                        pattern.getTitle(),
+                        pattern.getDescription(),
+                        pattern.getCategory(),
+                        pattern.getCreator().getName(),
+                        pattern.getCreator().getUsername()
+                ).toLowerCase(Locale.ROOT);
+
+        for (String term : terms) {
+            if (!searchableText.contains(term)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void appendSummaryPart(

@@ -339,6 +339,269 @@
 
     </section>
 
+
+    <section class="container reviews-section" id="reviews">
+
+        <div class="reviews-heading">
+            <div>
+                <span class="pattern-details-category">COMMUNITY FEEDBACK</span>
+                <h2>Ratings &amp; Reviews</h2>
+                <p>See what makers think about this pattern.</p>
+            </div>
+
+            <div class="review-summary">
+                <div class="review-average"
+                     th:text="${#numbers.formatDecimal(averageRating, 1, 1)}">
+                    0.0
+                </div>
+
+                <div class="review-summary-stars" aria-label="Average rating">
+                    <span th:each="star : ${#numbers.sequence(1, 5)}"
+                          th:classappend="${star <= averageRating} ? ' is-filled' : ''">
+                        ★
+                    </span>
+                </div>
+
+                <span class="review-count"
+                      th:text="${reviewCount == 1 ? '1 review' : reviewCount + ' reviews'}">
+                    0 reviews
+                </span>
+            </div>
+        </div>
+
+        <div class="review-feedback"
+             th:if="${reviewSuccess}"
+             th:text="${reviewSuccess}">
+            Review saved.
+        </div>
+
+        <div class="review-feedback review-feedback-error"
+             th:if="${reviewError}"
+             th:text="${reviewError}">
+            Review error.
+        </div>
+
+        <div class="review-form-card"
+             th:if="${canReview and currentUserReview == null}">
+
+            <div class="review-form-heading">
+                <h3>Share your experience</h3>
+                <p>You purchased this pattern, so you can leave a rating and review.</p>
+            </div>
+
+            <form th:action="@{/patterns/{id}/reviews(id=${pattern.id})}"
+                  method="post"
+                  class="review-form">
+
+                <fieldset class="rating-field">
+                    <legend>Your rating</legend>
+
+                    <div class="star-picker">
+                        <input type="radio" id="rating-5" name="rating" value="5" required>
+                        <label for="rating-5" title="5 stars">★</label>
+
+                        <input type="radio" id="rating-4" name="rating" value="4">
+                        <label for="rating-4" title="4 stars">★</label>
+
+                        <input type="radio" id="rating-3" name="rating" value="3">
+                        <label for="rating-3" title="3 stars">★</label>
+
+                        <input type="radio" id="rating-2" name="rating" value="2">
+                        <label for="rating-2" title="2 stars">★</label>
+
+                        <input type="radio" id="rating-1" name="rating" value="1">
+                        <label for="rating-1" title="1 star">★</label>
+                    </div>
+                </fieldset>
+
+                <label class="review-label" for="review-comment">
+                    Your review
+                </label>
+
+                <textarea id="review-comment"
+                          name="comment"
+                          maxlength="1000"
+                          rows="5"
+                          placeholder="Tell other makers what you liked about this pattern..."></textarea>
+
+                <button type="submit" class="review-submit-button">
+                    Post review
+                </button>
+            </form>
+        </div>
+
+        <div class="review-own-card"
+             th:if="${currentUserReview != null}">
+
+            <div class="review-own-header">
+                <div>
+                    <span class="review-own-kicker">YOUR REVIEW</span>
+                    <h3>You reviewed this pattern</h3>
+                    <div class="review-own-rating" aria-label="Your rating">
+                        <span th:each="star : ${#numbers.sequence(1, 5)}"
+                              th:classappend="${star <= currentUserReview.rating} ? ' is-filled' : ''">★</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="review-own-comment"
+               th:text="${currentUserReview.comment}">
+                Your review.
+            </p>
+
+            <div class="review-own-actions">
+                <button type="button"
+                        class="review-edit-button"
+                        onclick="toggleReviewEdit(this)">
+                    Edit review
+                </button>
+
+                <form th:action="@{/patterns/{patternId}/reviews/{reviewId}/delete(patternId=${pattern.id},reviewId=${currentUserReview.id})}"
+                      method="post"
+                      class="review-delete-form">
+
+                    <button type="submit"
+                            class="review-delete-button"
+                            onclick="return confirm('Delete your review?');">
+                        Delete review
+                    </button>
+                </form>
+            </div>
+
+            <div class="review-edit-panel">
+                <form th:action="@{/patterns/{patternId}/reviews/{reviewId}/edit(patternId=${pattern.id},reviewId=${currentUserReview.id})}"
+                      method="post"
+                      class="review-form">
+
+                    <fieldset class="rating-field">
+                        <legend>Your rating</legend>
+
+                        <div class="star-picker">
+                            <input type="radio" id="edit-rating-5" name="rating" value="5"
+                                   th:checked="${currentUserReview.rating == 5}" required>
+                            <label for="edit-rating-5" title="5 stars">★</label>
+
+                            <input type="radio" id="edit-rating-4" name="rating" value="4"
+                                   th:checked="${currentUserReview.rating == 4}">
+                            <label for="edit-rating-4" title="4 stars">★</label>
+
+                            <input type="radio" id="edit-rating-3" name="rating" value="3"
+                                   th:checked="${currentUserReview.rating == 3}">
+                            <label for="edit-rating-3" title="3 stars">★</label>
+
+                            <input type="radio" id="edit-rating-2" name="rating" value="2"
+                                   th:checked="${currentUserReview.rating == 2}">
+                            <label for="edit-rating-2" title="2 stars">★</label>
+
+                            <input type="radio" id="edit-rating-1" name="rating" value="1"
+                                   th:checked="${currentUserReview.rating == 1}">
+                            <label for="edit-rating-1" title="1 star">★</label>
+                        </div>
+                    </fieldset>
+
+                    <label class="review-label" for="edit-review-comment">
+                        Your review
+                    </label>
+
+                    <textarea id="edit-review-comment"
+                              name="comment"
+                              maxlength="1000"
+                              rows="5"
+                              th:text="${currentUserReview.comment}"
+                              placeholder="Share your thoughts..."></textarea>
+
+                    <div class="review-own-actions">
+                        <button type="submit" class="review-submit-button">
+                            Save changes
+                        </button>
+                        <button type="button"
+                                class="review-cancel-button"
+                                onclick="toggleReviewEdit(this)">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="review-login-note"
+             th:if="${!isAuthenticated}">
+            Log in to purchase patterns and leave your review.
+        </div>
+
+        <div class="review-purchase-note"
+             th:if="${isAuthenticated and !canReview and currentUserReview == null and !pattern.free}">
+            You can review this pattern after completing a verified purchase.
+        </div>
+
+        <div class="review-list"
+             th:if="${!#lists.isEmpty(reviews)}">
+
+            <article class="review-card"
+                     th:each="review : ${reviews}">
+
+                <div class="review-card-header">
+
+                    <div class="reviewer-info">
+
+                        <div class="reviewer-avatar">
+                            <img th:if="${review.reviewer.profileImagePath != null and !review.reviewer.profileImagePath.isBlank()}"
+                                 th:src="${review.reviewer.profileImagePath}"
+                                 alt="">
+
+                            <span th:unless="${review.reviewer.profileImagePath != null and !review.reviewer.profileImagePath.isBlank()}"
+                                  th:text="${#strings.substring(review.reviewer.username, 0, 1).toUpperCase()}">
+                                U
+                            </span>
+                        </div>
+
+                        <div>
+                            <strong th:text="'@' + ${review.reviewer.username}">
+                                @username
+                            </strong>
+
+                            <span class="review-date"
+                                  th:text="${#temporals.format(review.createdAt, 'dd MMM yyyy')}">
+                                01 Jan 2026
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="review-stars"
+                         aria-label="Rating">
+                        <span th:each="star : ${#numbers.sequence(1, 5)}"
+                              th:classappend="${star <= review.rating} ? ' is-filled' : ''">
+                            ★
+                        </span>
+                    </div>
+
+                </div>
+
+                <p class="review-comment"
+                   th:if="${review.comment != null and !review.comment.isBlank()}"
+                   th:text="${review.comment}">
+                    Review comment.
+                </p>
+
+                <span class="review-edited"
+                      th:if="${review.updatedAt != null and review.updatedAt != review.createdAt}">
+                    Edited
+                </span>
+
+            </article>
+
+        </div>
+
+        <div class="reviews-empty"
+             th:if="${#lists.isEmpty(reviews)}">
+            <div class="reviews-empty-icon">★</div>
+            <h3>No reviews yet</h3>
+            <p>Be the first verified buyer to share your experience with this pattern.</p>
+        </div>
+
+    </section>
+
     <section class="container related-patterns-section"
              th:if="${!#lists.isEmpty(relatedPatterns)}">
 
@@ -446,6 +709,16 @@ function closeMessagingComingSoon() {
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('modal-open');
+}
+
+function toggleReviewEdit(button) {
+    const card = button.closest('.review-own-card');
+    const panel = card.querySelector('.review-edit-panel');
+    const isOpen = panel.classList.toggle('open');
+
+    if (button.classList.contains('review-edit-button')) {
+        button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
 }
 
 document.addEventListener('keydown', function (event) {

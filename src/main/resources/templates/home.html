@@ -381,6 +381,11 @@
                 Hand-picked designs from creators across Nepal, updated daily.
             </p>
 
+            <p class="search-result-count"
+               th:text="${resultCount == 1 ? '1 pattern found' : resultCount + ' patterns found'}">
+                0 patterns found
+            </p>
+
         </div>
 
         <a href="#" class="btn btn-ghost">

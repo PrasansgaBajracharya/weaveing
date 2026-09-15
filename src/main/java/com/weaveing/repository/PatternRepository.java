@@ -38,13 +38,6 @@ public interface PatternRepository extends JpaRepository<Pattern, Long> {
             FROM Pattern p
             WHERE p.approvalStatus = :approvalStatus
               AND (
-                    :search = ''
-                    OR LOWER(p.title) LIKE LOWER(CONCAT('%', :search, '%'))
-                    OR LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%'))
-                    OR LOWER(p.category) LIKE LOWER(CONCAT('%', :search, '%'))
-                    OR LOWER(p.creator.username) LIKE LOWER(CONCAT('%', :search, '%'))
-              )
-              AND (
                     :category = 'all'
                     OR (
                         :category = 'Amigurumi & Toys'
@@ -87,7 +80,6 @@ public interface PatternRepository extends JpaRepository<Pattern, Long> {
             """)
     List<Pattern> searchApprovedPatterns(
             @Param("approvalStatus") Pattern.ApprovalStatus approvalStatus,
-            @Param("search") String search,
             @Param("category") String category,
             @Param("difficulty") String difficulty,
             @Param("priceType") String priceType,

@@ -1227,3 +1227,10 @@ body.homepage {
     }
 }
 
+
+
+.search-result-count {
+    margin: 6px 0 0;
+    font-size: 0.82rem;
+    color: var(--brown-muted, #8a7565);
+}
