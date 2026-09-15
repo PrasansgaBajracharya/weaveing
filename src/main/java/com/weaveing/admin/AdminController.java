@@ -4,10 +4,14 @@ import com.weaveing.entity.Pattern;
 import com.weaveing.entity.User;
 import com.weaveing.entity.Vacancy;
 import com.weaveing.entity.VacancyReport;
+import com.weaveing.entity.Purchase;
+import com.weaveing.entity.Withdrawal;
 import com.weaveing.repository.PatternRepository;
 import com.weaveing.repository.UserRepository;
 import com.weaveing.repository.VacancyReportRepository;
 import com.weaveing.repository.VacancyRepository;
+import com.weaveing.repository.PurchaseRepository;
+import com.weaveing.repository.WithdrawalRepository;
 import com.weaveing.service.EmailService;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -36,6 +40,8 @@ public class AdminController {
     private final UserRepository userRepository;
     private final VacancyRepository vacancyRepository;
     private final VacancyReportRepository vacancyReportRepository;
+    private final PurchaseRepository purchaseRepository;
+    private final WithdrawalRepository withdrawalRepository;
     private final EmailService emailService;
 
     public AdminController(
@@ -43,12 +49,16 @@ public class AdminController {
             UserRepository userRepository,
             VacancyRepository vacancyRepository,
             VacancyReportRepository vacancyReportRepository,
+            PurchaseRepository purchaseRepository,
+            WithdrawalRepository withdrawalRepository,
             EmailService emailService) {
 
         this.patternRepository = patternRepository;
         this.userRepository = userRepository;
         this.vacancyRepository = vacancyRepository;
         this.vacancyReportRepository = vacancyReportRepository;
+        this.purchaseRepository = purchaseRepository;
+        this.withdrawalRepository = withdrawalRepository;
         this.emailService = emailService;
     }
 
@@ -261,8 +271,94 @@ public class AdminController {
     }
 
     @GetMapping("/payments")
-    public String paymentManagement() {
+    public String paymentManagement(Model model) {
+
+        List<Purchase> purchases =
+                purchaseRepository.findAll();
+
+        List<Purchase> verifiedSales =
+                purchases.stream()
+                        .filter(purchase ->
+                                purchase.getPaymentStatus() ==
+                                        Purchase.PaymentStatus.VERIFIED)
+                        .sorted((a, b) -> b.getPurchasedAt().compareTo(a.getPurchasedAt()))
+                        .toList();
+
+        List<Withdrawal> withdrawals =
+                withdrawalRepository.findAll();
+
+        withdrawals.sort((a, b) ->
+                b.getRequestedAt().compareTo(a.getRequestedAt()));
+
+        double totalSales =
+                verifiedSales.stream()
+                        .mapToDouble(Purchase::getAmount)
+                        .sum();
+
+        double totalWithdrawn =
+                withdrawals.stream()
+                        .filter(withdrawal ->
+                                withdrawal.getStatus() == Withdrawal.Status.COMPLETED)
+                        .mapToDouble(Withdrawal::getAmount)
+                        .sum();
+
+        double pendingWithdrawals =
+                withdrawals.stream()
+                        .filter(withdrawal ->
+                                withdrawal.getStatus() == Withdrawal.Status.PENDING)
+                        .mapToDouble(Withdrawal::getAmount)
+                        .sum();
+
+        long pendingWithdrawalCount =
+                withdrawals.stream()
+                        .filter(withdrawal ->
+                                withdrawal.getStatus() == Withdrawal.Status.PENDING)
+                        .count();
+
+        model.addAttribute("sales", verifiedSales);
+        model.addAttribute("withdrawals", withdrawals);
+        model.addAttribute("totalSales", totalSales);
+        model.addAttribute("totalWithdrawn", totalWithdrawn);
+        model.addAttribute("pendingWithdrawals", pendingWithdrawals);
+        model.addAttribute("pendingWithdrawalCount", pendingWithdrawalCount);
+
         return "admin-payments";
+    }
+
+    @PostMapping("/withdrawals/{id}/approve")
+    public String approveWithdrawal(@PathVariable Long id) {
+
+        Withdrawal withdrawal = findWithdrawal(id);
+
+        if (withdrawal.getStatus() == Withdrawal.Status.PENDING) {
+            withdrawal.setStatus(Withdrawal.Status.COMPLETED);
+            withdrawalRepository.save(withdrawal);
+
+            try {
+                emailService.sendWithdrawalApprovalEmail(withdrawal);
+            } catch (Exception ignored) {
+            }
+        }
+
+        return "redirect:/admin/payments#withdrawals";
+    }
+
+    @PostMapping("/withdrawals/{id}/reject")
+    public String rejectWithdrawal(@PathVariable Long id) {
+
+        Withdrawal withdrawal = findWithdrawal(id);
+
+        if (withdrawal.getStatus() == Withdrawal.Status.PENDING) {
+            withdrawal.setStatus(Withdrawal.Status.REJECTED);
+            withdrawalRepository.save(withdrawal);
+
+            try {
+                emailService.sendWithdrawalRejectionEmail(withdrawal);
+            } catch (Exception ignored) {
+            }
+        }
+
+        return "redirect:/admin/payments#withdrawals";
     }
 
     @PostMapping("/patterns/{id}/approve")
@@ -456,6 +552,15 @@ public class AdminController {
         }
 
         return "redirect:/admin/vacancies";
+    }
+
+    private Withdrawal findWithdrawal(Long id) {
+        return withdrawalRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Withdrawal not found"
+                        )
+                );
     }
 
     private Vacancy findVacancy(Long id) {

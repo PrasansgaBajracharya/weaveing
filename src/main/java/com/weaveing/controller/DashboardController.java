@@ -9,6 +9,7 @@ import com.weaveing.repository.PurchaseRepository;
 import com.weaveing.repository.UserRepository;
 import com.weaveing.repository.WishlistRepository;
 import com.weaveing.repository.WithdrawalRepository;
+import com.weaveing.service.EmailService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
@@ -42,6 +43,7 @@ public class DashboardController {
     private final PurchaseRepository purchaseRepository;
     private final WishlistRepository wishlistRepository;
     private final WithdrawalRepository withdrawalRepository;
+    private final EmailService emailService;
     private final SecurityContextRepository securityContextRepository =
             new HttpSessionSecurityContextRepository();
 
@@ -50,13 +52,15 @@ public class DashboardController {
             PatternRepository patternRepository,
             PurchaseRepository purchaseRepository,
             WishlistRepository wishlistRepository,
-            WithdrawalRepository withdrawalRepository) {
+            WithdrawalRepository withdrawalRepository,
+            EmailService emailService) {
 
         this.userRepository = userRepository;
         this.patternRepository = patternRepository;
         this.purchaseRepository = purchaseRepository;
         this.wishlistRepository = wishlistRepository;
         this.withdrawalRepository = withdrawalRepository;
+        this.emailService = emailService;
     }
 
     @GetMapping("/dashboard")
@@ -117,6 +121,14 @@ public class DashboardController {
         List<Withdrawal> withdrawals =
                 withdrawalRepository.findByUserOrderByRequestedAtDesc(user);
 
+        double reservedWithdrawals =
+                withdrawals.stream()
+                        .filter(withdrawal ->
+                                withdrawal.getStatus() == Withdrawal.Status.PENDING ||
+                                withdrawal.getStatus() == Withdrawal.Status.COMPLETED)
+                        .mapToDouble(Withdrawal::getAmount)
+                        .sum();
+
         double totalWithdrawn =
                 withdrawals.stream()
                         .filter(withdrawal ->
@@ -125,7 +137,7 @@ public class DashboardController {
                         .sum();
 
         double availableBalance =
-                Math.max(0.0, totalEarnings - totalWithdrawn);
+                Math.max(0.0, totalEarnings - reservedWithdrawals);
 
         long approvedPatterns =
                 myPatterns.stream()
@@ -197,18 +209,17 @@ public class DashboardController {
                         .mapToDouble(Purchase::getAmount)
                         .sum();
 
-        double totalWithdrawn =
-                withdrawalRepository
-                        .findByUserAndStatus(
-                                user,
-                                Withdrawal.Status.COMPLETED
-                        )
+        double reservedWithdrawals =
+                withdrawalRepository.findByUserOrderByRequestedAtDesc(user)
                         .stream()
+                        .filter(withdrawal ->
+                                withdrawal.getStatus() == Withdrawal.Status.PENDING ||
+                                withdrawal.getStatus() == Withdrawal.Status.COMPLETED)
                         .mapToDouble(Withdrawal::getAmount)
                         .sum();
 
         double availableBalance =
-                Math.max(0.0, totalEarnings - totalWithdrawn);
+                Math.max(0.0, totalEarnings - reservedWithdrawals);
 
         if (amount <= 0) {
             redirectAttributes.addFlashAttribute(
@@ -270,16 +281,20 @@ public class DashboardController {
         withdrawal.setAmount(amount);
         withdrawal.setPaymentMethod(selectedMethod);
         withdrawal.setAccountIdentifier(identifier);
-        withdrawal.setStatus(Withdrawal.Status.COMPLETED);
+        withdrawal.setStatus(Withdrawal.Status.PENDING);
         withdrawalRepository.save(withdrawal);
+
+        try {
+            emailService.sendWithdrawalPendingUserNotification(withdrawal);
+            emailService.sendWithdrawalPendingAdminNotification(withdrawal);
+        } catch (Exception ignored) {
+        }
 
         redirectAttributes.addFlashAttribute(
                 "withdrawalSuccess",
-                "Withdrawal successful. Rs " +
+                "Withdrawal request submitted. Rs " +
                         String.format("%.0f", amount) +
-                        " has been simulated through " +
-                        selectedMethod.name() +
-                        "."
+                        " is pending admin approval."
         );
 
         return "redirect:/dashboard#withdrawals";

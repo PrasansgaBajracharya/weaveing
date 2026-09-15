@@ -634,7 +634,8 @@
                             </small>
                         </div>
 
-                        <span class="withdrawal-status completed"
+                        <span class="withdrawal-status"
+                              th:classappend="${#strings.toLowerCase(withdrawal.status.name())}"
                               th:text="${withdrawal.status}">
                             COMPLETED
                         </span>

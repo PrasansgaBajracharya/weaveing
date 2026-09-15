@@ -6,6 +6,7 @@ import com.weaveing.entity.Purchase;
 import com.weaveing.entity.User;
 import com.weaveing.entity.Vacancy;
 import com.weaveing.entity.VacancyReport;
+import com.weaveing.entity.Withdrawal;
 import com.weaveing.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -880,6 +881,148 @@ public class EmailService {
                         "may result in further account restrictions, suspension, " +
                         "or account removal.\n\n" +
                         "— The Weave.ing Moderation Team"
+        );
+
+        mailSender.send(message);
+    }
+
+    public void sendWithdrawalPendingUserNotification(
+            Withdrawal withdrawal) {
+
+        if (withdrawal == null ||
+                withdrawal.getUser() == null ||
+                withdrawal.getUser().getEmail() == null ||
+                withdrawal.getUser().getEmail().isBlank()) {
+            return;
+        }
+
+        User user = withdrawal.getUser();
+        String name = user.getName();
+
+        if (name == null || name.isBlank()) {
+            name = user.getUsername();
+        }
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(senderEmail);
+        message.setTo(user.getEmail());
+        message.setSubject("Withdrawal request received — Weave.ing");
+        message.setText(
+                "Hi " + name + ",\n\n" +
+                "Your withdrawal request has been received by Weave.ing.\n\n" +
+                "Amount: Rs " + withdrawal.getAmount() + "\n" +
+                "Method: " + withdrawal.getPaymentMethod() + "\n" +
+                "Account: " + withdrawal.getAccountIdentifier() + "\n" +
+                "Status: PENDING\n\n" +
+                "An administrator will review your request. You will receive another email when the request is approved or rejected.\n\n" +
+                "— The Weave.ing Team"
+        );
+
+        mailSender.send(message);
+    }
+
+    public void sendWithdrawalPendingAdminNotification(
+            Withdrawal withdrawal) {
+
+        if (withdrawal == null) {
+            return;
+        }
+
+        List<User> admins = userRepository.findByAdminTrue();
+
+        if (admins.isEmpty()) {
+            return;
+        }
+
+        User user = withdrawal.getUser();
+        String username = user != null ? user.getUsername() : "Unknown user";
+        String email = user != null ? user.getEmail() : "Unknown email";
+
+        String emailText =
+                "Hello Weave.ing Admin,\n\n" +
+                "A new withdrawal request is waiting for approval.\n\n" +
+                "Seller: @" + username + "\n" +
+                "Email: " + email + "\n" +
+                "Amount: Rs " + withdrawal.getAmount() + "\n" +
+                "Method: " + withdrawal.getPaymentMethod() + "\n" +
+                "Account: " + withdrawal.getAccountIdentifier() + "\n" +
+                "Status: PENDING\n\n" +
+                "Please log in to the admin dashboard and review the request.\n\n" +
+                "Admin payments dashboard:\n" +
+                "http://localhost:8080/admin/payments\n\n" +
+                "— The Weave.ing System";
+
+        for (User admin : admins) {
+            if (admin.getEmail() == null || admin.getEmail().isBlank()) {
+                continue;
+            }
+
+            try {
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setFrom(senderEmail);
+                message.setTo(admin.getEmail());
+                message.setSubject("New withdrawal request awaiting approval — Weave.ing");
+                message.setText(emailText);
+                mailSender.send(message);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    public void sendWithdrawalApprovalEmail(
+            Withdrawal withdrawal) {
+
+        sendWithdrawalStatusEmail(
+                withdrawal,
+                "Withdrawal approved — Weave.ing",
+                "Your withdrawal request has been approved by the Weave.ing admin team.",
+                "COMPLETED"
+        );
+    }
+
+    public void sendWithdrawalRejectionEmail(
+            Withdrawal withdrawal) {
+
+        sendWithdrawalStatusEmail(
+                withdrawal,
+                "Withdrawal request rejected — Weave.ing",
+                "Your withdrawal request has been rejected by the Weave.ing admin team. The amount has been returned to your available balance.",
+                "REJECTED"
+        );
+    }
+
+    private void sendWithdrawalStatusEmail(
+            Withdrawal withdrawal,
+            String subject,
+            String statusMessage,
+            String status) {
+
+        if (withdrawal == null ||
+                withdrawal.getUser() == null ||
+                withdrawal.getUser().getEmail() == null ||
+                withdrawal.getUser().getEmail().isBlank()) {
+            return;
+        }
+
+        User user = withdrawal.getUser();
+        String name = user.getName();
+
+        if (name == null || name.isBlank()) {
+            name = user.getUsername();
+        }
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(senderEmail);
+        message.setTo(user.getEmail());
+        message.setSubject(subject);
+        message.setText(
+                "Hi " + name + ",\n\n" +
+                statusMessage + "\n\n" +
+                "Amount: Rs " + withdrawal.getAmount() + "\n" +
+                "Method: " + withdrawal.getPaymentMethod() + "\n" +
+                "Account: " + withdrawal.getAccountIdentifier() + "\n" +
+                "Status: " + status + "\n\n" +
+                "— The Weave.ing Team"
         );
 
         mailSender.send(message);

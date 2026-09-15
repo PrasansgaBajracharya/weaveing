@@ -1170,9 +1170,19 @@ h4 {
     font-weight: 800;
 }
 
+.withdrawal-status.pending {
+    background: #f2e8da;
+    color: #806a53;
+}
+
 .withdrawal-status.completed {
     background: rgba(72, 139, 92, .10);
     color: #356844;
+}
+
+.withdrawal-status.rejected {
+    background: #f1e5e1;
+    color: #805d55;
 }
 
 @media (max-width: 760px) {

@@ -100,6 +100,8 @@ public class Withdrawal {
     }
 
     public enum Status {
-        COMPLETED
+        PENDING,
+        COMPLETED,
+        REJECTED
     }
 }

@@ -845,3 +845,232 @@
     }
 }
 
+
+.finance-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.finance-stat-card {
+    padding: 21px 22px;
+    background: rgba(255, 255, 255, .88);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+}
+
+.finance-stat-card span,
+.finance-stat-card small {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.finance-stat-card strong {
+    display: block;
+    margin: 7px 0 5px;
+    color: var(--brown-dark);
+    font-family: var(--font-display);
+    font-size: 27px;
+    font-weight: 600;
+}
+
+.finance-section {
+    margin-top: 26px;
+}
+
+.finance-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 13px;
+}
+
+.section-kicker {
+    margin: 0 0 5px;
+    color: var(--brown-light);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+}
+
+.finance-section-heading h2 {
+    margin: 0;
+    color: var(--brown-dark);
+    font-family: var(--font-display);
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.finance-count {
+    min-width: 34px;
+    padding: 7px 10px;
+    text-align: center;
+    border-radius: var(--radius-pill);
+    background: var(--beige-light);
+    color: var(--brown);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.finance-table-wrap {
+    overflow-x: auto;
+    background: rgba(255, 255, 255, .9);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+}
+
+.finance-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+}
+
+.finance-table th {
+    padding: 13px 15px;
+    background: var(--offwhite);
+    border-bottom: 1px solid var(--border);
+    color: var(--brown-light);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.finance-table td {
+    padding: 15px;
+    border-bottom: 1px solid rgba(99, 77, 64, .08);
+    color: #75685e;
+    font-size: 11px;
+    vertical-align: middle;
+}
+
+.finance-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.finance-table td strong,
+.finance-table td small {
+    display: block;
+}
+
+.finance-table td strong {
+    margin-bottom: 4px;
+    color: var(--brown-dark);
+    font-size: 12px;
+}
+
+.finance-table td small {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.amount-cell {
+    color: var(--brown-dark) !important;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.account-cell,
+.transaction-cell {
+    max-width: 170px;
+    overflow-wrap: anywhere;
+}
+
+.finance-status {
+    display: inline-flex;
+    padding: 6px 9px;
+    border-radius: var(--radius-pill);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.finance-status.pending {
+    background: #f2e8da;
+    color: #806a53;
+}
+
+.finance-status.completed,
+.finance-status.verified {
+    background: #e8eee5;
+    color: #5b6b55;
+}
+
+.finance-status.rejected {
+    background: #f1e5e1;
+    color: #805d55;
+}
+
+.finance-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.finance-actions form {
+    margin: 0;
+}
+
+.finance-actions button {
+    min-height: 32px;
+    padding: 7px 10px;
+    border-radius: 9px;
+    font: inherit;
+    font-size: 9px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.finance-approve {
+    border: 1px solid #d4dfcf;
+    background: #edf3e9;
+    color: #52654b;
+}
+
+.finance-reject {
+    border: 1px solid #e4d2cd;
+    background: #f7ece8;
+    color: #7c5851;
+}
+
+.finance-muted {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.finance-empty {
+    padding: 42px 24px;
+    text-align: center;
+    background: rgba(255, 255, 255, .88);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.finance-empty h3 {
+    margin: 0 0 7px;
+    color: var(--brown-dark);
+    font-family: var(--font-display);
+    font-size: 21px;
+}
+
+.finance-empty p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+@media (max-width: 800px) {
+    .finance-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .finance-section-heading h2 {
+        font-size: 22px;
+    }
+}
