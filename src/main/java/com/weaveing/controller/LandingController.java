@@ -23,7 +23,7 @@ public class LandingController {
 
         List<Pattern> communityPatterns =
                 patternRepository
-                        .findTop12ByApprovalStatusOrderBySubmittedAtDesc(
+                        .findTop12ByApprovalStatusAndRemovedAtIsNullOrderBySubmittedAtDesc(
                                 Pattern.ApprovalStatus.APPROVED
                         );
 

@@ -8,6 +8,7 @@ import com.weaveing.repository.PatternRepository;
 import com.weaveing.repository.PurchaseRepository;
 import com.weaveing.repository.ReviewRepository;
 import com.weaveing.repository.UserRepository;
+import com.weaveing.repository.WishlistRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -41,19 +42,22 @@ public class PatternController {
     private final PurchaseRepository purchaseRepository;
     private final ReviewRepository reviewRepository;
     private final EmailService emailService;
+    private final WishlistRepository wishlistRepository;
 
     public PatternController(
             PatternRepository patternRepository,
             UserRepository userRepository,
             PurchaseRepository purchaseRepository,
             ReviewRepository reviewRepository,
-            EmailService emailService) {
+            EmailService emailService,
+            WishlistRepository wishlistRepository) {
 
         this.patternRepository = patternRepository;
         this.userRepository = userRepository;
         this.purchaseRepository = purchaseRepository;
         this.reviewRepository = reviewRepository;
         this.emailService = emailService;
+        this.wishlistRepository = wishlistRepository;
     }
 
 
@@ -258,6 +262,8 @@ public class PatternController {
             pattern.setFree(isFree);
 
             pattern.setPrice(price);
+            pattern.setOriginalPrice(isFree ? 0.0 : price);
+            pattern.setDiscountPercent(0.0);
 
             pattern.setImagePath(
                     "/uploads/pattern-images/"
@@ -304,6 +310,283 @@ public class PatternController {
         }
     }
 
+    @GetMapping("/patterns/{id}/edit")
+    public String editPatternPage(
+            @PathVariable Long id,
+            Authentication authentication,
+            Model model) {
+
+        User user = getCurrentUser(authentication);
+        Pattern pattern = patternRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pattern not found"));
+
+        if (!isPatternOwner(pattern, user)) {
+            return "redirect:/profile#patterns";
+        }
+
+        model.addAttribute("pattern", pattern);
+        model.addAttribute("categories", Pattern.CATEGORIES);
+        model.addAttribute(
+                "editOriginalPrice",
+                pattern.getOriginalPrice() > 0
+                        ? pattern.getOriginalPrice()
+                        : pattern.getPrice()
+        );
+
+        return "pattern-edit";
+    }
+
+    @PostMapping("/patterns/{id}/edit")
+    public String editPattern(
+            @PathVariable Long id,
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("category") String category,
+            @RequestParam("difficulty") String difficulty,
+            @RequestParam("priceType") String priceType,
+            @RequestParam("originalPrice") double originalPrice,
+            @RequestParam("discountPercent") double discountPercent,
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "patternFile", required = false) MultipartFile patternFile,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            User user = getCurrentUser(authentication);
+            Pattern pattern = patternRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Pattern not found"));
+
+            if (!isPatternOwner(pattern, user)) {
+                return "redirect:/profile#patterns";
+            }
+
+            title = title == null ? "" : title.trim();
+            description = description == null ? "" : description.trim();
+            category = category == null ? "" : category.trim();
+            difficulty = difficulty == null ? "" : difficulty.trim();
+
+            if (title.isBlank() || description.isBlank()
+                    || category.isBlank() || difficulty.isBlank()
+                    || !Pattern.CATEGORIES.contains(category)) {
+                redirectAttributes.addFlashAttribute(
+                        "patternError",
+                        "Please complete all required pattern details."
+                );
+                return "redirect:/patterns/" + id + "/edit";
+            }
+
+            boolean isFree = "free".equalsIgnoreCase(priceType);
+
+            if (isFree) {
+                originalPrice = 0.0;
+                discountPercent = 0.0;
+            } else {
+                if (originalPrice <= 0) {
+                    redirectAttributes.addFlashAttribute(
+                            "patternError",
+                            "Please enter a valid original price."
+                    );
+                    return "redirect:/patterns/" + id + "/edit";
+                }
+
+                if (discountPercent < 0 || discountPercent > 90) {
+                    redirectAttributes.addFlashAttribute(
+                            "patternError",
+                            "Discount must be between 0% and 90%."
+                    );
+                    return "redirect:/patterns/" + id + "/edit";
+                }
+            }
+
+            double finalPrice = isFree
+                    ? 0.0
+                    : Math.round(originalPrice * (1.0 - discountPercent / 100.0) * 100.0) / 100.0;
+
+            if (!isFree && finalPrice <= 0) {
+                redirectAttributes.addFlashAttribute(
+                        "patternError",
+                        "The discounted price must be greater than Rs 0."
+                );
+                return "redirect:/patterns/" + id + "/edit";
+            }
+
+            boolean contentChanged =
+                    !safeEquals(pattern.getTitle(), title)
+                    || !safeEquals(pattern.getDescription(), description)
+                    || !safeEquals(pattern.getCategory(), category)
+                    || !safeEquals(pattern.getDifficulty(), difficulty)
+                    || (image != null && !image.isEmpty())
+                    || (patternFile != null && !patternFile.isEmpty());
+
+            if (image != null && !image.isEmpty()) {
+                String originalName = image.getOriginalFilename();
+
+                if (originalName == null || !isAllowedImage(originalName)) {
+                    redirectAttributes.addFlashAttribute(
+                            "patternError",
+                            "Cover image must be PNG, JPG, JPEG, or WEBP."
+                    );
+                    return "redirect:/patterns/" + id + "/edit";
+                }
+
+                Path imageDirectory = Paths.get("uploads", "pattern-images")
+                        .toAbsolutePath().normalize();
+                Files.createDirectories(imageDirectory);
+
+                String filename = UUID.randomUUID() + getFileExtension(originalName);
+                Path imagePath = imageDirectory.resolve(filename).normalize();
+
+                if (!imagePath.startsWith(imageDirectory)) {
+                    throw new IOException("Invalid image path");
+                }
+
+                Files.copy(
+                        image.getInputStream(),
+                        imagePath,
+                        StandardCopyOption.REPLACE_EXISTING
+                );
+
+                pattern.setImagePath("/uploads/pattern-images/" + filename);
+            }
+
+            if (patternFile != null && !patternFile.isEmpty()) {
+                String originalName = patternFile.getOriginalFilename();
+
+                if (originalName == null || !originalName.toLowerCase().endsWith(".pdf")) {
+                    redirectAttributes.addFlashAttribute(
+                            "patternError",
+                            "The digital pattern file must be a PDF."
+                    );
+                    return "redirect:/patterns/" + id + "/edit";
+                }
+
+                Path patternDirectory = Paths.get("uploads", "private-patterns")
+                        .toAbsolutePath().normalize();
+                Files.createDirectories(patternDirectory);
+
+                String filename = UUID.randomUUID() + ".pdf";
+                Path patternPath = patternDirectory.resolve(filename).normalize();
+
+                if (!patternPath.startsWith(patternDirectory)) {
+                    throw new IOException("Invalid pattern path");
+                }
+
+                Files.copy(
+                        patternFile.getInputStream(),
+                        patternPath,
+                        StandardCopyOption.REPLACE_EXISTING
+                );
+
+                pattern.setFilePath("/uploads/private-patterns/" + filename);
+            }
+
+            pattern.setTitle(title);
+            pattern.setDescription(description);
+            pattern.setCategory(category);
+            pattern.setDifficulty(difficulty);
+            pattern.setFree(isFree);
+            pattern.setOriginalPrice(originalPrice);
+            pattern.setDiscountPercent(discountPercent);
+            pattern.setPrice(finalPrice);
+
+            if (contentChanged &&
+                    pattern.getApprovalStatus() != Pattern.ApprovalStatus.PENDING) {
+                pattern.setApprovalStatus(Pattern.ApprovalStatus.PENDING);
+                pattern.setRejectionReason(null);
+                pattern.setReviewedAt(null);
+                pattern.setSubmittedAt(LocalDateTime.now());
+            }
+
+            patternRepository.save(pattern);
+
+            redirectAttributes.addFlashAttribute(
+                    "patternSuccess",
+                    contentChanged
+                            ? "Pattern updated and sent for admin review."
+                            : "Pattern pricing updated successfully."
+            );
+
+            return "redirect:/profile#patterns";
+
+        } catch (IOException e) {
+            redirectAttributes.addFlashAttribute(
+                    "patternError",
+                    "There was a problem updating the pattern. Please try again."
+            );
+            return "redirect:/patterns/" + id + "/edit";
+        }
+    }
+
+    @PostMapping("/patterns/{id}/delete")
+    public String removePattern(
+            @PathVariable Long id,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
+
+        User user = getCurrentUser(authentication);
+        Pattern pattern = patternRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pattern not found"));
+
+        if (!isPatternOwner(pattern, user)) {
+            return "redirect:/profile#patterns";
+        }
+
+        pattern.setRemovedAt(LocalDateTime.now());
+        patternRepository.save(pattern);
+        wishlistRepository.deleteByPattern(pattern);
+
+        redirectAttributes.addFlashAttribute(
+                "patternSuccess",
+                "Pattern removed from the marketplace. Existing purchases remain available."
+        );
+
+        return "redirect:/profile#patterns";
+    }
+
+    @PostMapping("/patterns/{id}/restore")
+    public String restorePattern(
+            @PathVariable Long id,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
+
+        User user = getCurrentUser(authentication);
+        Pattern pattern = patternRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pattern not found"));
+
+        if (!isPatternOwner(pattern, user)) {
+            return "redirect:/profile#patterns";
+        }
+
+        pattern.setRemovedAt(null);
+        pattern.setApprovalStatus(Pattern.ApprovalStatus.PENDING);
+        pattern.setSubmittedAt(LocalDateTime.now());
+        pattern.setReviewedAt(null);
+        pattern.setRejectionReason(null);
+        patternRepository.save(pattern);
+
+        try {
+            emailService.sendPendingPatternAdminNotification(pattern);
+        } catch (Exception ignored) {
+        }
+
+        redirectAttributes.addFlashAttribute(
+                "patternSuccess",
+                "Pattern restored and sent for admin review."
+        );
+
+        return "redirect:/profile#patterns";
+    }
+
+    private boolean isPatternOwner(Pattern pattern, User user) {
+        return pattern.getCreator() != null
+                && user != null
+                && pattern.getCreator().getId().equals(user.getId());
+    }
+
+    private boolean safeEquals(String first, String second) {
+        return first == null ? second == null : first.equals(second);
+    }
+
     @GetMapping("/patterns/{id}")
     public String patternDetails(
             @PathVariable Long id,
@@ -316,12 +599,6 @@ public class PatternController {
                                 "Pattern not found"
                         )
                 );
-
-        if (pattern.getApprovalStatus()
-                != Pattern.ApprovalStatus.APPROVED) {
-
-            return "redirect:/home";
-        }
 
         User user = null;
 
@@ -337,15 +614,30 @@ public class PatternController {
 
         Purchase pendingPurchase = null;
 
+        boolean verifiedPurchase = false;
+
+        if (!pattern.isFree() && user != null) {
+            verifiedPurchase = purchaseRepository
+                    .existsByBuyerAndPatternAndPaymentStatus(
+                            user,
+                            pattern,
+                            Purchase.PaymentStatus.VERIFIED
+                    );
+        }
+
+        if (pattern.getApprovalStatus()
+                != Pattern.ApprovalStatus.APPROVED) {
+
+            return "redirect:/home";
+        }
+
+        if (pattern.getRemovedAt() != null && !verifiedPurchase) {
+            return "redirect:/home";
+        }
+
         if (!pattern.isFree() && user != null) {
 
-            ownsPattern =
-                    purchaseRepository
-                            .existsByBuyerAndPatternAndPaymentStatus(
-                                    user,
-                                    pattern,
-                                    Purchase.PaymentStatus.VERIFIED
-                            );
+            ownsPattern = verifiedPurchase;
 
             pendingPurchase =
                     purchaseRepository
@@ -359,7 +651,7 @@ public class PatternController {
 
         java.util.List<Pattern> relatedPatterns =
                 patternRepository
-                        .findTop4ByApprovalStatusAndCategoryAndIdNotOrderBySubmittedAtDesc(
+                        .findTop4ByApprovalStatusAndRemovedAtIsNullAndCategoryAndIdNotOrderBySubmittedAtDesc(
                                 Pattern.ApprovalStatus.APPROVED,
                                 pattern.getCategory(),
                                 pattern.getId()
@@ -551,6 +843,24 @@ public class PatternController {
                 != Pattern.ApprovalStatus.APPROVED) {
 
             return false;
+        }
+
+        if (pattern.getRemovedAt() != null) {
+            if (user == null) {
+                return false;
+            }
+
+            if (pattern.getCreator() != null &&
+                    pattern.getCreator().getId().equals(user.getId())) {
+                return true;
+            }
+
+            return purchaseRepository
+                    .existsByBuyerAndPatternAndPaymentStatus(
+                            user,
+                            pattern,
+                            Purchase.PaymentStatus.VERIFIED
+                    );
         }
 
         if (pattern.isFree()) {

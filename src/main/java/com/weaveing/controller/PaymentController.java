@@ -1,5 +1,6 @@
 package com.weaveing.controller;
 
+import com.weaveing.entity.Pattern;
 import com.weaveing.entity.Purchase;
 import com.weaveing.entity.User;
 import com.weaveing.repository.PurchaseRepository;
@@ -54,6 +55,20 @@ public class PaymentController {
             return "redirect:/home";
         }
 
+        if (purchase.getPattern().getRemovedAt() != null ||
+                purchase.getPattern().getApprovalStatus() != Pattern.ApprovalStatus.APPROVED) {
+
+            purchase.setPaymentStatus(Purchase.PaymentStatus.FAILED);
+            purchaseRepository.save(purchase);
+
+            redirectAttributes.addFlashAttribute(
+                    "purchaseMessage",
+                    "This pattern is no longer available for purchase."
+            );
+
+            return "redirect:/wishlist";
+        }
+
         if (purchase.getPaymentStatus() == Purchase.PaymentStatus.VERIFIED) {
 
             redirectAttributes.addFlashAttribute(
@@ -63,6 +78,20 @@ public class PaymentController {
 
             return "redirect:/patterns/" +
                     purchase.getPattern().getId();
+        }
+
+        if (purchase.getPattern().getRemovedAt() != null ||
+                purchase.getPattern().getApprovalStatus() != Pattern.ApprovalStatus.APPROVED) {
+
+            purchase.setPaymentStatus(Purchase.PaymentStatus.FAILED);
+            purchaseRepository.save(purchase);
+
+            redirectAttributes.addFlashAttribute(
+                    "purchaseMessage",
+                    "This pattern is no longer available for purchase."
+            );
+
+            return "redirect:/home";
         }
 
         if (purchase.getPaymentStatus() != Purchase.PaymentStatus.PENDING) {
@@ -197,7 +226,10 @@ public class PaymentController {
                             purchase.getBuyer().getId()
                                     .equals(currentUser.getId())
                                     && purchase.getPaymentStatus() ==
-                                    Purchase.PaymentStatus.PENDING)
+                                    Purchase.PaymentStatus.PENDING
+                                    && purchase.getPattern().getRemovedAt() == null
+                                    && purchase.getPattern().getApprovalStatus() ==
+                                    Pattern.ApprovalStatus.APPROVED)
                     .ifPresent(purchases::add);
         }
 
@@ -255,7 +287,10 @@ public class PaymentController {
                             purchase.getBuyer().getId()
                                     .equals(currentUser.getId())
                                     && purchase.getPaymentStatus() ==
-                                    Purchase.PaymentStatus.PENDING)
+                                    Purchase.PaymentStatus.PENDING
+                                    && purchase.getPattern().getRemovedAt() == null
+                                    && purchase.getPattern().getApprovalStatus() ==
+                                    Pattern.ApprovalStatus.APPROVED)
                     .ifPresent(purchases::add);
         }
 

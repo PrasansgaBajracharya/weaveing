@@ -22,11 +22,11 @@ public interface PatternRepository extends JpaRepository<Pattern, Long> {
             Pattern.ApprovalStatus approvalStatus
     );
 
-    List<Pattern> findTop12ByApprovalStatusOrderBySubmittedAtDesc(
+    List<Pattern> findTop12ByApprovalStatusAndRemovedAtIsNullOrderBySubmittedAtDesc(
             Pattern.ApprovalStatus approvalStatus
     );
 
-    List<Pattern> findTop4ByApprovalStatusAndCategoryAndIdNotOrderBySubmittedAtDesc(
+    List<Pattern> findTop4ByApprovalStatusAndRemovedAtIsNullAndCategoryAndIdNotOrderBySubmittedAtDesc(
             Pattern.ApprovalStatus approvalStatus,
             String category,
             Long id
@@ -37,6 +37,7 @@ public interface PatternRepository extends JpaRepository<Pattern, Long> {
             SELECT p
             FROM Pattern p
             WHERE p.approvalStatus = :approvalStatus
+              AND p.removedAt IS NULL
               AND (
                     :category = 'all'
                     OR (

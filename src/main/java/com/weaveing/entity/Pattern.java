@@ -49,6 +49,12 @@ public class Pattern {
 
     private double price = 0.0;
 
+    private double originalPrice = 0.0;
+
+    private double discountPercent = 0.0;
+
+    private LocalDateTime removedAt;
+
     private String imagePath;
 
     private String filePath;
@@ -170,6 +176,30 @@ public class Pattern {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public double getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(double originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+
+    public double getDiscountPercent() {
+        return discountPercent;
+    }
+
+    public void setDiscountPercent(double discountPercent) {
+        this.discountPercent = discountPercent;
+    }
+
+    public LocalDateTime getRemovedAt() {
+        return removedAt;
+    }
+
+    public void setRemovedAt(LocalDateTime removedAt) {
+        this.removedAt = removedAt;
     }
 
     public String getImagePath() {

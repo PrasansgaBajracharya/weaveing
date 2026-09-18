@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payments &amp; Transactions — weave.ing</title>
     <link rel="stylesheet" th:href="@{/assets/css/admin-dashboard.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/confirmation.css}">
 </head>
 <body>
 
@@ -19,7 +20,7 @@
     <div class="nav-right">
         <a th:href="@{/admin}" class="marketplace-link">← Admin Dashboard</a>
         <span class="admin-badge">ADMIN</span>
-        <form th:action="@{/logout}" method="post">
+        <form th:action="@{/logout}" method="post" data-confirm="Log out of weave.ing?" data-confirm-title="Log out?" data-confirm-accept="Log out">
             <button type="submit" class="logout-button">Log out</button>
         </form>
     </div>
@@ -92,10 +93,16 @@
                     <td>
                         <div class="finance-actions" th:if="${withdrawal.status.name() == 'PENDING'}">
                             <form th:action="@{/admin/withdrawals/{id}/approve(id=${withdrawal.id})}" method="post">
-                                <button type="submit" class="finance-approve">Approve</button>
+                                <button type="submit" class="finance-approve"
+                                       data-confirm="Approve this withdrawal request?"
+                                       data-confirm-title="Approve withdrawal?"
+                                       data-confirm-accept="Approve">Approve</button>
                             </form>
                             <form th:action="@{/admin/withdrawals/{id}/reject(id=${withdrawal.id})}" method="post">
-                                <button type="submit" class="finance-reject">Reject</button>
+                                <button type="submit" class="finance-reject"
+                                       data-confirm="Reject this withdrawal request? The amount will return to the seller's available balance."
+                                       data-confirm-title="Reject withdrawal?"
+                                       data-confirm-accept="Reject">Reject</button>
                             </form>
                         </div>
                         <span class="finance-muted" th:unless="${withdrawal.status.name() == 'PENDING'}">No action</span>
@@ -162,5 +169,6 @@
     <a th:href="@{/admin}" class="back-dashboard-button">← Back to Admin Dashboard</a>
 </main>
 
+<script th:src="@{/assets/js/confirmation.js}"></script>
 </body>
 </html>

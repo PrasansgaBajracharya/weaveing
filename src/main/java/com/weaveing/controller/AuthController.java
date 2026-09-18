@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
 
 @Controller
 public class AuthController {
@@ -104,40 +107,28 @@ public class AuthController {
 
         if (user == null) {
 
-            model.addAttribute(
-                    "verificationType",
-                    "email"
-            );
-
-            model.addAttribute(
-                    "verificationSuccess",
-                    false
-            );
-
-            model.addAttribute(
-                    "targetUrl",
-                    "/signup?verified=failed"
-            );
-
-            return "verification-result";
+            return "redirect:/login?verified=failed";
         }
 
-        model.addAttribute(
-                "verificationType",
-                "email"
-        );
+        return "redirect:/login?verified=success";
+    }
 
-        model.addAttribute(
-                "verificationSuccess",
-                true
-        );
+    @GetMapping("/login/device-status")
+    @ResponseBody
+    public Map<String, Boolean> deviceStatus(
+            @RequestParam("login") String login,
+            HttpServletRequest request) {
 
-        model.addAttribute(
-                "targetUrl",
-                "/login?verified=success"
-        );
+        String token =
+                userService.getTrustedDeviceCookie(
+                        request,
+                        login
+                );
 
-        return "verification-result";
+        return Map.of(
+                "trusted",
+                userService.isTrustedDevice(login, token)
+        );
     }
 
     @GetMapping("/verify-device")
@@ -160,22 +151,7 @@ public class AuthController {
 
         if (user == null) {
 
-            model.addAttribute(
-                    "verificationType",
-                    "device"
-            );
-
-            model.addAttribute(
-                    "verificationSuccess",
-                    false
-            );
-
-            model.addAttribute(
-                    "targetUrl",
-                    "/login?verification=device-failed"
-            );
-
-            return "verification-result";
+            return "redirect:/login?verification=device-failed";
         }
 
         if (rememberDevice) {
@@ -208,23 +184,9 @@ public class AuthController {
                     );
         }
 
-        model.addAttribute(
-                "verificationType",
-                "device"
-        );
-
-        model.addAttribute(
-                "verificationSuccess",
-                true
-        );
-
-        model.addAttribute(
-                "targetUrl",
-                rememberDevice
-                        ? "/login?verification=device-verified"
-                        : "/login?verification=device-verified-once"
-        );
-
-        return "verification-result";
+        return "redirect:/login?verification=" +
+                (rememberDevice
+                        ? "device-verified"
+                        : "device-verified-once");
     }
 }

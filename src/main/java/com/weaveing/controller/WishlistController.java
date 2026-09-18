@@ -52,6 +52,15 @@ public class WishlistController {
                 wishlistRepository
                         .findByUserOrderByCreatedAtDesc(user);
 
+        wishlistItems.removeIf(item -> {
+            Pattern pattern = item.getPattern();
+            if (pattern.getRemovedAt() != null) {
+                wishlistRepository.delete(item);
+                return true;
+            }
+            return false;
+        });
+
         Map<Long, Long> wishlistCounts =
                 new HashMap<>();
 
@@ -95,7 +104,8 @@ public class WishlistController {
                         );
 
         if (pattern.getApprovalStatus() !=
-                Pattern.ApprovalStatus.APPROVED) {
+                Pattern.ApprovalStatus.APPROVED ||
+                pattern.getRemovedAt() != null) {
 
             return ResponseEntity.badRequest()
                     .body(
@@ -201,7 +211,15 @@ public class WishlistController {
                         );
 
         if (pattern.getApprovalStatus() !=
-                Pattern.ApprovalStatus.APPROVED) {
+                Pattern.ApprovalStatus.APPROVED ||
+                pattern.getRemovedAt() != null) {
+
+            wishlistRepository.deleteByUserAndPattern(user, pattern);
+
+            redirectAttributes.addFlashAttribute(
+                    "wishlistMessage",
+                    "This pattern is no longer available for purchase."
+            );
 
             return "redirect:/wishlist";
         }
@@ -281,6 +299,7 @@ public class WishlistController {
 
             if (pattern.getApprovalStatus() !=
                     Pattern.ApprovalStatus.APPROVED ||
+                    pattern.getRemovedAt() != null ||
                     pattern.isFree()) {
 
                 continue;

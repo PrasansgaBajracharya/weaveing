@@ -520,233 +520,6 @@ body.homepage {
 }
 
 
-/* ---------- COMMUNITY FEED ---------- */
-
-.feed {
-    max-width: 620px;
-
-    margin: 0 auto;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 26px;
-}
-
-.post-card {
-    background: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: var(--radius-md);
-
-    overflow: hidden;
-
-    box-shadow: var(--shadow-soft);
-}
-
-.post-head {
-    display: flex;
-
-    align-items: center;
-
-    gap: 12px;
-
-    padding: 16px 18px;
-}
-
-.post-avatar {
-    width: 42px;
-    height: 42px;
-
-    border-radius: 50%;
-
-    overflow: hidden;
-
-    flex-shrink: 0;
-}
-
-.post-avatar img {
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-}
-
-.post-user {
-    font-weight: 700;
-    font-size: .92rem;
-}
-
-.post-time {
-    font-size: .75rem;
-    color: var(--muted);
-}
-
-.post-img {
-    width: 100%;
-    max-height: 520px;
-
-    object-fit: cover;
-}
-
-.post-actions {
-    display: flex;
-
-    align-items: center;
-
-    gap: 18px;
-
-    padding: 14px 18px 6px;
-}
-
-.post-actions button {
-    display: flex;
-
-    align-items: center;
-
-    gap: 6px;
-
-    color: var(--muted);
-
-    font-size: .85rem;
-    font-weight: 600;
-
-    transition:
-            color .3s ease,
-            transform .2s ease;
-}
-
-.post-actions button:hover {
-    color: var(--brown);
-
-    transform: translateY(-1px);
-}
-
-.post-actions button.liked {
-    color: #b23a3a;
-}
-
-.post-actions button.liked svg {
-    fill: #b23a3a;
-}
-
-.post-caption {
-    padding: 6px 18px 18px;
-
-    font-size: .9rem;
-
-    line-height: 1.55;
-}
-
-.post-caption b {
-    margin-right: 6px;
-}
-
-
-/* ---------- BUSINESS SPOTLIGHT ---------- */
-
-.biz-row {
-    display: flex;
-
-    gap: 20px;
-
-    overflow-x: auto;
-
-    padding-bottom: 10px;
-
-    scrollbar-width: thin;
-
-    scrollbar-color:
-            var(--beige-dark)
-            transparent;
-}
-
-.biz-card {
-    flex: 0 0 280px;
-
-    background: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: var(--radius-md);
-
-    padding: 22px;
-
-    box-shadow: var(--shadow-soft);
-
-    transition:
-            transform .4s var(--ease),
-            box-shadow .4s var(--ease);
-}
-
-.biz-card:hover {
-    transform: translateY(-6px);
-
-    box-shadow: var(--shadow-med);
-}
-
-.biz-top {
-    display: flex;
-
-    align-items: center;
-
-    gap: 12px;
-}
-
-.biz-logo {
-    width: 52px;
-    height: 52px;
-
-    border-radius: 14px;
-
-    overflow: hidden;
-
-    flex-shrink: 0;
-}
-
-.biz-logo img {
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-}
-
-.biz-name {
-    font-weight: 700;
-}
-
-.biz-rating {
-    font-size: .78rem;
-    color: var(--muted);
-}
-
-.biz-stats-row {
-    display: flex;
-
-    justify-content: space-between;
-
-    margin: 18px 0;
-
-    text-align: center;
-}
-
-.biz-stats-row div span {
-    display: block;
-
-    font-family: var(--font-display);
-
-    font-size: 1.1rem;
-
-    color: var(--brown-dark);
-}
-
-.biz-stats-row div small {
-    font-size: .7rem;
-    color: var(--muted);
-}
-
-
 /* ---------- LEADERBOARD ---------- */
 
 .lb-tabs {
@@ -1233,4 +1006,27 @@ body.homepage {
     margin: 6px 0 0;
     font-size: 0.82rem;
     color: var(--brown-muted, #8a7565);
+}
+
+
+.pattern-creator-link { color: inherit; text-decoration: none; }
+.pattern-creator-link:hover { text-decoration: underline; }
+
+
+.pattern-price.sale-price {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.pattern-price.sale-price s {
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.pattern-price.sale-price em {
+    color: #8a4742;
+    font-style: normal;
+    font-weight: 800;
 }

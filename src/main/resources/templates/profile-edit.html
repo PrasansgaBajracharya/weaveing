@@ -61,8 +61,8 @@
                 </div>
                 <div class="edit-field">
                     <label for="email">Email</label>
-                    <input id="email" type="email" th:value="${user.email}" readonly>
-                    <small>Your email is used for account verification and notifications.</small>
+                    <input id="email" name="email" type="email" maxlength="150" th:value="${user.email}" placeholder="you@example.com" required>
+                    <small>Changing your email will require verification of the new address.</small>
                 </div>
                 <div class="edit-field full-width">
                     <label for="bio">Bio</label>

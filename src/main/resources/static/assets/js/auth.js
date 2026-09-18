@@ -25,13 +25,54 @@ function showSignup() {
 
 tabLogin.addEventListener('click', showLogin);
 tabSignup.addEventListener('click', showSignup);
-document.getElementById('goSignup').addEventListener('click', showSignup);
-document.getElementById('goLogin').addEventListener('click', showLogin);
 
 if (window.location.pathname === '/signup') {
     showSignup();
 } else {
     showLogin();
+}
+
+
+const loginEmail = document.getElementById('loginEmail');
+const rememberDeviceRow = document.getElementById('rememberDeviceRow');
+const trustedDeviceNote = document.getElementById('trustedDeviceNote');
+let trustedDeviceTimer;
+
+function updateTrustedDeviceStatus() {
+    if (!loginEmail || !rememberDeviceRow || !trustedDeviceNote) {
+        return;
+    }
+
+    const login = loginEmail.value.trim();
+
+    if (!login) {
+        rememberDeviceRow.hidden = false;
+        trustedDeviceNote.hidden = true;
+        return;
+    }
+
+    fetch('/login/device-status?login=' + encodeURIComponent(login), {
+        credentials: 'same-origin'
+    })
+        .then(response => response.ok ? response.json() : {trusted: false})
+        .then(data => {
+            const trusted = data.trusted === true;
+            rememberDeviceRow.hidden = trusted;
+            trustedDeviceNote.hidden = !trusted;
+        })
+        .catch(() => {
+            rememberDeviceRow.hidden = false;
+            trustedDeviceNote.hidden = true;
+        });
+}
+
+if (loginEmail) {
+    loginEmail.addEventListener('input', () => {
+        clearTimeout(trustedDeviceTimer);
+        trustedDeviceTimer = setTimeout(updateTrustedDeviceStatus, 300);
+    });
+
+    loginEmail.addEventListener('blur', updateTrustedDeviceStatus);
 }
 
 const suPassword = document.getElementById('suPassword');

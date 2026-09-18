@@ -1,0 +1,74 @@
+.edit-note {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin: 0 0 20px;
+    padding: 14px 16px;
+    background: #f8f1e8;
+    border: 1px solid rgba(99, 77, 64, .12);
+    border-radius: 14px;
+    color: #6e5b50;
+    font-size: .82rem;
+    line-height: 1.6;
+}
+
+.edit-note > span {
+    flex: 0 0 auto;
+    color: #9b735c;
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+.edit-note p {
+    margin: 0;
+}
+
+.form-error {
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    color: #82413d;
+    background: #fbefed;
+    border: 1px solid #efd9d6;
+    border-radius: 12px;
+    font-size: .82rem;
+}
+
+.current-image {
+    width: 112px;
+    height: 112px;
+    display: block;
+    margin-top: 10px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 1px solid rgba(99, 77, 64, .14);
+}
+
+.edit-price-preview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 18px;
+    padding: 13px 15px;
+    border-radius: 12px;
+    background: rgba(248, 241, 232, .75);
+    color: #6e5b50;
+    font-size: .8rem;
+}
+
+.edit-price-preview strong {
+    color: #4a3830;
+    font-family: var(--font-display);
+    font-size: 1rem;
+}
+
+@media (max-width: 640px) {
+    .edit-note {
+        font-size: .76rem;
+    }
+
+    .edit-price-preview {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

@@ -34,4 +34,7 @@ public interface WishlistRepository
 
     @Transactional
     void deleteByUser(User user);
+
+    @Transactional
+    void deleteByPattern(Pattern pattern);
 }

@@ -1518,3 +1518,27 @@ body.modal-open { overflow:hidden; }
         gap: 10px;
     }
 }
+
+
+.pattern-creator-link { color: inherit; text-decoration: none; }
+.pattern-creator-link:hover { text-decoration: underline; }
+
+
+.pattern-details-price.sale-price {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.pattern-details-price.sale-price s {
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.pattern-details-price.sale-price em {
+    color: #8a4742;
+    font-size: .72em;
+    font-style: normal;
+    font-weight: 800;
+}

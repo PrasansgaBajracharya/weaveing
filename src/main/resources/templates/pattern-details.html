@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" th:href="@{/assets/css/home.css}">
     <link rel="stylesheet" th:href="@{/assets/css/pattern-details.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/confirmation.css}">
 </head>
 
 <body class="pattern-details-body">
@@ -86,9 +87,12 @@
 
             <p class="pattern-details-creator">
                 Created by
-                <strong th:text="'@' + ${pattern.creator.username}">
-                    @username
-                </strong>
+                <a th:href="@{/users/{username}(username=${pattern.creator.username})}"
+                   class="pattern-creator-link">
+                    <strong th:text="'@' + ${pattern.creator.username}">
+                        @username
+                    </strong>
+                </a>
             </p>
 
             <button type="button"
@@ -123,8 +127,15 @@
                     Free
                 </span>
 
+                <span class="pattern-details-price sale-price"
+                      th:if="${!pattern.free and pattern.discountPercent > 0}">
+                    <s th:text="'Rs ' + ${#numbers.formatDecimal(pattern.originalPrice, 0, 0)}">Rs 0</s>
+                    <strong th:text="'Rs ' + ${#numbers.formatDecimal(pattern.price, 0, 0)}">Rs 0</strong>
+                    <em th:text="${#numbers.formatDecimal(pattern.discountPercent, 0, 0)} + '% OFF'">0% OFF</em>
+                </span>
+
                 <span class="pattern-details-price"
-                      th:unless="${pattern.free}"
+                      th:if="${!pattern.free and pattern.discountPercent <= 0}"
                       th:text="'Rs ' + ${#numbers.formatDecimal(pattern.price, 0, 0)}">
                     Rs 0
                 </span>
@@ -462,7 +473,7 @@
 
                     <button type="submit"
                             class="review-delete-button"
-                            onclick="return confirm('Delete your review?');">
+                            data-confirm="Delete this review?" data-confirm-title="Delete review?" data-confirm-accept="Delete review">
                         Delete review
                     </button>
                 </form>
@@ -636,9 +647,11 @@
                     </h3>
 
                     <p>
-                        by @<span th:text="${related.creator.username}">
-                            username
-                        </span>
+                        by
+                        <a th:href="@{/users/{username}(username=${related.creator.username})}"
+                           class="pattern-creator-link">
+                            @<span th:text="${related.creator.username}">username</span>
+                        </a>
                     </p>
 
                     <strong th:text="${related.free
@@ -728,5 +741,6 @@ document.addEventListener('keydown', function (event) {
 });
 </script>
 
+<script th:src="@{/assets/js/confirmation.js}"></script>
 </body>
 </html>

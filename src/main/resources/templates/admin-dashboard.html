@@ -17,6 +17,7 @@
     <link rel="stylesheet"
           th:href="@{/assets/css/admin-dashboard.css}">
 
+    <link rel="stylesheet" th:href="@{/assets/css/confirmation.css}">
 </head>
 
 <body>
@@ -63,7 +64,10 @@
         </span>
 
         <form th:action="@{/logout}"
-              method="post">
+              method="post"
+              data-confirm="Log out of weave.ing?"
+              data-confirm-title="Log out?"
+              data-confirm-accept="Log out">
 
             <button type="submit"
                     class="logout-button">
@@ -486,6 +490,7 @@
 
 </main>
 
+<script th:src="@{/assets/js/confirmation.js}"></script>
 </body>
 
 </html>

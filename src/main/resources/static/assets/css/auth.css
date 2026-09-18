@@ -477,6 +477,22 @@ body.auth-body {
     border-radius: 6px;
 }
 
+
+.trusted-device-note {
+    margin: 14px 0 0;
+    padding: 11px 13px;
+    border: 1px solid rgba(100, 131, 77, .25);
+    border-radius: 12px;
+    background: #f2f6ed;
+    color: #5d744c;
+    font-size: .78rem;
+    line-height: 1.45;
+}
+
+.remember-device-row[hidden] {
+    display: none;
+}
+
 .auth-submit {
     width: 100%;
     justify-content: center;
@@ -518,21 +534,6 @@ body.auth-body {
     transform: translateY(-3px);
 }
 
-.auth-switch {
-    margin-top: 26px;
-    text-align: center;
-    font-size: .88rem;
-    color: var(--muted);
-}
-
-.auth-switch button {
-    color: var(--brown);
-    font-weight: 700;
-}
-
-.auth-switch button:hover {
-    text-decoration: underline;
-}
 
 .auth-panel {
     display: none;

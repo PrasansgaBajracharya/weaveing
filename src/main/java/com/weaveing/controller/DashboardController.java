@@ -362,6 +362,7 @@ public class DashboardController {
             Model model,
             @RequestParam("name") String name,
             @RequestParam("username") String username,
+            @RequestParam("email") String email,
             @RequestParam("bio") String bio,
             @RequestParam("profilePicture") MultipartFile profilePicture) {
 
@@ -373,6 +374,7 @@ public class DashboardController {
 
         name = name == null ? "" : name.trim();
         username = username == null ? "" : username.trim();
+        email = email == null ? "" : email.trim().toLowerCase();
         bio = bio == null ? "" : bio.trim();
 
         if (name.isBlank()) {
@@ -398,6 +400,28 @@ public class DashboardController {
             model.addAttribute(
                     "profileError",
                     "Your username must be between 3 and 30 characters."
+            );
+            return "profile-edit";
+        }
+
+        if (email.isBlank() ||
+                !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+
+            addProfileData(user, model);
+            model.addAttribute(
+                    "profileError",
+                    "Please enter a valid email address."
+            );
+            return "profile-edit";
+        }
+
+        if (!email.equals(user.getEmail()) &&
+                userRepository.existsByEmail(email)) {
+
+            addProfileData(user, model);
+            model.addAttribute(
+                    "profileError",
+                    "That email is already in use. Please choose another one."
             );
             return "profile-edit";
         }
@@ -439,11 +463,27 @@ public class DashboardController {
                 saveProfilePicture(user, profilePicture);
             }
 
+            boolean emailChanged =
+                    !email.equals(user.getEmail());
+
             user.setName(name);
             user.setUsername(username);
             user.setBio(bio.isBlank() ? null : bio);
 
+            if (emailChanged) {
+                user.setEmail(email);
+                user.setVerified(false);
+                user.setVerificationToken(UUID.randomUUID().toString());
+            }
+
             userRepository.save(user);
+
+            if (emailChanged) {
+                emailService.sendVerificationEmail(
+                        user.getEmail(),
+                        user.getVerificationToken()
+                );
+            }
 
             if (!username.equals(authentication.getName())) {
 

@@ -340,53 +340,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* =========================================================
-       COMMUNITY LIKE BUTTONS
-    ========================================================= */
-
-    const likeButtons =
-        document.querySelectorAll('.community-like');
-
-    likeButtons.forEach(button => {
-
-        button.addEventListener('click', event => {
-
-            event.preventDefault();
-
-            button.classList.toggle('liked');
-
-            const count =
-                button.querySelector('.like-count');
-
-            if (!count) {
-                return;
-            }
-
-            let current =
-                parseInt(
-                    count.textContent,
-                    10
-                ) || 0;
-
-
-            if (button.classList.contains('liked')) {
-
-                current += 1;
-
-            } else {
-
-                current = Math.max(
-                    0,
-                    current - 1
-                );
-            }
-
-
-            count.textContent = current;
-        });
-    });
-
-
-    /* =========================================================
        SCROLL REVEAL
     ========================================================= */
 

@@ -32,7 +32,10 @@ public class PublicProfileController {
         User profileUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        List<Pattern> publishedPatterns = patternRepository.findByCreatorAndApprovalStatus(profileUser, Pattern.ApprovalStatus.APPROVED);
+        List<Pattern> publishedPatterns = patternRepository.findByCreatorAndApprovalStatus(profileUser, Pattern.ApprovalStatus.APPROVED)
+                .stream()
+                .filter(pattern -> pattern.getRemovedAt() == null)
+                .toList();
         long reviewCount = reviewRepository.countByReviewer(profileUser);
         long totalSaves = 0;
         long totalDownloads = 0;

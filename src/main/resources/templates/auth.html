@@ -145,7 +145,7 @@
 
                 </div>
 
-                <div class="remember-device-row">
+                <div class="remember-device-row" id="rememberDeviceRow">
                     <input type="checkbox"
                            id="rememberDevice"
                            name="rememberDevice">
@@ -153,10 +153,14 @@
                     <label for="rememberDevice">
                         <span class="remember-device-copy">
                             <strong>Remember this device</strong>
-                            <small>Keep this browser trusted for 30 days.</small>
+                            <small id="rememberDeviceHint">Keep this browser trusted for 30 days.</small>
                         </span>
                     </label>
                 </div>
+
+                <p class="trusted-device-note" id="trustedDeviceNote" hidden>
+                    This browser is already trusted for this account.
+                </p>
 
                 <p class="field-hint error"
                    th:if="${param.error}">
@@ -191,13 +195,6 @@
                 Continue with Google
 
             </button>
-
-            <p class="auth-switch">
-                New to weave.ing?
-                <button type="button" id="goSignup">
-                    Create an account
-                </button>
-            </p>
 
         </div>
 
@@ -397,13 +394,6 @@
                 Sign up with Google
 
             </button>
-
-            <p class="auth-switch">
-                Already have an account?
-                <button type="button" id="goLogin">
-                    Log in
-                </button>
-            </p>
 
         </div>
 

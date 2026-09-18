@@ -1,0 +1,103 @@
+
+.confirmation-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    background: rgba(67, 51, 43, .30);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease;
+}
+
+.confirmation-overlay.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.confirmation-modal {
+    width: min(100%, 420px);
+    padding: 30px 28px 26px;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: var(--white);
+    box-shadow: 0 24px 70px rgba(67, 51, 43, .20);
+    text-align: center;
+    transform: translateY(10px) scale(.98);
+    transition: transform .22s var(--ease);
+}
+
+.confirmation-overlay.is-visible .confirmation-modal {
+    transform: translateY(0) scale(1);
+}
+
+.confirmation-mark {
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--beige-light);
+    color: var(--brown);
+    font-size: 1.35rem;
+}
+
+.confirmation-modal h2 {
+    margin: 0;
+    color: var(--brown-dark);
+    font-size: 1.45rem;
+}
+
+.confirmation-modal p {
+    margin: 9px auto 0;
+    color: var(--muted);
+    max-width: 38ch;
+    font-size: .88rem;
+    line-height: 1.55;
+}
+
+.confirmation-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.confirmation-actions button {
+    flex: 1;
+    min-height: 44px;
+    border: 0;
+    border-radius: 999px;
+    font: inherit;
+    font-size: .82rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.confirmation-cancel {
+    background: var(--beige-light);
+    color: var(--brown-dark);
+}
+
+.confirmation-accept {
+    background: var(--brown-dark);
+    color: var(--white);
+}
+
+.confirmation-accept:hover,
+.confirmation-cancel:hover {
+    transform: translateY(-1px);
+}
+
+@media (max-width: 520px) {
+    .confirmation-actions {
+        flex-direction: column-reverse;
+    }
+}

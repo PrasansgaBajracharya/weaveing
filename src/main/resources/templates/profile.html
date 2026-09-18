@@ -17,6 +17,7 @@
     <link rel="stylesheet"
           th:href="@{/assets/css/profile.css}">
 
+    <link rel="stylesheet" th:href="@{/assets/css/confirmation.css}">
 </head>
 
 <body>
@@ -53,6 +54,16 @@
 </nav>
 
 <main class="profile-page">
+
+    <div class="profile-feedback" th:if="${patternSuccess != null or patternError != null}">
+        <div class="feedback-success" th:if="${patternSuccess != null}" th:text="${patternSuccess}">Pattern updated.</div>
+        <div class="feedback-error" th:if="${patternError != null}" th:text="${patternError}">Pattern update failed.</div>
+    </div>
+
+    <div class="profile-feedback" th:if="${patternSuccess != null or patternError != null}">
+        <div class="feedback-success" th:if="${patternSuccess != null}" th:text="${patternSuccess}">Pattern updated.</div>
+        <div class="feedback-error" th:if="${patternError != null}" th:text="${patternError}">Pattern update failed.</div>
+    </div>
 
     <section class="profile-header">
 
@@ -214,7 +225,7 @@
             <article class="pattern-card"
                      th:each="pattern : ${myPatterns}">
 
-                <a th:if="${pattern.approvalStatus.name() == 'APPROVED'}"
+                <a th:if="${pattern.approvalStatus.name() == 'APPROVED' and pattern.removedAt == null}"
                    th:href="@{/patterns/{id}(id=${pattern.id})}"
                    class="pattern-image-link">
 
@@ -268,8 +279,8 @@
                         </div>
 
                         <span class="status-badge"
-                              th:classappend="${#strings.toLowerCase(pattern.approvalStatus.name())}"
-                              th:text="${pattern.approvalStatus.name()}">
+                              th:classappend="${pattern.removedAt != null ? ' unpublished' : ' ' + #strings.toLowerCase(pattern.approvalStatus.name())}"
+                              th:text="${pattern.removedAt != null ? 'UNPUBLISHED' : pattern.approvalStatus.name()}">
                             APPROVED
                         </span>
 
@@ -281,7 +292,13 @@
                             Free
                         </span>
 
-                        <span th:unless="${pattern.free}"
+                        <span th:if="${!pattern.free and pattern.discountPercent > 0}" class="sale-price">
+                            <s th:text="'Rs ' + ${#numbers.formatDecimal(pattern.originalPrice, 0, 0)}">Rs 0</s>
+                            <strong th:text="'Rs ' + ${#numbers.formatDecimal(pattern.price, 0, 0)}">Rs 0</strong>
+                            <em th:text="${#numbers.formatDecimal(pattern.discountPercent, 0, 0)} + '% OFF'">0% OFF</em>
+                        </span>
+
+                        <span th:if="${!pattern.free and pattern.discountPercent <= 0}"
                               th:text="'Rs ' + ${#numbers.formatDecimal(pattern.price, 0, 0)}">
                             Rs 0
                         </span>
@@ -308,6 +325,32 @@
                         <p th:text="${pattern.rejectionReason}">
                             Rejection reason
                         </p>
+
+                    </div>
+
+                    <div class="pattern-management-actions">
+
+                        <a th:href="@{/patterns/{id}/edit(id=${pattern.id})}"
+                           class="manage-button edit">
+                            Edit
+                        </a>
+
+                        <form th:if="${pattern.removedAt == null}"
+                              th:action="@{/patterns/{id}/delete(id=${pattern.id})}"
+                              method="post"
+                              onsubmit="return confirm('Remove this pattern from the marketplace? Existing purchases will remain available.');">
+                            <button type="submit" class="manage-button remove">
+                                Remove
+                            </button>
+                        </form>
+
+                        <form th:if="${pattern.removedAt != null}"
+                              th:action="@{/patterns/{id}/restore(id=${pattern.id})}"
+                              method="post">
+                            <button type="submit" class="manage-button restore">
+                                Restore
+                            </button>
+                        </form>
 
                     </div>
 
@@ -641,9 +684,25 @@
 
                 </div>
 
-                <span class="coming-soon">
-                    Coming next
-                </span>
+                <a th:href="@{/profile/edit}" class="settings-action">Edit</a>
+
+            </div>
+
+            <div class="settings-row">
+
+                <div>
+
+                    <h3>
+                        Username
+                    </h3>
+
+                    <p th:text="'@' + ${user.username}">
+                        @username
+                    </p>
+
+                </div>
+
+                <a th:href="@{/profile/edit}" class="settings-action">Edit</a>
 
             </div>
 
@@ -661,8 +720,8 @@
 
                 </div>
 
-                <span class="coming-soon">
-                    Coming next
+                <span class="settings-status">
+                    Future enhancement
                 </span>
 
             </div>
@@ -702,7 +761,10 @@
                 </div>
 
                 <form th:action="@{/logout}"
-                      method="post">
+                      method="post"
+                      data-confirm="Log out of weave.ing?"
+                      data-confirm-title="Log out?"
+                      data-confirm-accept="Log out">
 
                     <button type="submit"
                             class="light-button danger-button">
@@ -721,5 +783,6 @@
 
 </main>
 
+<script th:src="@{/assets/js/confirmation.js}"></script>
 </body>
 </html>

@@ -13,6 +13,7 @@
 
     <link rel="stylesheet"
           th:href="@{/assets/css/admin-vacancies.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/confirmation.css}">
 </head>
 
 <body>
@@ -38,7 +39,10 @@
         </span>
 
         <form th:action="@{/logout}"
-              method="post">
+              method="post"
+              data-confirm="Log out of weave.ing?"
+              data-confirm-title="Log out?"
+              data-confirm-accept="Log out">
             <button type="submit"
                     class="logout-button">
                 Log out
@@ -203,7 +207,10 @@
                                   th:action="@{/admin/vacancies/{id}/remove(id=${vacancy.id})}"
                                   method="post">
                                 <button type="submit"
-                                        class="table-button danger">
+                                        class="table-button danger"
+                                    data-confirm="Remove this vacancy from the board?"
+                                    data-confirm-title="Remove vacancy?"
+                                    data-confirm-accept="Remove">
                                     Remove
                                 </button>
                             </form>
@@ -337,7 +344,10 @@
                     <form th:action="@{/admin/vacancy-reports/{id}/remove(id=${report.id})}"
                           method="post">
                         <button type="submit"
-                                class="moderation-button remove">
+                                class="moderation-button remove"
+                        data-confirm="Remove this reported vacancy?"
+                        data-confirm-title="Remove vacancy?"
+                        data-confirm-accept="Remove">
                             Remove vacancy
                         </button>
                     </form>
@@ -366,5 +376,6 @@
 
 </main>
 
+<script th:src="@{/assets/js/confirmation.js}"></script>
 </body>
 </html>

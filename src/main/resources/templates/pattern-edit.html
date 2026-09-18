@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Edit ' + ${pattern.title} + ' — weave.ing'">Edit Pattern — weave.ing</title>
+    <link rel="stylesheet" th:href="@{/assets/css/pattern-form.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/pattern-edit.css}">
+</head>
+<body>
+
+<nav class="pattern-nav">
+    <a th:href="@{/profile#patterns}" class="nav-back">← My Patterns</a>
+    <a th:href="@{/home}" class="logo">
+        <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
+    </a>
+    <div class="nav-spacer"></div>
+</nav>
+
+<main class="pattern-page">
+    <section class="page-intro">
+        <p class="eyebrow">MANAGE YOUR WORK</p>
+        <h1>Edit pattern</h1>
+        <p>Update your listing, pricing, discount, cover image, or digital PDF.</p>
+    </section>
+
+    <div class="edit-note">
+        <span>✦</span>
+        <p><strong>Keep your listing safe.</strong> Pricing changes can go live without restarting moderation. Changes to the pattern content, image, or PDF return an approved pattern to admin review.</p>
+    </div>
+
+    <div class="form-error" th:if="${patternError != null}" th:text="${patternError}">
+        Something went wrong.
+    </div>
+
+    <form class="pattern-form"
+          th:action="@{/patterns/{id}/edit(id=${pattern.id})}"
+          method="post"
+          enctype="multipart/form-data">
+
+        <section class="form-card">
+            <div class="form-card-heading">
+                <span class="step-number">01</span>
+                <div>
+                    <h2>Pattern details</h2>
+                    <p>Keep your pattern information clear and accurate.</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="title">Pattern title <span>*</span></label>
+                <input type="text" id="title" name="title" maxlength="100" required th:value="${pattern.title}">
+                <small>Choose a clear and descriptive name.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description <span>*</span></label>
+                <textarea id="description" name="description" rows="6" maxlength="2000" required th:text="${pattern.description}"></textarea>
+                <small>Give buyers enough information to understand the pattern.</small>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="category">Category <span>*</span></label>
+                    <select id="category" name="category" required>
+                        <option th:each="category : ${categories}"
+                                th:value="${category}"
+                                th:text="${category}"
+                                th:selected="${category == pattern.category}">Category</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="difficulty">Difficulty <span>*</span></label>
+                    <select id="difficulty" name="difficulty" required>
+                        <option value="Beginner" th:selected="${pattern.difficulty == 'Beginner'}">Beginner</option>
+                        <option value="Intermediate" th:selected="${pattern.difficulty == 'Intermediate'}">Intermediate</option>
+                        <option value="Advanced" th:selected="${pattern.difficulty == 'Advanced'}">Advanced</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="form-card">
+            <div class="form-card-heading">
+                <span class="step-number">02</span>
+                <div>
+                    <h2>Pricing & discount</h2>
+                    <p>Give buyers a regular price and an optional sale price.</p>
+                </div>
+            </div>
+
+            <div class="pricing-options">
+                <label class="pricing-option">
+                    <input type="radio" name="priceType" value="free" th:checked="${pattern.free}">
+                    <span class="pricing-radio"></span>
+                    <span class="pricing-content">
+                        <strong>Free pattern</strong>
+                        <small>Anyone can access the pattern for free.</small>
+                    </span>
+                </label>
+
+                <label class="pricing-option">
+                    <input type="radio" name="priceType" value="paid" th:checked="${!pattern.free}">
+                    <span class="pricing-radio"></span>
+                    <span class="pricing-content">
+                        <strong>Paid pattern</strong>
+                        <small>Set a regular price and optional discount.</small>
+                    </span>
+                </label>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="originalPrice">Regular price (Rs)</label>
+                    <div class="price-input">
+                        <span>Rs</span>
+                        <input type="number" id="originalPrice" name="originalPrice" min="0" max="999999" step="0.01" th:value="${editOriginalPrice}">
+                    </div>
+                    <small>The price before discount.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="discountPercent">Discount (%)</label>
+                    <input type="number" id="discountPercent" name="discountPercent" min="0" max="90" step="1" th:value="${pattern.discountPercent}">
+                    <small>Choose 0–90% off.</small>
+                </div>
+            </div>
+
+            <div class="edit-price-preview">
+                <span>Current listed price</span>
+                <strong th:text="${pattern.free ? 'Free' : 'Rs ' + #numbers.formatDecimal(pattern.price, 0, 2)}">Rs 0</strong>
+            </div>
+        </section>
+
+        <section class="form-card">
+            <div class="form-card-heading">
+                <span class="step-number">03</span>
+                <div>
+                    <h2>Replace files</h2>
+                    <p>Leave these blank to keep the current files.</p>
+                </div>
+            </div>
+
+            <div class="upload-group">
+                <label for="image">Cover image</label>
+                <label for="image" class="upload-box">
+                    <span class="upload-icon">◇</span>
+                    <strong>Choose a new cover image</strong>
+                    <small>PNG, JPG, JPEG or WEBP</small>
+                </label>
+                <input type="file" id="image" name="image" accept="image/png,image/jpeg,image/webp">
+                <img th:if="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}"
+                     th:src="${pattern.imagePath}"
+                     th:alt="${pattern.title}"
+                     class="current-image">
+            </div>
+
+            <div class="upload-group">
+                <label for="patternFile">Digital pattern PDF</label>
+                <label for="patternFile" class="upload-box">
+                    <span class="upload-icon">↓</span>
+                    <strong>Choose a new PDF</strong>
+                    <small>Leave blank to keep the current digital pattern.</small>
+                </label>
+                <input type="file" id="patternFile" name="patternFile" accept=".pdf,application/pdf">
+            </div>
+        </section>
+
+        <section class="review-notice">
+            <div class="notice-icon">✓</div>
+            <div>
+                <h3>Marketplace review stays active</h3>
+                <p>If you change the pattern content, cover image, or PDF, an approved listing becomes pending until an admin reviews it again.</p>
+            </div>
+        </section>
+
+        <div class="form-actions">
+            <a th:href="@{/profile#patterns}" class="cancel-button">Cancel</a>
+            <button type="submit" class="submit-button">Save Changes <span>→</span></button>
+        </div>
+    </form>
+</main>
+
+<script>
+    const priceTypeInputs = document.querySelectorAll('input[name="priceType"]');
+    const originalPrice = document.getElementById('originalPrice');
+    const discountPercent = document.getElementById('discountPercent');
+
+    function syncPriceFields() {
+        const isFree = document.querySelector('input[name="priceType"]:checked')?.value === 'free';
+        originalPrice.disabled = isFree;
+        discountPercent.disabled = isFree;
+        if (isFree) {
+            originalPrice.value = '0';
+            discountPercent.value = '0';
+        }
+    }
+
+    priceTypeInputs.forEach(input => input.addEventListener('change', syncPriceFields));
+    syncPriceFields();
+</script>
+
+</body>
+</html>

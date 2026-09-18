@@ -17,6 +17,7 @@
     <link rel="stylesheet"
           th:href="@{/assets/css/wishlist.css}">
 
+    <link rel="stylesheet" th:href="@{/assets/css/confirmation.css}">
 </head>
 
 <body class="wishlist-page">
@@ -85,7 +86,7 @@
 
                 <form th:action="@{/wishlist/delete-all}"
                       method="post"
-                      onsubmit="return confirm('Remove all saved patterns from your wishlist?');">
+                      data-confirm="Remove all saved patterns from your wishlist?" data-confirm-title="Clear wishlist?" data-confirm-accept="Clear wishlist">
 
                     <button type="submit"
                             class="text-button">
@@ -350,5 +351,6 @@
 
 </main>
 
+<script th:src="@{/assets/js/confirmation.js}"></script>
 </body>
 </html>

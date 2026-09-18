@@ -14,6 +14,7 @@
     <link rel="stylesheet"
           th:href="@{/assets/css/admin-dashboard.css}">
 
+    <link rel="stylesheet" th:href="@{/assets/css/confirmation.css}">
 </head>
 
 
@@ -49,7 +50,10 @@
 
 
         <form th:action="@{/logout}"
-              method="post">
+              method="post"
+              data-confirm="Log out of weave.ing?"
+              data-confirm-title="Log out?"
+              data-confirm-accept="Log out">
 
             <button type="submit"
                     class="logout-button">
@@ -333,7 +337,10 @@
                               method="post">
 
                             <button type="submit"
-                                    class="approve-button">
+                                    class="approve-button"
+                                    data-confirm="Approve this pattern for the marketplace?"
+                                    data-confirm-title="Approve pattern?"
+                                    data-confirm-accept="Approve">
 
                                 ✓ Approve
 
@@ -347,7 +354,10 @@
 
                         <form th:action="@{'/admin/patterns/' + ${pattern.id} + '/reject'}"
                               method="post"
-                              class="reject-form">
+                              class="reject-form"
+                              data-confirm="Reject this pattern submission?"
+                              data-confirm-title="Reject pattern?"
+                              data-confirm-accept="Reject">
 
                             <textarea name="rejectionReason"
                                       placeholder="Reason for rejection (optional)"
@@ -516,6 +526,7 @@
 
 </main>
 
+<script th:src="@{/assets/js/confirmation.js}"></script>
 </body>
 
 </html>
