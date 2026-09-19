@@ -364,6 +364,8 @@ public class DashboardController {
             @RequestParam("username") String username,
             @RequestParam("email") String email,
             @RequestParam("bio") String bio,
+            @RequestParam(value = "profileImagePositionX", defaultValue = "50") int profileImagePositionX,
+            @RequestParam(value = "profileImagePositionY", defaultValue = "50") int profileImagePositionY,
             @RequestParam("profilePicture") MultipartFile profilePicture) {
 
         User user = getCurrentUser(authentication);
@@ -469,6 +471,8 @@ public class DashboardController {
             user.setName(name);
             user.setUsername(username);
             user.setBio(bio.isBlank() ? null : bio);
+            user.setProfileImagePositionX(profileImagePositionX);
+            user.setProfileImagePositionY(profileImagePositionY);
 
             if (emailChanged) {
                 user.setEmail(email);

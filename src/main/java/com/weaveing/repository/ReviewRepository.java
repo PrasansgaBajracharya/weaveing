@@ -18,6 +18,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     long countByPattern(Pattern pattern);
 
+    long countByReviewer(User reviewer);
+
     boolean existsByReviewerAndPattern(User reviewer, Pattern pattern);
 
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.pattern = :pattern")

@@ -26,7 +26,7 @@ public interface PatternRepository extends JpaRepository<Pattern, Long> {
             Pattern.ApprovalStatus approvalStatus
     );
 
-    List<Pattern> findTop4ByApprovalStatusAndRemovedAtIsNullAndCategoryAndIdNotOrderBySubmittedAtDesc(
+    List<Pattern> findTop8ByApprovalStatusAndRemovedAtIsNullAndCategoryAndIdNotOrderBySubmittedAtDesc(
             Pattern.ApprovalStatus approvalStatus,
             String category,
             Long id

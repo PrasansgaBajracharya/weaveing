@@ -886,3 +886,153 @@ body {
     }
 }
 
+
+
+.image-preview-editor {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 16px;
+    align-items: center;
+    margin-top: 13px;
+    padding: 14px;
+    background: var(--beige-light);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.image-preview-frame {
+    width: 150px;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 12px;
+    background: var(--beige-mid);
+    cursor: crosshair;
+    box-shadow: 0 6px 18px rgba(74, 56, 48, .08);
+}
+
+.image-preview-frame img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.image-preview-copy strong {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--brown-dark);
+    font-size: .82rem;
+}
+
+.image-preview-copy p {
+    margin: 0;
+    color: var(--muted);
+    font-size: .7rem;
+    line-height: 1.6;
+}
+
+@media (max-width: 560px) {
+    .image-preview-editor {
+        grid-template-columns: 1fr;
+    }
+
+    .image-preview-frame {
+        width: min(100%, 220px);
+    }
+}
+
+.image-preview-editor[hidden] { display: none; }
+
+
+/* Image focus picker */
+.image-preview-editor {
+    grid-template-columns: minmax(170px, 190px) 1fr;
+    gap: 18px;
+    padding: 16px;
+    background: var(--beige-light);
+}
+
+.image-preview-frame {
+    position: relative;
+    width: 190px;
+    height: 190px;
+    aspect-ratio: auto;
+    border: 2px solid rgba(99, 77, 64, .16);
+    cursor: crosshair;
+    isolation: isolate;
+}
+
+.image-preview-frame img {
+    pointer-events: none;
+}
+
+.image-focus-marker {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    transform: translate(-50%, -50%);
+    border: 2px solid var(--white);
+    border-radius: 50%;
+    background: rgba(99, 77, 64, .72);
+    box-shadow: 0 2px 8px rgba(74, 56, 48, .28);
+    pointer-events: none;
+    z-index: 4;
+}
+
+.image-focus-marker::before,
+.image-focus-marker::after {
+    content: "";
+    position: absolute;
+    background: var(--white);
+    opacity: .9;
+}
+
+.image-focus-marker::before {
+    width: 2px;
+    height: 26px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.image-focus-marker::after {
+    width: 26px;
+    height: 2px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.image-preview-copy {
+    min-width: 0;
+}
+
+.image-preview-copy strong::before {
+    content: "01";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background: var(--beige-mid);
+    color: var(--brown);
+    font-size: .62rem;
+    vertical-align: middle;
+}
+
+.image-preview-copy p::after {
+    content: "The square preview on the left is the same shape used on the marketplace.";
+    display: block;
+    margin-top: 7px;
+    color: var(--brown);
+    font-weight: 600;
+}
+
+@media (max-width: 560px) {
+    .image-preview-frame {
+        width: min(100%, 240px);
+        height: min(240px, 80vw);
+    }
+}

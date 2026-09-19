@@ -12,7 +12,6 @@
 
     <!-- Thymeleaf static CSS -->
     <link rel="stylesheet" th:href="@{/assets/css/home.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
 </head>
 
 <body class="homepage">
@@ -794,7 +793,173 @@
 
 <!-- ============ FOOTER ============ -->
 
-<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
+<footer>
+
+    <div class="container">
+
+        <div class="footer-grid">
+
+
+            <div class="footer-brand">
+
+                <a th:href="@{/home}"
+                   class="logo">
+
+                    <span class="dot"></span>
+                    weave.ing
+
+                </a>
+
+                <p>
+                    Crafted with Care. Shared with Creativity.
+                    Nepal's digital marketplace for crochet creators.
+                </p>
+
+            </div>
+
+
+            <div class="footer-col">
+
+                <h5>Platform</h5>
+
+                <a th:href="@{/home}">
+                    Marketplace
+                </a>
+
+                <a th:href="@{/home#features}">
+                    Features
+                </a>
+
+                <a th:href="@{/home#leaderboard}">
+                    Leaderboard
+                </a>
+
+                <a th:href="@{/vacancies}">
+                    Vacancy Board
+                </a>
+
+            </div>
+
+
+            <div class="footer-col">
+
+                <h5>Sellers</h5>
+
+                <a th:href="@{/login}">
+                    Become a Seller
+                </a>
+
+                <a th:href="@{/dashboard}">
+                    Dashboard
+                </a>
+
+                <a th:href="@{/pricing}">
+                    Pricing
+                </a>
+
+            </div>
+
+
+            <div class="footer-col">
+
+                <h5>Company</h5>
+
+                <a th:href="@{/about}">
+                    About
+                </a>
+
+                <a th:href="@{/community-guidelines}">
+                    Community Guidelines
+                </a>
+
+                <a th:href="@{/contact}">
+                    Contact
+                </a>
+
+                <a th:href="@{/faq}">
+                    FAQ
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>
+                © 2026 weave.ing. All rights reserved.
+            </span>
+
+            <div class="social-row">
+
+                <a href="https://www.instagram.com/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Instagram">
+
+                    <svg width="16" height="16"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <rect x="3" y="3"
+                              width="18"
+                              height="18"
+                              rx="5"/>
+
+                        <circle cx="12"
+                                cy="12"
+                                r="4"/>
+
+                        <circle cx="17.5"
+                                cy="6.5"
+                                r="1"/>
+
+                    </svg>
+
+                </a>
+
+
+                <a href="https://www.tiktok.com/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="TikTok">
+
+                    <svg width="16" height="16"
+                         viewBox="0 0 24 24"
+                         fill="currentColor">
+
+                        <path d="M14 3c.3 2 1.8 3.6 4 4v3c-1.5 0-2.9-.4-4-1.2V15a5.5 5.5 0 11-5.5-5.5c.3 0 .6 0 .9.1v3.1a2.5 2.5 0 102.1 2.5V3z"/>
+
+                    </svg>
+
+                </a>
+
+
+                <a href="https://www.facebook.com/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Facebook">
+
+                    <svg width="16" height="16"
+                         viewBox="0 0 24 24"
+                         fill="currentColor">
+
+                        <path d="M13 22v-9h3l.5-3.5H13V7.2c0-1 .3-1.7 1.8-1.7H17V2.3C16.6 2.2 15.4 2 14 2c-2.8 0-4.7 1.7-4.7 4.9V9.5H6V13h3.3v9z"/>
+
+                    </svg>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
 
 
 <!-- ============ TOAST ============ -->

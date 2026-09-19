@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ — weave.ing</title>
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/info-pages.css}">
+</head>
+<body>
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
+<main class="info-page">
+    <div class="info-shell">
+        <p class="info-kicker">HELP CENTRE</p>
+        <h1 class="info-title">Frequently Asked Questions</h1>
+        <p class="info-intro">Quick answers about buying, selling and using weave.ing.</p>
+        <section class="info-card faq-item"><details open><summary>What can I buy on weave.ing?</summary><p>weave.ing is focused on digital crochet patterns. Purchased patterns are available through your library.</p></details></section><section class="info-card faq-item"><details><summary>Can I sell my own crochet patterns?</summary><p>Yes. Registered users can post digital crochet patterns. Submitted patterns may be reviewed before they appear for marketplace sale.</p></details></section><section class="info-card faq-item"><details><summary>Are free patterns available?</summary><p>Yes. A creator can publish a pattern as free or set a price for a paid pattern.</p></details></section><section class="info-card faq-item"><details><summary>Where can I find patterns I purchased?</summary><p>Your purchased digital patterns are available from your library after the purchase process is completed.</p></details></section><section class="info-card faq-item"><details><summary>How do I get help?</summary><p>Use the contact page to reach the weave.ing team.</p><a class="info-link" th:href="@{/contact}">Contact weave.ing</a></details></section>
+    </div>
+</main>
+<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
+</body>
+</html>

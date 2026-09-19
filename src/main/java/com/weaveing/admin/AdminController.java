@@ -91,6 +91,20 @@ public class AdminController {
                 userRepository.count()
         );
 
+        long openVacancyCount =
+                vacancyRepository.findAllByOrderByCreatedAtDesc()
+                        .stream()
+                        .filter(v -> !v.isRemoved())
+                        .filter(v -> v.getStatus() == Vacancy.Status.OPEN)
+                        .count();
+
+        model.addAttribute(
+                "openVacancyCount",
+                openVacancyCount
+        );
+
+        addAdminNavigation(model);
+
         return "admin-dashboard";
     }
 
@@ -116,7 +130,30 @@ public class AdminController {
         model.addAttribute("approvedPatterns", approvedPatterns);
         model.addAttribute("rejectedPatterns", rejectedPatterns);
 
+        addAdminNavigation(model);
+
         return "admin-patterns";
+    }
+
+    @GetMapping("/notifications")
+    public String notifications(Model model) {
+
+        List<Pattern> pendingPatterns =
+                patternRepository.findByApprovalStatus(
+                        Pattern.ApprovalStatus.PENDING
+                );
+
+        List<VacancyReport> pendingReports =
+                vacancyReportRepository.findByStatusOrderByReportedAtDesc(
+                        VacancyReport.Status.PENDING
+                );
+
+        model.addAttribute("pendingPatterns", pendingPatterns);
+        model.addAttribute("pendingReports", pendingReports);
+
+        addAdminNavigation(model);
+
+        return "admin-notifications";
     }
 
     @GetMapping("/patterns/{id}/review")
@@ -213,6 +250,8 @@ public class AdminController {
                 userRepository.findAll()
         );
 
+        addAdminNavigation(model);
+
         return "admin-users";
     }
 
@@ -266,6 +305,8 @@ public class AdminController {
         model.addAttribute("closedCount", closedCount);
         model.addAttribute("removedCount", removedCount);
         model.addAttribute("pendingReportCount", pendingReportCount);
+
+        addAdminNavigation(model);
 
         return "admin-vacancies";
     }
@@ -321,6 +362,8 @@ public class AdminController {
         model.addAttribute("totalWithdrawn", totalWithdrawn);
         model.addAttribute("pendingWithdrawals", pendingWithdrawals);
         model.addAttribute("pendingWithdrawalCount", pendingWithdrawalCount);
+
+        addAdminNavigation(model);
 
         return "admin-payments";
     }
@@ -552,6 +595,24 @@ public class AdminController {
         }
 
         return "redirect:/admin/vacancies";
+    }
+
+    private void addAdminNavigation(Model model) {
+
+        long pendingPatterns =
+                patternRepository.findByApprovalStatus(
+                        Pattern.ApprovalStatus.PENDING
+                ).size();
+
+        long pendingReports =
+                vacancyReportRepository.countByStatus(
+                        VacancyReport.Status.PENDING
+                );
+
+        model.addAttribute(
+                "moderationNotificationCount",
+                pendingPatterns + pendingReports
+        );
     }
 
     private Withdrawal findWithdrawal(Long id) {

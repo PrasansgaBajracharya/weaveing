@@ -1,0 +1,57 @@
+<aside class="admin-sidebar" th:fragment="sidebar">
+
+    <div class="sidebar-heading">
+        <span class="sidebar-kicker">ADMIN PANEL</span>
+        <strong>Manage weave.ing</strong>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Admin navigation">
+
+        <a th:href="@{/admin}"
+           class="sidebar-link">
+            <span class="sidebar-icon">⌂</span>
+            <span>Dashboard</span>
+        </a>
+
+        <a th:href="@{/admin/patterns}"
+           class="sidebar-link">
+            <span class="sidebar-icon">✦</span>
+            <span>Patterns</span>
+        </a>
+
+        <a th:href="@{/admin/vacancies}"
+           class="sidebar-link">
+            <span class="sidebar-icon">⌁</span>
+            <span>Vacancies</span>
+        </a>
+
+        <a th:href="@{/admin/payments}"
+           class="sidebar-link">
+            <span class="sidebar-icon">Rs</span>
+            <span>Payments</span>
+        </a>
+
+        <a th:href="@{/admin/users}"
+           class="sidebar-link">
+            <span class="sidebar-icon">◌</span>
+            <span>Users</span>
+        </a>
+
+        <a th:href="@{/admin/notifications}"
+           class="sidebar-link notification-sidebar-link">
+            <span class="sidebar-icon">♧</span>
+            <span>Notifications</span>
+            <span class="sidebar-count"
+                  th:if="${moderationNotificationCount > 0}"
+                  th:text="${moderationNotificationCount}">
+                0
+            </span>
+        </a>
+
+    </nav>
+
+    <a th:href="@{/home}" class="sidebar-home-link">
+        ← View website
+    </a>
+
+</aside>

@@ -11,6 +11,7 @@
 <body>
 
 <nav class="admin-nav">
+
     <div class="nav-left">
         <a th:href="@{/home}" class="logo">
             <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
@@ -18,13 +19,49 @@
     </div>
 
     <div class="nav-right">
-        <a th:href="@{/admin}" class="marketplace-link">← Admin Dashboard</a>
+
+        <a th:href="@{/admin/notifications}"
+           class="admin-notification-link"
+           aria-label="Admin notifications">
+
+            <svg width="17"
+                 height="17"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 aria-hidden="true">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                <path d="M10 21h4"></path>
+            </svg>
+
+            <span>Notifications</span>
+
+            <span class="admin-notification-badge"
+                  th:if="${moderationNotificationCount > 0}"
+                  th:text="${moderationNotificationCount}">
+                0
+            </span>
+        </a>
+
         <span class="admin-badge">ADMIN</span>
-        <form th:action="@{/logout}" method="post" data-confirm="Log out of weave.ing?" data-confirm-title="Log out?" data-confirm-accept="Log out">
+
+        <form th:action="@{/logout}"
+              method="post"
+              data-confirm="Log out of weave.ing?"
+              data-confirm-title="Log out?"
+              data-confirm-accept="Log out">
             <button type="submit" class="logout-button">Log out</button>
         </form>
+
     </div>
 </nav>
+
+<div class="admin-layout">
+
+<div th:replace="~{admin-sidebar :: sidebar}"></div>
 
 <main class="admin-main">
     <section class="admin-heading">
@@ -168,6 +205,8 @@
 
     <a th:href="@{/admin}" class="back-dashboard-button">← Back to Admin Dashboard</a>
 </main>
+
+</div>
 
 <script th:src="@{/assets/js/confirmation.js}"></script>
 </body>

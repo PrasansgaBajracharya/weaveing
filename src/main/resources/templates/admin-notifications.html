@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Notifications — weave.ing</title>
+
+    <link rel="stylesheet" th:href="@{/assets/css/admin-dashboard.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/confirmation.css}">
+</head>
+
+<body>
+
+<nav class="admin-nav">
+
+    <div class="nav-left">
+        <a th:href="@{/home}" class="logo">
+            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
+        </a>
+    </div>
+
+    <div class="nav-right">
+
+        <a th:href="@{/admin/notifications}"
+           class="admin-notification-link active">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                 stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                <path d="M10 21h4"></path>
+            </svg>
+            <span>Notifications</span>
+            <span class="admin-notification-badge"
+                  th:if="${moderationNotificationCount > 0}"
+                  th:text="${moderationNotificationCount}">0</span>
+        </a>
+
+        <span class="admin-badge">ADMIN</span>
+
+        <form th:action="@{/logout}"
+              method="post"
+              data-confirm="Log out of weave.ing?"
+              data-confirm-title="Log out?"
+              data-confirm-accept="Log out">
+            <button type="submit" class="logout-button">Log out</button>
+        </form>
+
+    </div>
+</nav>
+
+<div class="admin-layout">
+
+    <div th:replace="~{admin-sidebar :: sidebar}"></div>
+
+    <main class="admin-main">
+
+        <section class="admin-heading">
+            <p class="eyebrow">MODERATION CENTER</p>
+            <h1>Notifications</h1>
+            <p>
+                Review moderation items that currently need administrator attention.
+            </p>
+        </section>
+
+        <section class="admin-section notification-section">
+
+            <div class="section-heading notification-heading">
+                <div>
+                    <p class="section-kicker">PATTERN MODERATION</p>
+                    <h2>Pending pattern submissions</h2>
+                    <p>New or edited patterns waiting for administrator review.</p>
+                </div>
+                <span class="section-count"
+                      th:text="${pendingPatterns.size()}">0</span>
+            </div>
+
+            <div class="notification-list"
+                 th:if="${!pendingPatterns.isEmpty()}">
+
+                <article class="notification-card"
+                         th:each="pattern : ${pendingPatterns}">
+
+                    <div class="notification-icon">✦</div>
+
+                    <div class="notification-content">
+                        <span class="notification-kicker">PATTERN REVIEW</span>
+                        <h3 th:text="${pattern.title}">Pattern title</h3>
+                        <p>
+                            Submitted by
+                            <strong th:text="'@' + ${pattern.creator.username}">@creator</strong>
+                            and waiting for approval.
+                        </p>
+                    </div>
+
+                    <a th:href="@{/admin/patterns}"
+                       class="notification-action">
+                        Review
+                    </a>
+
+                </article>
+
+            </div>
+
+            <div class="simple-empty"
+                 th:if="${pendingPatterns.isEmpty()}">
+                No pattern submissions are waiting for review.
+            </div>
+
+        </section>
+
+        <section class="admin-section notification-section">
+
+            <div class="section-heading notification-heading">
+                <div>
+                    <p class="section-kicker">VACANCY MODERATION</p>
+                    <h2>Pending vacancy reports</h2>
+                    <p>Reports submitted by users that need moderation review.</p>
+                </div>
+                <span class="section-count"
+                      th:text="${pendingReports.size()}">0</span>
+            </div>
+
+            <div class="notification-list"
+                 th:if="${!pendingReports.isEmpty()}">
+
+                <article class="notification-card"
+                         th:each="report : ${pendingReports}">
+
+                    <div class="notification-icon">!</div>
+
+                    <div class="notification-content">
+                        <span class="notification-kicker">VACANCY REPORT</span>
+                        <h3 th:text="${report.vacancy.title}">Vacancy title</h3>
+                        <p>
+                            Reported by
+                            <strong th:text="'@' + ${report.reportedBy.username}">@reporter</strong>
+                            and waiting for moderation.
+                        </p>
+                    </div>
+
+                    <a th:href="@{/admin/vacancies}"
+                       class="notification-action">
+                        Review
+                    </a>
+
+                </article>
+
+            </div>
+
+            <div class="simple-empty"
+                 th:if="${pendingReports.isEmpty()}">
+                No vacancy reports are waiting for review.
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script th:src="@{/assets/js/confirmation.js}"></script>
+</body>
+</html>

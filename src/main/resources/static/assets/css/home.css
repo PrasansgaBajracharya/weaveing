@@ -275,14 +275,17 @@ body.homepage {
 /* ---------- MASONRY ---------- */
 
 .masonry {
-    columns: 4 260px;
-    column-gap: 22px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+    align-items: stretch;
 }
 
 .pattern-card {
-    break-inside: avoid;
-
-    margin-bottom: 22px;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 
     background: var(--white);
 
@@ -308,18 +311,26 @@ body.homepage {
 
 .pattern-thumb {
     position: relative;
-    overflow: hidden;
-}
-
-.pattern-thumb img {
     width: 100%;
-    display: block;
-
-    transition: transform .6s var(--ease);
+    height: 300px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--beige-light);
 }
 
 .pattern-image-link {
     display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.pattern-thumb img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+
+    transition: transform .6s var(--ease);
 }
 
 .pattern-title a {
@@ -404,6 +415,9 @@ body.homepage {
 
 .pattern-body {
     padding: 14px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .pattern-title {
@@ -485,7 +499,7 @@ body.homepage {
 /* ---------- PATTERN BUTTON ---------- */
 
 .view-pattern-btn {
-    margin-top: 12px;
+    margin-top: auto;
 
     width: 100%;
 
@@ -922,7 +936,11 @@ body.homepage {
 @media (max-width: 1100px) {
 
     .masonry {
-        columns: 3 220px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .pattern-thumb {
+        height: 270px;
     }
 
     .vacancy-grid {
@@ -935,7 +953,11 @@ body.homepage {
 @media (max-width: 720px) {
 
     .masonry {
-        columns: 2 160px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pattern-thumb {
+        height: 240px;
     }
 
     .vacancy-grid {
@@ -952,7 +974,11 @@ body.homepage {
 @media (max-width: 480px) {
 
     .masonry {
-        columns: 1;
+        grid-template-columns: 1fr;
+    }
+
+    .pattern-thumb {
+        height: min(82vw, 360px);
     }
 
 }
@@ -1029,4 +1055,61 @@ body.homepage {
     color: #8a4742;
     font-style: normal;
     font-weight: 800;
+}
+
+
+/* ---------- PAGINATION ---------- */
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 34px;
+}
+
+.pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 92px;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--white);
+    color: var(--brown-dark);
+    text-decoration: none;
+    font-size: .82rem;
+    font-weight: 700;
+    transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+}
+
+.pagination-btn:hover {
+    transform: translateY(-1px);
+    background: var(--beige-light);
+    box-shadow: var(--shadow-soft);
+}
+
+.pagination-status {
+    min-width: 110px;
+    text-align: center;
+    color: var(--muted);
+    font-size: .82rem;
+    font-weight: 700;
+}
+
+@media (max-width: 560px) {
+    .pagination {
+        gap: 8px;
+    }
+
+    .pagination-btn {
+        min-width: 84px;
+        padding: 9px 12px;
+    }
+
+    .pagination-status {
+        min-width: 96px;
+        font-size: .76rem;
+    }
 }

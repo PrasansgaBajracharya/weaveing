@@ -63,6 +63,10 @@ public class Pattern {
 
     private String imageContentType;
 
+    private Integer imagePositionX = 50;
+
+    private Integer imagePositionY = 50;
+
     private String filePath;
 
     private long likes = 0;
@@ -233,6 +237,26 @@ public class Pattern {
 
     public void setImageContentType(String imageContentType) {
         this.imageContentType = imageContentType;
+    }
+
+    public int getImagePositionX() {
+        return imagePositionX == null ? 50 : imagePositionX;
+    }
+
+    public void setImagePositionX(int imagePositionX) {
+        this.imagePositionX = Math.max(0, Math.min(100, imagePositionX));
+    }
+
+    public int getImagePositionY() {
+        return imagePositionY == null ? 50 : imagePositionY;
+    }
+
+    public void setImagePositionY(int imagePositionY) {
+        this.imagePositionY = Math.max(0, Math.min(100, imagePositionY));
+    }
+
+    public String getImageObjectPosition() {
+        return getImagePositionX() + "% " + getImagePositionY() + "%";
     }
 
     public String getFilePath() {

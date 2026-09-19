@@ -82,4 +82,63 @@
             form.dataset.confirmAccept || 'Confirm';
         requestAnimationFrame(() => overlay.classList.add('is-visible'));
     });
+
+    function setupPatternManagement() {
+        const patternsSection = document.getElementById('patterns');
+        const grid = document.getElementById('myPatternGrid');
+
+        if (!patternsSection || !grid || document.getElementById('patternEditToggle')) {
+            return;
+        }
+
+        const heading = patternsSection.querySelector('.section-heading');
+        const postButton = heading?.querySelector('a[href*="/patterns/new"]');
+
+        if (!heading || !postButton) {
+            return;
+        }
+
+        const actions = document.createElement('div');
+        actions.className = 'my-pattern-actions';
+
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.id = 'patternEditToggle';
+        toggle.className = 'pattern-edit-toggle';
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-controls', 'myPatternGrid');
+        toggle.textContent = 'Edit patterns';
+
+        postButton.replaceWith(actions);
+        actions.append(toggle, postButton);
+
+        grid.id = 'myPatternGrid';
+
+        toggle.addEventListener('click', () => {
+            const editing = grid.classList.toggle('is-managing');
+            toggle.setAttribute('aria-expanded', String(editing));
+            toggle.textContent = editing ? 'Done' : 'Edit patterns';
+            toggle.classList.toggle('is-active', editing);
+        });
+
+        grid.querySelectorAll('form').forEach(form => {
+            const removeButton = form.querySelector('.manage-button.remove');
+
+            if (!removeButton || form.dataset.confirm) {
+                return;
+            }
+
+            form.dataset.confirm =
+                'Remove this pattern from the marketplace? Existing purchases will remain available.';
+            form.dataset.confirmTitle = 'Remove pattern?';
+            form.dataset.confirmAccept = 'Remove pattern';
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupPatternManagement);
+    } else {
+        setupPatternManagement();
+    }
+
 })();

@@ -1725,3 +1725,131 @@ h4 {
         top: 8px;
     }
 }
+
+
+.profile-position-picker {
+    cursor: crosshair;
+}
+
+.profile-position-hint {
+    grid-column: 1 / -1;
+    color: var(--muted);
+    font-size: 8px;
+    line-height: 1.4;
+}
+
+.profile-edit-avatar img {
+    cursor: crosshair;
+}
+
+
+/* Pattern management */
+.my-pattern-actions {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+}
+
+.pattern-edit-toggle {
+    min-height: 38px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--brown-dark);
+    font: inherit;
+    font-size: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform .2s ease, background .2s ease, color .2s ease;
+}
+
+.pattern-edit-toggle:hover,
+.pattern-edit-toggle.is-active {
+    transform: translateY(-1px);
+    background: var(--beige-light);
+    color: var(--brown);
+}
+
+.pattern-management-actions {
+    display: none;
+}
+
+.pattern-grid.is-managing .pattern-management-actions {
+    display: flex;
+}
+
+@media (max-width: 620px) {
+    .my-pattern-actions {
+        width: 100%;
+    }
+
+    .my-pattern-actions .dark-button,
+    .my-pattern-actions .pattern-edit-toggle {
+        flex: 1;
+    }
+}
+
+/* Profile focus picker */
+.profile-edit-avatar {
+    position: relative;
+    cursor: crosshair;
+}
+
+.profile-edit-avatar img {
+    pointer-events: none;
+}
+
+.profile-focus-marker {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    transform: translate(-50%, -50%);
+    border: 2px solid var(--white);
+    border-radius: 50%;
+    background: rgba(99, 77, 64, .72);
+    box-shadow: 0 2px 8px rgba(74, 56, 48, .28);
+    pointer-events: none;
+    z-index: 3;
+}
+
+.profile-focus-marker::before,
+.profile-focus-marker::after {
+    content: "";
+    position: absolute;
+    background: var(--white);
+    opacity: .9;
+}
+
+.profile-focus-marker::before {
+    width: 2px;
+    height: 26px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.profile-focus-marker::after {
+    width: 26px;
+    height: 2px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.profile-position-hint {
+    display: block;
+    margin-top: 2px;
+}
+
+@media (max-width: 700px) {
+    .profile-edit-photo {
+        grid-template-columns: 88px 1fr;
+    }
+
+    .profile-photo-button {
+        grid-column: 1 / -1;
+        justify-self: start;
+    }
+}

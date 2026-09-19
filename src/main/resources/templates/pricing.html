@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing — weave.ing</title>
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/info-pages.css}">
+</head>
+<body>
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
+<main class="info-page">
+    <div class="info-shell">
+        <p class="info-kicker">SELLING ON WEAVE.ING</p>
+        <h1 class="info-title">Pricing</h1>
+        <p class="info-intro">Creators choose whether a digital crochet pattern is free or paid.</p>
+        <section class="info-card"><h2>Free patterns</h2><p>Creators can publish patterns at no cost so other crochet makers can discover and use them.</p></section><section class="info-card"><h2>Paid patterns</h2><p>Creators can set a price for eligible digital patterns. Buyers complete the available checkout process before the pattern is added to their library.</p></section><section class="info-card"><h2>Want to publish?</h2><p>Start from the existing Sell a Pattern flow.</p><a class="info-link" th:href="@{/patterns/new}">Sell a Pattern</a></section>
+    </div>
+</main>
+<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
+</body>
+</html>

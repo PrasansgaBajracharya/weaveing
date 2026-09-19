@@ -2,6 +2,7 @@ package com.weaveing.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,9 +36,19 @@ public class SecurityConfig {
                                 "/verify",
                                 "/verify-device",
                                 "/patterns/{id}",
+                                "/api/patterns",
+                                "/api/patterns/{id}",
+                                "/api/vacancies",
+                                "/api/vacancies/{id}",
                                 "/assets/**",
                                 "/uploads/**"
                         ).permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/api/users")
+                        .permitAll()
+
+                        .requestMatchers("/api/users/**")
+                        .hasAuthority("ROLE_ADMIN")
 
                         .anyRequest()
                         .authenticated()

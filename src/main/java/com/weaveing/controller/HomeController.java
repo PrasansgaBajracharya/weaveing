@@ -48,6 +48,7 @@ public class HomeController {
             @RequestParam(defaultValue = "all") String difficulty,
             @RequestParam(defaultValue = "all") String priceType,
             @RequestParam(defaultValue = "newest") String sort,
+            @RequestParam(defaultValue = "0") int page,
             Authentication authentication,
             Model model) {
 
@@ -141,6 +142,12 @@ public class HomeController {
                             );
         }
 
+        if (page < 0) {
+            page = 0;
+        }
+
+        final int pageSize = 12;
+
         List<Pattern> approvedPatterns =
                 patternRepository.searchApprovedPatterns(
                         Pattern.ApprovalStatus.APPROVED,
@@ -155,7 +162,31 @@ public class HomeController {
                         .filter(pattern -> matchesSearch(pattern, searchTerm))
                         .toList();
 
-        for (Pattern pattern : approvedPatterns) {
+        int totalResultCount = approvedPatterns.size();
+        int totalPages =
+                totalResultCount == 0
+                        ? 0
+                        : (int) Math.ceil(
+                                (double) totalResultCount / pageSize
+                        );
+
+        if (totalPages > 0 && page >= totalPages) {
+            page = totalPages - 1;
+        }
+
+        int fromIndex = page * pageSize;
+        int toIndex =
+                Math.min(
+                        fromIndex + pageSize,
+                        totalResultCount
+                );
+
+        List<Pattern> pagedPatterns =
+                totalResultCount == 0
+                        ? List.of()
+                        : approvedPatterns.subList(fromIndex, toIndex);
+
+        for (Pattern pattern : pagedPatterns) {
 
             long purchaseCount =
                     purchaseRepository
@@ -177,7 +208,7 @@ public class HomeController {
         Map<Long, Long> wishlistCounts =
                 new HashMap<>();
 
-        for (Pattern pattern : approvedPatterns) {
+        for (Pattern pattern : pagedPatterns) {
 
             wishlistCounts.put(
                     pattern.getId(),
@@ -186,8 +217,13 @@ public class HomeController {
         }
 
         model.addAttribute("user", user);
-        model.addAttribute("approvedPatterns", approvedPatterns);
-        model.addAttribute("resultCount", approvedPatterns.size());
+        model.addAttribute("approvedPatterns", pagedPatterns);
+        model.addAttribute("resultCount", totalResultCount);
+        model.addAttribute("pageNumber", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("hasPrevious", page > 0);
+        model.addAttribute("hasNext", totalPages > 0 && page < totalPages - 1);
         model.addAttribute("wishlistPatternIds", wishlistPatternIds);
         model.addAttribute("wishlistCounts", wishlistCounts);
         model.addAttribute("categories", Pattern.CATEGORIES);

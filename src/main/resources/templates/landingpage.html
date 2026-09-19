@@ -735,7 +735,7 @@
 
                 <div class="t-avatar">
 
-                    <img th:src="@{/assets/images/pompompurin-doll.png}"
+                    <img th:src="@{/assets/images/pompompurin.png}"
                          alt="">
 
                 </div>
@@ -772,7 +772,7 @@
 
                 <div class="t-avatar">
 
-                    <img th:src="@{/assets/images/luffy-keychain.png}"
+                    <img th:src="@{/assets/images/luffystretchy.png}"
                          alt="">
 
                 </div>
@@ -809,7 +809,7 @@
 
                 <div class="t-avatar">
 
-                    <img th:src="@{/assets/images/gintoki-doll.png}"
+                    <img th:src="@{/assets/images/jett.png}"
                          alt="">
 
                 </div>
@@ -901,7 +901,7 @@
                     Marketplace
                 </a>
 
-                <a href="#features">
+                <a th:href="@{/#features}">
                     Features
                 </a>
 
@@ -932,6 +932,10 @@
                     Sell a Pattern
                 </a>
 
+                <a th:href="@{/pricing}">
+                    Pricing
+                </a>
+
             </div>
 
 
@@ -939,16 +943,20 @@
 
                 <h5>Company</h5>
 
-                <a href="#problem">
+                <a th:href="@{/about}">
                     About
                 </a>
 
-                <a href="#features">
+                <a th:href="@{/community-guidelines}">
                     Community Guidelines
                 </a>
 
-                <a href="#contact">
+                <a th:href="@{/contact}">
                     Contact
+                </a>
+
+                <a th:href="@{/faq}">
+                    FAQ
                 </a>
 
             </div>

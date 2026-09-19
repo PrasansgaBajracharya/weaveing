@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Guidelines — weave.ing</title>
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/info-pages.css}">
+</head>
+<body>
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
+<main class="info-page">
+    <div class="info-shell">
+        <p class="info-kicker">COMMUNITY</p>
+        <h1 class="info-title">Community Guidelines</h1>
+        <p class="info-intro">A few simple principles for keeping weave.ing useful, respectful and creator-friendly.</p>
+        <section class="info-card"><h2>Keep patterns original</h2><p>Only upload work you have the right to share. Do not present another creator’s pattern as your own.</p></section><section class="info-card"><h2>Respect other creators</h2><p>Give creators credit where appropriate and keep discussions constructive. Harassment, spam and misleading content do not belong in the community.</p></section><section class="info-card"><h2>Keep listings clear</h2><p>Pattern titles, descriptions, images and prices should accurately represent the digital pattern being offered.</p></section>
+    </div>
+</main>
+<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
+</body>
+</html>

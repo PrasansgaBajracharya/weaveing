@@ -6,6 +6,7 @@ import com.weaveing.repository.PatternRepository;
 import com.weaveing.repository.ReviewRepository;
 import com.weaveing.repository.UserRepository;
 import com.weaveing.repository.WishlistRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ public class PublicProfileController {
     }
 
     @GetMapping("/users/{username}")
-    public String publicProfile(@PathVariable String username, Model model) {
+    public String publicProfile(@PathVariable String username, Authentication authentication, Model model) {
         User profileUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -54,6 +55,8 @@ public class PublicProfileController {
         }
 
         double averageRating = totalReviews == 0 ? 0.0 : ratingSum / totalReviews;
+        User currentUser = userRepository.findByUsername(authentication.getName()).orElse(null);
+        model.addAttribute("user", currentUser);
         model.addAttribute("profileUser", profileUser);
         model.addAttribute("publishedPatterns", publishedPatterns);
         model.addAttribute("publishedPatternCount", publishedPatterns.size());

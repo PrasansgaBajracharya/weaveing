@@ -48,6 +48,10 @@ public class User {
     @Column
     private String profileImagePath;
 
+    private Integer profileImagePositionX = 50;
+
+    private Integer profileImagePositionY = 50;
+
     @Column(length = 500)
     private String bio;
 
@@ -136,6 +140,26 @@ public class User {
             String profileImagePath) {
 
         this.profileImagePath = profileImagePath;
+    }
+
+    public int getProfileImagePositionX() {
+        return profileImagePositionX == null ? 50 : profileImagePositionX;
+    }
+
+    public void setProfileImagePositionX(int profileImagePositionX) {
+        this.profileImagePositionX = Math.max(0, Math.min(100, profileImagePositionX));
+    }
+
+    public int getProfileImagePositionY() {
+        return profileImagePositionY == null ? 50 : profileImagePositionY;
+    }
+
+    public void setProfileImagePositionY(int profileImagePositionY) {
+        this.profileImagePositionY = Math.max(0, Math.min(100, profileImagePositionY));
+    }
+
+    public String getProfileImageObjectPosition() {
+        return getProfileImagePositionX() + "% " + getProfileImagePositionY() + "%";
     }
 
     public String getBio() {
