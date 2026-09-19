@@ -18,40 +18,15 @@
           th:href="@{/assets/css/profile.css}">
 
     <link rel="stylesheet" th:href="@{/assets/css/confirmation.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
 </head>
 
 <body>
 
-<nav class="profile-nav">
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
 
-    <a th:href="@{/home}"
-       class="profile-logo"
-       aria-label="weave.ing home">
-
-        <img th:src="@{/assets/images/logo.png}"
-             alt="weave.ing">
-
-    </a>
-
-    <div class="profile-nav-actions">
-
-        <a th:href="@{/dashboard}"
-           class="nav-button">
-
-            Dashboard
-
-        </a>
-
-        <a th:href="@{/home}"
-           class="nav-button">
-
-            Marketplace
-
-        </a>
-
-    </div>
-
-</nav>
+<div class="site-back-wrap">
+</div>
 
 <main class="profile-page">
 
@@ -818,5 +793,6 @@
 </script>
 
 <script th:src="@{/assets/js/confirmation.js}"></script>
+<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
 </body>
 </html>

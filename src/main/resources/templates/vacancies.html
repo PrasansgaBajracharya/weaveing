@@ -14,52 +14,16 @@
     <link rel="stylesheet"
           th:href="@{/assets/css/vacancies.css}">
 
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
 </head>
 
 <body>
 
-<nav class="vacancy-nav">
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
 
-    <div class="vacancy-nav-inner">
 
-        <a th:href="@{/home}"
-           class="vacancy-logo">
-
-            <img class="vacancy-logo-image"
-                 th:src="@{/assets/images/logo.png}"
-                 alt="weave.ing">
-
-        </a>
-
-        <div class="nav-actions">
-
-            <a th:href="@{/home}"
-               class="nav-link">
-
-                Marketplace
-
-            </a>
-
-            <a th:href="@{/profile}"
-               class="nav-link">
-
-                Profile
-
-            </a>
-
-            <a th:href="@{/dashboard}"
-               class="nav-link">
-
-                Dashboard
-
-            </a>
-
-        </div>
-
-    </div>
-
-</nav>
-
+<div class="site-back-wrap">
+</div>
 
 <main class="vacancy-page">
 
@@ -232,6 +196,7 @@
 
 </main>
 
+<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
 </body>
 
 </html>

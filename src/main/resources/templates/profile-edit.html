@@ -6,18 +6,13 @@
     <title>Edit Profile — weave.ing</title>
     <meta name="description" content="Edit your weave.ing profile.">
     <link rel="stylesheet" th:href="@{/assets/css/profile.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
 </head>
 <body class="profile-edit-page">
-<nav class="profile-nav">
-    <a th:href="@{/profile}" class="profile-logo">
-        <img th:src="@{/assets/images/logo.png}" alt="weave.ing">
-    </a>
-    <div class="profile-nav-actions">
-        <a th:href="@{/profile}" class="nav-button">Profile</a>
-        <a th:href="@{/dashboard}" class="nav-button">Dashboard</a>
-        <a th:href="@{/home}" class="nav-button">Marketplace</a>
-    </div>
-</nav>
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
+<div class="site-back-wrap">
+</div>
+
 <main class="profile-edit-page-main">
     <a th:href="@{/profile}" class="profile-back-link">
         <span>←</span> Back to Profile
@@ -35,16 +30,22 @@
         <div class="profile-form-message error" th:if="${profileError}" th:text="${profileError}">Something went wrong.</div>
         <form th:action="@{/profile/edit}" method="post" enctype="multipart/form-data" class="profile-edit-form">
             <div class="profile-edit-photo">
-                <div class="profile-edit-avatar">
-                    <img th:if="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}" th:src="${user.profileImagePath}" alt="Current profile picture">
+                <div class="profile-edit-avatar profile-position-picker" id="profilePositionPicker">
+                    <img th:if="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
+                         th:src="${user.profileImagePath}"
+                         alt="Current profile picture"
+                         th:style="|object-position: ${user.profileImageObjectPosition};|">
                     <span th:unless="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}" th:text="${#strings.substring(user.username, 0, 1).toUpperCase()}">U</span>
                 </div>
                 <div class="profile-edit-photo-copy">
                     <strong>Profile picture</strong>
-                    <p>JPG, PNG, or WebP. Choose a new photo if you want to change it.</p>
+                    <p>JPG, PNG, or WebP. Choose a photo, then click the part you want to keep visible.</p>
                 </div>
                 <label for="profilePicture" class="choose-photo profile-photo-button">Choose Photo</label>
                 <input type="file" id="profilePicture" name="profilePicture" accept="image/jpeg,image/png,image/webp">
+                <input type="hidden" id="profileImagePositionX" name="profileImagePositionX" th:value="${user.profileImagePositionX}">
+                <input type="hidden" id="profileImagePositionY" name="profileImagePositionY" th:value="${user.profileImagePositionY}">
+                <small class="profile-position-hint">Click the photo to set the focus point. The circular preview shows how it will appear.</small>
             </div>
             <div class="profile-edit-fields">
                 <div class="edit-field">
@@ -77,5 +78,100 @@
         </form>
     </section>
 </main>
+<script>
+const profileInput = document.getElementById("profilePicture");
+const profilePicker = document.getElementById("profilePositionPicker");
+const profileX = document.getElementById("profileImagePositionX");
+const profileY = document.getElementById("profileImagePositionY");
+
+let profileFocusMarker = profilePicker?.querySelector(".profile-focus-marker");
+
+if (profilePicker && !profileFocusMarker) {
+    profileFocusMarker = document.createElement("span");
+    profileFocusMarker.className = "profile-focus-marker";
+    profileFocusMarker.setAttribute("aria-hidden", "true");
+    profileFocusMarker.hidden = !profilePicker.querySelector("img");
+    profilePicker.appendChild(profileFocusMarker);
+}
+
+function clampProfile(value) {
+    return Math.max(0, Math.min(100, Math.round(value)));
+}
+
+function placeProfileMarker(x, y) {
+    if (!profileFocusMarker) return;
+
+    profileFocusMarker.style.left = `${x}%`;
+    profileFocusMarker.style.top = `${y}%`;
+}
+
+function setProfilePosition(event) {
+    const image = profilePicker?.querySelector("img");
+
+    if (!profilePicker || !profileX || !profileY || !image) {
+        return;
+    }
+
+    const rect = profilePicker.getBoundingClientRect();
+
+    const x = clampProfile(
+        ((event.clientX - rect.left) / rect.width) * 100
+    );
+
+    const y = clampProfile(
+        ((event.clientY - rect.top) / rect.height) * 100
+    );
+
+    profileX.value = x;
+    profileY.value = y;
+
+    image.style.objectPosition = `${x}% ${y}%`;
+    profileFocusMarker.hidden = false;
+    placeProfileMarker(x, y);
+}
+
+profilePicker?.addEventListener("click", setProfilePosition);
+
+profileInput?.addEventListener("change", () => {
+    const file = profileInput.files?.[0];
+
+    if (!file || !profilePicker) {
+        return;
+    }
+
+    const url = URL.createObjectURL(file);
+
+    let img = profilePicker.querySelector("img");
+
+    if (!img) {
+        img = document.createElement("img");
+        img.alt = "Profile preview";
+        profilePicker.replaceChildren(img);
+
+        if (profileFocusMarker) {
+            profilePicker.appendChild(profileFocusMarker);
+        }
+    }
+
+    img.src = url;
+    img.style.objectPosition =
+        `${profileX.value || 50}% ${profileY.value || 50}%`;
+
+    if (profileFocusMarker) {
+        profileFocusMarker.hidden = false;
+    }
+
+    placeProfileMarker(
+        Number(profileX.value || 50),
+        Number(profileY.value || 50)
+    );
+});
+
+placeProfileMarker(
+    Number(profileX?.value || 50),
+    Number(profileY?.value || 50)
+);
+</script>
+<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
 </body>
 </html>

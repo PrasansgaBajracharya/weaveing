@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="siteHeader">
+<nav class="navbar scrolled" id="navbar">
+
+    <div class="container nav-inner">
+
+        <a th:href="@{/}" class="logo home-logo" aria-label="weave.ing home">
+            <img th:src="@{/assets/images/logo.png}" alt="weave.ing">
+        </a>
+
+        <ul class="nav-links">
+            <li><a th:href="@{/home#patterns}">Marketplace</a></li>
+            <li><a th:href="@{/home#leaderboard}">Leaderboard</a></li>
+            <li><a th:href="@{/vacancies}">Vacancies</a></li>
+        </ul>
+
+        <div class="nav-actions">
+
+            <a th:href="@{/messages}"
+               class="icon-btn messages-nav-btn"
+               aria-label="Messages">
+
+                <svg width="21" height="21"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M20 11.5a8.5 8.5 0 0 1-8.5 8.5H6l-3 2 .5-4.2A8.5 8.5 0 1 1 20 11.5z"/>
+                </svg>
+            </a>
+
+            <a th:href="@{/wishlist}"
+               class="icon-btn wishlist-nav-btn"
+               aria-label="Wishlist">
+
+                <svg width="21" height="21"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+            </a>
+
+            <!-- Seller: hidden for admins -->
+            <a th:if="${user != null and !user.admin}"
+               th:href="@{/patterns/new}"
+               class="btn btn-outline">
+                Sell a Pattern
+            </a>
+
+            <!-- Admin Dashboard -->
+            <a th:if="${user != null and user.admin}"
+               th:href="@{/admin}"
+               class="btn btn-outline dashboard-nav-btn">
+                Admin Dashboard
+            </a>
+
+            <!-- Dashboard -->
+            <a th:href="@{/dashboard}"
+               class="btn btn-outline dashboard-nav-btn">
+                Dashboard
+            </a>
+
+            <!-- Profile -->
+            <a th:if="${user != null}" th:href="@{/profile}"
+               class="user-chip">
+
+                <span class="user-avatar">
+                    <img th:if="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
+                         th:src="${user.profileImagePath}"
+                         th:style="|object-position: ${user.profileImageObjectPosition};|"
+                         alt="Profile">
+
+                    <span th:unless="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
+                          class="avatar-initial"
+                          th:text="${#strings.substring(user.username, 0, 1).toUpperCase()}">
+                        U
+                    </span>
+                </span>
+
+                <span th:text="${user.username}">
+                    username
+                </span>
+            </a>
+
+        </div>
+
+        <!-- Mobile hamburger -->
+        <button class="hamburger"
+                id="hamburger"
+                aria-label="Open menu"
+                aria-expanded="false">
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </button>
+
+    </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+
+    <a th:href="@{/home#patterns}">Marketplace</a>
+    <a th:href="@{/home#leaderboard}">Leaderboard</a>
+    <a th:href="@{/vacancies}">Vacancies</a>
+    <a th:href="@{/messages}">Messages</a>
+
+    <a th:if="${user != null and !user.admin}"
+       th:href="@{/patterns/new}"
+       class="btn btn-outline">
+        Sell a Pattern
+    </a>
+
+    <a th:if="${user != null and user.admin}"
+       th:href="@{/admin}"
+       class="btn btn-outline dashboard-nav-btn">
+        Admin Dashboard
+    </a>
+
+    <a th:href="@{/dashboard}"
+       class="btn btn-outline">
+        Dashboard
+    </a>
+
+    <a th:href="@{/profile}"
+       class="btn btn-primary">
+        My Account
+    </a>
+
+</div>
+</div>
+
+<div th:fragment="siteFooter">
+<footer class="site-layout-footer">
+
+    <div class="container">
+
+        <div class="footer-grid">
+
+            <div class="footer-brand">
+
+                <a th:href="@{/}"
+                   class="logo">
+
+                    <span class="dot"></span>
+                    <span>weave.ing</span>
+
+                </a>
+
+                <p>
+                    Crafted with Care. Shared with Creativity.
+                    Nepal's digital marketplace for crochet creators.
+                </p>
+
+            </div>
+
+
+            <div class="footer-col">
+
+                <h5>Platform</h5>
+
+                <a th:href="@{/home}">
+                    Marketplace
+                </a>
+
+                <a href="#features">
+                    Features
+                </a>
+
+                <a th:href="@{/home#leaderboard}">
+                    Leaderboard
+                </a>
+
+                <a th:href="@{/vacancies}">
+                    Vacancy Board
+                </a>
+
+            </div>
+
+
+            <div class="footer-col">
+
+                <h5>Sellers</h5>
+
+                <a th:href="@{/login}">
+                    Become a Seller
+                </a>
+
+                <a th:href="@{/dashboard}">
+                    Seller Dashboard
+                </a>
+
+                <a th:href="@{/patterns/new}">
+                    Sell a Pattern
+                </a>
+
+            </div>
+
+
+            <div class="footer-col">
+
+                <h5>Company</h5>
+
+                <a href="#problem">
+                    About
+                </a>
+
+                <a href="#features">
+                    Community Guidelines
+                </a>
+
+                <a href="#contact">
+                    Contact
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>
+                © 2026 weave.ing. All rights reserved.
+            </span>
+
+            <div class="social-row">
+
+                <a href="https://www.instagram.com/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Instagram">
+                    Instagram
+                </a>
+
+                <a href="https://www.tiktok.com/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="TikTok">
+                    TikTok
+                </a>
+
+                <a href="https://www.facebook.com/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="Facebook">
+                    Facebook
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
+</div>
+
+
+<script th:src="@{/assets/js/site-layout.js}"></script>
+
+</body>
+</html>

@@ -18,31 +18,12 @@
           th:href="@{/assets/css/wishlist.css}">
 
     <link rel="stylesheet" th:href="@{/assets/css/confirmation.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
 </head>
 
 <body class="wishlist-page">
 
-<header class="wishlist-header">
-
-    <div class="wishlist-header-inner">
-
-        <a th:href="@{/home}"
-           class="logo"
-           aria-label="weave.ing home">
-            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
-        </a>
-
-        <a th:href="@{/dashboard}"
-           class="back-dashboard">
-
-            Dashboard
-
-        </a>
-
-    </div>
-
-</header>
-
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
 
 <main class="wishlist-main">
 
@@ -352,5 +333,6 @@
 </main>
 
 <script th:src="@{/assets/js/confirmation.js}"></script>
+<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
 </body>
 </html>

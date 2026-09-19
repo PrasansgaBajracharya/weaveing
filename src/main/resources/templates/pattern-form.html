@@ -17,6 +17,7 @@
     <link rel="stylesheet"
           th:href="@{/assets/css/pattern-form.css}">
 
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
 </head>
 
 
@@ -27,25 +28,7 @@
      NAVBAR
      ============================================================ -->
 
-<nav class="pattern-nav">
-
-    <a th:href="@{/dashboard}"
-       class="nav-back">
-
-        ← Dashboard
-
-    </a>
-
-
-    <a th:href="@{/home}"
-       class="logo">
-            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
-        </a>
-
-
-    <div class="nav-spacer"></div>
-
-</nav>
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
 
 
 
@@ -418,11 +401,9 @@
                         ◇
                     </span>
 
-
                     <strong>
                         Choose a cover image
                     </strong>
-
 
                     <small>
                         PNG, JPG or WEBP · Recommended 1200 × 1200 px
@@ -430,13 +411,24 @@
 
                 </label>
 
-
                 <input
                         type="file"
                         id="image"
                         name="image"
                         accept="image/png,image/jpeg,image/webp"
                         required>
+
+                <div class="image-preview-editor" id="imagePreviewEditor" hidden>
+                    <div class="image-preview-frame">
+                        <img id="imagePreview" alt="Cover preview">
+                    </div>
+                    <div class="image-preview-copy">
+                        <strong>Choose your preview crop</strong>
+                        <p>Click the preview to move the subject. This is how the cover will be framed across weave.ing.</p>
+                    </div>
+                    <input type="hidden" id="imagePositionX" name="imagePositionX" value="50">
+                    <input type="hidden" id="imagePositionY" name="imagePositionY" value="50">
+                </div>
 
             </div>
 
@@ -558,6 +550,7 @@
 
 <script th:src="@{/assets/js/pattern-form.js}"></script>
 
+<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
 </body>
 
 </html>

@@ -12,46 +12,20 @@
 
     <link rel="stylesheet"
           th:href="@{/assets/css/payment.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
 </head>
 
 <body class="payment-body">
 
-<header class="payment-header">
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
 
-    <div class="container payment-header-inner">
 
-        <a th:href="@{/home}"
-           class="payment-brand"
-           aria-label="weave.ing marketplace">
-            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
-        </a>
-
-        <a th:href="@{/patterns/{id}(id=${pattern.id})}"
-           class="payment-back-link">
-
-            <svg width="18"
-                 height="18"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="1.8"
-                 stroke-linecap="round"
-                 stroke-linejoin="round"
-                 aria-hidden="true">
-
-                <path d="M19 12H5"></path>
-                <path d="M12 19l-7-7 7-7"></path>
-
-            </svg>
-
-            <span>Back to pattern</span>
-
-        </a>
-
-    </div>
-
-</header>
-
+<div class="site-back-wrap">
+    <a th:href="@{/home}" class="site-back-button">
+        <span aria-hidden="true">←</span>
+        <span>Back to Marketplace</span>
+    </a>
+</div>
 
 <main class="payment-page">
 
@@ -320,5 +294,6 @@
 
 </main>
 
+<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
 </body>
 </html>

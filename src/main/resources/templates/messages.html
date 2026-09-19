@@ -6,21 +6,14 @@
     <title>Messages — weave.ing</title>
     <meta name="description" content="weave.ing messaging preview.">
     <link rel="stylesheet" th:href="@{/assets/css/messages.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
 </head>
 <body class="messages-page">
 
-<header class="messages-header">
-    <div class="messages-header-inner">
-        <a th:href="@{/home}" class="messages-logo">
-            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
-        </a>
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
 
-        <div class="messages-header-actions">
-            <a th:href="@{/profile}" class="messages-nav-link">Profile</a>
-            <a th:href="@{/home}" class="messages-nav-link">Marketplace</a>
-        </div>
-    </div>
-</header>
+<div class="site-back-wrap">
+</div>
 
 <main class="messages-main">
     <section class="messages-hero">
@@ -49,8 +42,6 @@
             <p>Accepted conversations and future creator chats will appear here when the messaging feature is developed.</p>
         </div>
     </section>
-
-    <a th:href="@{/home}" class="messages-back-link">← Back to marketplace</a>
 </main>
 
 <script>
@@ -74,5 +65,6 @@ tabs.forEach(function (tab) {
 });
 </script>
 
+<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
 </body>
 </html>

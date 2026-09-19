@@ -18,58 +18,12 @@
           th:href="@{/assets/css/dashboard.css}">
 
     <link rel="stylesheet" th:href="@{/assets/css/confirmation.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
 </head>
 
 <body>
 
-<nav class="dashboard-nav">
-
-    <div class="nav-left">
-
-        <a th:href="@{/home}"
-           class="logo">
-
-            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
-
-        </a>
-
-    </div>
-
-    <div class="nav-right">
-
-        <a th:href="@{/home}"
-           class="back-home">
-
-            ← Marketplace
-
-        </a>
-
-        <a th:href="@{/profile}"
-           class="nav-user">
-
-            <div class="nav-avatar">
-
-                <img th:if="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
-                     th:src="${user.profileImagePath}"
-                     alt="Profile">
-
-                <span th:unless="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
-                      class="avatar-initial"
-                      th:text="${#strings.substring(user.username, 0, 1).toUpperCase()}">
-                    U
-                </span>
-
-            </div>
-
-            <span th:text="${user.username}">
-                username
-            </span>
-
-        </a>
-
-    </div>
-
-</nav>
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
 
 <div class="dashboard-layout">
 
@@ -81,6 +35,7 @@
 
                 <img th:if="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
                      th:src="${user.profileImagePath}"
+                         th:style="|object-position: ${user.profileImageObjectPosition};|"
                      alt="Profile picture">
 
                 <span th:unless="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
@@ -179,7 +134,7 @@
 
     </aside>
 
-    <main class="dashboard-main">
+<main class="dashboard-main">
 
         <div class="page-heading">
 
@@ -654,5 +609,6 @@
 </div>
 
 <script th:src="@{/assets/js/confirmation.js}"></script>
+<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
 </body>
 </html>

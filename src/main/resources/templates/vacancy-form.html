@@ -14,34 +14,20 @@
     <link rel="stylesheet"
           th:href="@{/assets/css/vacancies.css}">
 
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
 </head>
 
 <body>
 
-<nav class="vacancy-nav">
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
 
-    <div class="vacancy-nav-inner">
 
-        <a th:href="@{/home}"
-           class="vacancy-logo">
-
-            <img class="vacancy-logo-image"
-                 th:src="@{/assets/images/logo.png}"
-                 alt="weave.ing">
-
-        </a>
-
-        <a th:href="@{/vacancies}"
-           class="nav-link">
-
-            ← Vacancy Board
-
-        </a>
-
-    </div>
-
-</nav>
-
+<div class="site-back-wrap">
+    <a th:href="@{/vacancies}" class="site-back-button">
+        <span aria-hidden="true">←</span>
+        <span>Back to Vacancy Board</span>
+    </a>
+</div>
 
 <main class="form-page">
 
@@ -192,6 +178,7 @@
 
 </main>
 
+<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
 </body>
 
 </html>

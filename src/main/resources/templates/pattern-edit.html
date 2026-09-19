@@ -6,16 +6,18 @@
     <title th:text="'Edit ' + ${pattern.title} + ' — weave.ing'">Edit Pattern — weave.ing</title>
     <link rel="stylesheet" th:href="@{/assets/css/pattern-form.css}">
     <link rel="stylesheet" th:href="@{/assets/css/pattern-edit.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
 </head>
 <body>
 
-<nav class="pattern-nav">
-    <a th:href="@{/profile#patterns}" class="nav-back">← My Patterns</a>
-    <a th:href="@{/home}" class="logo">
-        <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
+
+<div class="site-back-wrap">
+    <a th:href="@{/profile#patterns}" class="site-back-button">
+        <span aria-hidden="true">←</span>
+        <span>Back to My Patterns</span>
     </a>
-    <div class="nav-spacer"></div>
-</nav>
+</div>
 
 <main class="pattern-page">
     <section class="page-intro">
@@ -150,10 +152,22 @@
                     <small>PNG, JPG, JPEG or WEBP</small>
                 </label>
                 <input type="file" id="image" name="image" accept="image/png,image/jpeg,image/webp">
-                <img th:if="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}"
-                     th:src="${pattern.imagePath}"
-                     th:alt="${pattern.title}"
-                     class="current-image">
+                <div class="image-preview-editor edit-image-preview" id="imagePreviewEditor" th:style="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)} ? '' : 'display:none'">
+                    <div class="image-preview-frame">
+                        <img id="imagePreview"
+                             th:if="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}"
+                             th:src="${pattern.imagePath}"
+                             th:alt="${pattern.title}"
+                             th:style="|object-position: ${pattern.imageObjectPosition};|">
+                        <img id="imagePreviewFallback" hidden alt="New cover preview">
+                    </div>
+                    <div class="image-preview-copy">
+                        <strong>Choose your preview crop</strong>
+                        <p>Click the preview to move the subject. This is how the cover will be framed across weave.ing.</p>
+                    </div>
+                    <input type="hidden" id="imagePositionX" name="imagePositionX" th:value="${pattern.imagePositionX}">
+                    <input type="hidden" id="imagePositionY" name="imagePositionY" th:value="${pattern.imagePositionY}">
+                </div>
             </div>
 
             <div class="upload-group">
@@ -182,6 +196,7 @@
     </form>
 </main>
 
+<script th:src="@{/assets/js/pattern-form.js}"></script>
 <script>
     const priceTypeInputs = document.querySelectorAll('input[name="priceType"]');
     const originalPrice = document.getElementById('originalPrice');
@@ -201,5 +216,6 @@
     syncPriceFields();
 </script>
 
+<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
 </body>
 </html>

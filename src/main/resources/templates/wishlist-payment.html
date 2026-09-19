@@ -14,33 +14,20 @@
     <link rel="stylesheet"
           th:href="@{/assets/css/payment.css}">
 
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
 </head>
 
 <body class="payment-body wishlist-payment-page">
 
-<header class="payment-header">
-
-    <div class="container payment-header-inner">
-
-        <a th:href="@{/home}"
-           class="payment-brand"
-           aria-label="weave.ing home">
-            <img th:src="@{/assets/images/logo.png}" alt="weave.ing" class="site-logo-image">
-        </a>
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
 
 
-        <a th:href="@{/wishlist}"
-           class="payment-back-link">
-
-            <span>←</span>
-            Wishlist
-
-        </a>
-
-    </div>
-
-</header>
-
+<div class="site-back-wrap">
+    <a th:href="@{/wishlist}" class="site-back-button">
+        <span aria-hidden="true">←</span>
+        <span>Back to Wishlist</span>
+    </a>
+</div>
 
 <main class="payment-page">
 
@@ -452,5 +439,6 @@
 
 </main>
 
+<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
 </body>
 </html>

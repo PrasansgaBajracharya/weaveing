@@ -5,8 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="'@' + ${profileUser.username} + ' · weave.ing'">Public Profile · weave.ing</title>
     <link rel="stylesheet" th:href="@{/assets/css/public-profile.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
 </head>
 <body>
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
+<div class="site-back-wrap">
+    <a th:href="@{/home}" class="site-back-button">
+        <span aria-hidden="true">←</span>
+        <span>Back to Marketplace</span>
+    </a>
+</div>
+
 <main class="public-profile-page">
     <a th:href="@{/home}" class="back-link">
         <span class="back-arrow" aria-hidden="true">←</span>
@@ -16,7 +25,8 @@
         <span class="yarn-doodle yarn-doodle-one" aria-hidden="true">◌</span>
         <span class="yarn-doodle yarn-doodle-two" aria-hidden="true">✦</span>
         <div class="profile-avatar">
-            <img th:if="${profileUser.profileImagePath != null and !#strings.isEmpty(profileUser.profileImagePath)}" th:src="${profileUser.profileImagePath}" th:alt="${profileUser.username + ' profile picture'}">
+            <img th:if="${profileUser.profileImagePath != null and !#strings.isEmpty(profileUser.profileImagePath)}" th:src="${profileUser.profileImagePath}"
+                         th:style="|object-position: ${profileUser.profileImageObjectPosition};|" th:alt="${profileUser.username + ' profile picture'}">
             <span th:unless="${profileUser.profileImagePath != null and !#strings.isEmpty(profileUser.profileImagePath)}" th:text="${#strings.substring(profileUser.name, 0, 1).toUpperCase()}">U</span>
         </div>
         <div class="profile-copy">
@@ -44,7 +54,7 @@
             <article class="pattern-card" th:each="pattern : ${publishedPatterns}">
                 <a th:href="@{/patterns/{id}(id=${pattern.id})}" class="pattern-image-link">
                     <div class="pattern-image">
-                        <img th:if="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}" th:src="${pattern.imagePath}" th:alt="${pattern.title}">
+                        <img th:if="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}" th:src="${pattern.imagePath}" th:alt="${pattern.title}" th:style="|object-position: ${pattern.imageObjectPosition};|">
                         <span th:unless="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}" class="image-placeholder">▣</span>
                     </div>
                 </a>
@@ -66,5 +76,6 @@
         </div>
     </section>
 </main>
+<div th:replace="~{fragments/site-layout :: siteFooter}"></div>
 </body>
 </html>
