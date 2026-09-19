@@ -15,6 +15,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +38,8 @@ import java.util.UUID;
 
 @Controller
 public class PatternController {
+
+    private static final Logger logger = LoggerFactory.getLogger(PatternController.class);
 
     private final PatternRepository patternRepository;
     private final UserRepository userRepository;
@@ -106,6 +110,7 @@ public class PatternController {
             RedirectAttributes redirectAttributes) {
 
         try {
+            logger.info("Pattern submission started");
             User user = getCurrentUser(authentication);
 
             if (title == null || title.isBlank()
@@ -288,6 +293,7 @@ public class PatternController {
             pattern.setDownloads(0);
 
             patternRepository.save(pattern);
+            logger.info("Pattern submitted successfully: id={}", pattern.getId());
             try {
                 emailService.sendPendingPatternAdminNotification(pattern);
             } catch (Exception ignored) {
@@ -301,6 +307,7 @@ public class PatternController {
             return "redirect:/dashboard";
 
         } catch (IOException e) {
+            logger.error("Pattern submission failed", e);
 
             redirectAttributes.addFlashAttribute(
                     "patternError",
@@ -353,6 +360,7 @@ public class PatternController {
             RedirectAttributes redirectAttributes) {
 
         try {
+            logger.info("Pattern edit started: id={}", id);
             User user = getCurrentUser(authentication);
             Pattern pattern = patternRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Pattern not found"));
@@ -490,6 +498,7 @@ public class PatternController {
             }
 
             patternRepository.save(pattern);
+            logger.info("Pattern updated successfully: id={}", pattern.getId());
 
             redirectAttributes.addFlashAttribute(
                     "patternSuccess",
@@ -523,6 +532,7 @@ public class PatternController {
             return "redirect:/profile#patterns";
         }
 
+        logger.info("Removing pattern: id={}", id);
         pattern.setRemovedAt(LocalDateTime.now());
         patternRepository.save(pattern);
         wishlistRepository.deleteByPattern(pattern);
@@ -549,6 +559,7 @@ public class PatternController {
             return "redirect:/profile#patterns";
         }
 
+        logger.info("Restoring pattern: id={}", id);
         pattern.setRemovedAt(null);
         pattern.setApprovalStatus(Pattern.ApprovalStatus.PENDING);
         pattern.setSubmittedAt(LocalDateTime.now());
@@ -754,6 +765,7 @@ public class PatternController {
         User user = getCurrentUser(authentication);
 
         if (!canAccessPattern(pattern, user)) {
+            logger.warn("Unauthorized pattern access attempt: id={}", id);
             return ResponseEntity.status(403).build();
         }
 
@@ -795,6 +807,7 @@ public class PatternController {
         User user = getCurrentUser(authentication);
 
         if (!canAccessPattern(pattern, user)) {
+            logger.warn("Unauthorized pattern access attempt: id={}", id);
             return ResponseEntity.status(403).build();
         }
 
@@ -812,6 +825,7 @@ public class PatternController {
         );
 
         patternRepository.save(pattern);
+        logger.info("Pattern downloaded: id={}", id);
 
         Resource resource =
                 new FileSystemResource(filePath);
