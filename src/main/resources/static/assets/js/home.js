@@ -214,6 +214,126 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     }
 
+    /* AJAX pattern refresh */
+
+    const refreshPatterns =
+        document.getElementById('refreshPatterns');
+
+    if (refreshPatterns) {
+
+        refreshPatterns.addEventListener('click', async () => {
+
+            const originalText = refreshPatterns.textContent;
+
+            refreshPatterns.disabled = true;
+            refreshPatterns.textContent = 'Refreshing...';
+
+            try {
+
+                const response = await fetch('/api/patterns', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Pattern request failed');
+                }
+
+                const patterns = await response.json();
+
+                const patternMap = new Map(
+                    patterns.map(pattern => [String(pattern.id), pattern])
+                );
+
+                document
+                    .querySelectorAll('.pattern-card[data-pattern-id]')
+                    .forEach(card => {
+
+                        const pattern =
+                            patternMap.get(card.dataset.patternId);
+
+                        if (!pattern) {
+                            return;
+                        }
+
+                        card.dataset.downloads = pattern.downloads;
+                        card.dataset.price = pattern.price;
+
+                        const titleLink =
+                            card.querySelector('.pattern-title-link');
+
+                        if (titleLink) {
+                            titleLink.textContent = pattern.title;
+                        }
+
+                        const image =
+                            card.querySelector('.pattern-card-image');
+
+                        if (image && pattern.imagePath) {
+                            image.src = pattern.imagePath;
+                            image.alt = pattern.title;
+                        }
+
+                        const category =
+                            card.querySelector('.pattern-category-value');
+
+                        if (category) {
+                            category.textContent = pattern.category;
+                        }
+
+                        const downloads =
+                            card.querySelector('.pattern-download-count');
+
+                        if (downloads) {
+                            downloads.textContent = pattern.downloads;
+                        }
+                    });
+
+                const toast = document.getElementById('toast');
+                const toastMessage = document.getElementById('toastMsg');
+
+                if (toast && toastMessage) {
+                    toastMessage.textContent =
+                        'Marketplace data refreshed';
+                    toast.classList.add('show');
+
+                    clearTimeout(window.patternRefreshToastTimer);
+
+                    window.patternRefreshToastTimer =
+                        setTimeout(() => {
+                            toast.classList.remove('show');
+                        }, 1800);
+                }
+
+            } catch (error) {
+
+                const toast = document.getElementById('toast');
+                const toastMessage = document.getElementById('toastMsg');
+
+                if (toast && toastMessage) {
+                    toastMessage.textContent =
+                        'Could not refresh marketplace';
+                    toast.classList.add('show');
+
+                    clearTimeout(window.patternRefreshToastTimer);
+
+                    window.patternRefreshToastTimer =
+                        setTimeout(() => {
+                            toast.classList.remove('show');
+                        }, 1800);
+                }
+
+            } finally {
+                refreshPatterns.disabled = false;
+                refreshPatterns.textContent = originalText;
+            }
+        });
+    }
+
+
     /* Wishlist hearts */
 
     const wishlistButtons =

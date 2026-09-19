@@ -61,6 +61,31 @@ public class PatternController {
     }
 
 
+    @GetMapping("/patterns/{id}/image")
+    public ResponseEntity<byte[]> getPatternImage(
+            @PathVariable Long id) {
+
+        Pattern pattern = patternRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pattern not found"));
+
+        if (pattern.getImageData() == null || pattern.getImageData().length == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        MediaType mediaType = MediaType.IMAGE_JPEG;
+
+        if (pattern.getImageContentType() != null) {
+            try {
+                mediaType = MediaType.parseMediaType(pattern.getImageContentType());
+            } catch (Exception ignored) {
+            }
+        }
+
+        return ResponseEntity.ok()
+                .contentType(mediaType)
+                .body(pattern.getImageData());
+    }
+
     @GetMapping("/patterns/new")
     public String newPattern(Model model) {
         model.addAttribute("categories", Pattern.CATEGORIES);
@@ -173,14 +198,6 @@ public class PatternController {
                 return "redirect:/patterns/new";
             }
 
-            Path imageDirectory =
-                    Paths.get(
-                                    "uploads",
-                                    "pattern-images"
-                            )
-                            .toAbsolutePath()
-                            .normalize();
-
             Path patternDirectory =
                     Paths.get(
                                     "uploads",
@@ -189,34 +206,19 @@ public class PatternController {
                             .toAbsolutePath()
                             .normalize();
 
-            Files.createDirectories(imageDirectory);
             Files.createDirectories(patternDirectory);
-
-            String imageExtension =
-                    getFileExtension(imageOriginalName);
-
-            String imageFilename =
-                    UUID.randomUUID()
-                            .toString()
-                            + imageExtension;
 
             String patternFilename =
                     UUID.randomUUID()
                             .toString()
                             + ".pdf";
 
-            Path imagePath =
-                    imageDirectory
-                            .resolve(imageFilename)
-                            .normalize();
-
             Path patternPath =
                     patternDirectory
                             .resolve(patternFilename)
                             .normalize();
 
-            if (!imagePath.startsWith(imageDirectory)
-                    || !patternPath.startsWith(patternDirectory)) {
+            if (!patternPath.startsWith(patternDirectory)) {
 
                 redirectAttributes.addFlashAttribute(
                         "patternError",
@@ -225,12 +227,6 @@ public class PatternController {
 
                 return "redirect:/patterns/new";
             }
-
-            Files.copy(
-                    image.getInputStream(),
-                    imagePath,
-                    StandardCopyOption.REPLACE_EXISTING
-            );
 
             Files.copy(
                     patternFile.getInputStream(),
@@ -265,10 +261,15 @@ public class PatternController {
             pattern.setOriginalPrice(isFree ? 0.0 : price);
             pattern.setDiscountPercent(0.0);
 
-            pattern.setImagePath(
-                    "/uploads/pattern-images/"
-                            + imageFilename
+            pattern.setImageData(
+                    image.getBytes()
             );
+
+            pattern.setImageContentType(
+                    image.getContentType()
+            );
+
+            pattern.setImagePath(null);
 
             pattern.setFilePath(
                     "/uploads/private-patterns/"
@@ -429,24 +430,15 @@ public class PatternController {
                     return "redirect:/patterns/" + id + "/edit";
                 }
 
-                Path imageDirectory = Paths.get("uploads", "pattern-images")
-                        .toAbsolutePath().normalize();
-                Files.createDirectories(imageDirectory);
-
-                String filename = UUID.randomUUID() + getFileExtension(originalName);
-                Path imagePath = imageDirectory.resolve(filename).normalize();
-
-                if (!imagePath.startsWith(imageDirectory)) {
-                    throw new IOException("Invalid image path");
-                }
-
-                Files.copy(
-                        image.getInputStream(),
-                        imagePath,
-                        StandardCopyOption.REPLACE_EXISTING
+                pattern.setImageData(
+                        image.getBytes()
                 );
 
-                pattern.setImagePath("/uploads/pattern-images/" + filename);
+                pattern.setImageContentType(
+                        image.getContentType()
+                );
+
+                pattern.setImagePath(null);
             }
 
             if (patternFile != null && !patternFile.isEmpty()) {

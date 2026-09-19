@@ -57,6 +57,12 @@ public class Pattern {
 
     private String imagePath;
 
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] imageData;
+
+    private String imageContentType;
+
     private String filePath;
 
     private long likes = 0;
@@ -203,11 +209,30 @@ public class Pattern {
     }
 
     public String getImagePath() {
+        if (imageData != null && imageData.length > 0 && id != null) {
+            return "/patterns/" + id + "/image";
+        }
         return imagePath;
     }
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
+    }
+
+    public String getImageContentType() {
+        return imageContentType;
+    }
+
+    public void setImageContentType(String imageContentType) {
+        this.imageContentType = imageContentType;
     }
 
     public String getFilePath() {

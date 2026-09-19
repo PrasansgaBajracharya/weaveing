@@ -386,9 +386,11 @@
 
         </div>
 
-        <a href="#" class="btn btn-ghost">
-            See All
-        </a>
+        <button id="refreshPatterns"
+                class="btn btn-ghost"
+                type="button">
+            Refresh patterns
+        </button>
 
     </div>
 
@@ -398,7 +400,7 @@
         <!-- REAL APPROVED PATTERNS -->
         <div th:each="pattern : ${approvedPatterns}"
              class="pattern-card reveal-scale"
-             th:attr="data-category=${#strings.toLowerCase(pattern.category)}, data-difficulty=${#strings.toLowerCase(pattern.difficulty)}, data-price-type=${pattern.free ? 'free' : 'paid'}, data-price=${pattern.price}, data-downloads=${pattern.downloads}">
+             th:attr="data-pattern-id=${pattern.id}, data-category=${#strings.toLowerCase(pattern.category)}, data-difficulty=${#strings.toLowerCase(pattern.difficulty)}, data-price-type=${pattern.free ? 'free' : 'paid'}, data-price=${pattern.price}, data-downloads=${pattern.downloads}">
 
             <div class="pattern-thumb">
 
@@ -410,7 +412,8 @@
                 <a th:href="@{/patterns/{id}(id=${pattern.id})}"
                    class="pattern-image-link"
                    th:attr="aria-label=|View ${pattern.title}|">
-                    <img th:src="${pattern.imagePath}"
+                    <img class="pattern-card-image"
+                         th:src="${pattern.imagePath}"
                          th:alt="${pattern.title}">
                 </a>
 
@@ -435,7 +438,8 @@
             <div class="pattern-body">
 
                 <p class="pattern-title">
-                    <a th:href="@{/patterns/{id}(id=${pattern.id})}"
+                    <a class="pattern-title-link"
+                       th:href="@{/patterns/{id}(id=${pattern.id})}"
                        th:text="${pattern.title}">
                         Pattern title
                     </a>
@@ -451,7 +455,7 @@
                     </span>
                 </div>
 
-                <span class="pattern-category"
+                <span class="pattern-category pattern-category-value"
                       th:text="${pattern.categoryLabel}">
                     Amigurumi &amp; Toys
                 </span>
