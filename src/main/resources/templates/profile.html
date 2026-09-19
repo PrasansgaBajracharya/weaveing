@@ -71,6 +71,7 @@
 
             <img th:if="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
                  th:src="${user.profileImagePath}"
+                         th:style="|object-position: ${user.profileImageObjectPosition};|"
                  alt="Profile picture">
 
             <span th:unless="${user.profileImagePath != null and !#strings.isEmpty(user.profileImagePath)}"
@@ -210,16 +211,25 @@
 
             </div>
 
-            <a th:href="@{/patterns/new}"
-               class="dark-button">
+            <div class="my-pattern-actions">
+                <button type="button"
+                        id="patternEditToggle"
+                        class="pattern-edit-toggle"
+                        aria-expanded="false"
+                        aria-controls="myPatternGrid">
+                    Edit patterns
+                </button>
 
-                + Post Pattern
-
-            </a>
+                <a th:href="@{/patterns/new}"
+                   class="dark-button">
+                    + Post Pattern
+                </a>
+            </div>
 
         </div>
 
-        <div class="pattern-grid"
+        <div id="myPatternGrid"
+             class="pattern-grid"
              th:if="${!myPatterns.isEmpty()}">
 
             <article class="pattern-card"
@@ -233,7 +243,8 @@
 
                         <img th:if="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}"
                              th:src="${pattern.imagePath}"
-                             th:alt="${pattern.title}">
+                             th:alt="${pattern.title}"
+                             th:style="|object-position: ${pattern.imageObjectPosition};|">
 
                         <span th:unless="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}"
                               class="pattern-placeholder">
@@ -251,7 +262,8 @@
 
                         <img th:if="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}"
                              th:src="${pattern.imagePath}"
-                             th:alt="${pattern.title}">
+                             th:alt="${pattern.title}"
+                             th:style="|object-position: ${pattern.imageObjectPosition};|">
 
                         <span th:unless="${pattern.imagePath != null and !#strings.isEmpty(pattern.imagePath)}"
                               class="pattern-placeholder">
@@ -338,7 +350,9 @@
                         <form th:if="${pattern.removedAt == null}"
                               th:action="@{/patterns/{id}/delete(id=${pattern.id})}"
                               method="post"
-                              onsubmit="return confirm('Remove this pattern from the marketplace? Existing purchases will remain available.');">
+                              data-confirm="Remove this pattern from the marketplace? Existing purchases will remain available."
+                              data-confirm-title="Remove pattern?"
+                              data-confirm-accept="Remove pattern">
                             <button type="submit" class="manage-button remove">
                                 Remove
                             </button>
@@ -429,7 +443,8 @@
 
                         <img th:if="${purchase.pattern.imagePath != null and !#strings.isEmpty(purchase.pattern.imagePath)}"
                              th:src="${purchase.pattern.imagePath}"
-                             th:alt="${purchase.pattern.title}">
+                             th:alt="${purchase.pattern.title}"
+                             th:style="|object-position: ${purchase.pattern.imageObjectPosition};|">
 
                         <span th:unless="${purchase.pattern.imagePath != null and !#strings.isEmpty(purchase.pattern.imagePath)}"
                               class="pattern-placeholder">
@@ -567,7 +582,8 @@
 
                         <img th:if="${item.pattern.imagePath != null and !#strings.isEmpty(item.pattern.imagePath)}"
                              th:src="${item.pattern.imagePath}"
-                             th:alt="${item.pattern.title}">
+                             th:alt="${item.pattern.title}"
+                             th:style="|object-position: ${item.pattern.imageObjectPosition};|">
 
                         <span th:unless="${item.pattern.imagePath != null and !#strings.isEmpty(item.pattern.imagePath)}"
                               class="pattern-placeholder">
@@ -782,6 +798,24 @@
     </section>
 
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggle = document.getElementById('patternEditToggle');
+        const grid = document.getElementById('myPatternGrid');
+
+        if (!toggle || !grid) {
+            return;
+        }
+
+        toggle.addEventListener('click', function () {
+            const editing = grid.classList.toggle('is-managing');
+            toggle.setAttribute('aria-expanded', editing ? 'true' : 'false');
+            toggle.textContent = editing ? 'Done' : 'Edit patterns';
+            toggle.classList.toggle('is-active', editing);
+        });
+    });
+</script>
 
 <script th:src="@{/assets/js/confirmation.js}"></script>
 </body>

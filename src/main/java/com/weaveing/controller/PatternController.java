@@ -103,8 +103,10 @@ public class PatternController {
             @RequestParam("category") String category,
             @RequestParam("difficulty") String difficulty,
             @RequestParam("priceType") String priceType,
-            @RequestParam("price") double price,
+            @RequestParam(value = "price", defaultValue = "0") double price,
             @RequestParam("image") MultipartFile image,
+            @RequestParam(value = "imagePositionX", defaultValue = "50") int imagePositionX,
+            @RequestParam(value = "imagePositionY", defaultValue = "50") int imagePositionY,
             @RequestParam("patternFile") MultipartFile patternFile,
             Authentication authentication,
             RedirectAttributes redirectAttributes) {
@@ -274,6 +276,8 @@ public class PatternController {
                     image.getContentType()
             );
 
+            pattern.setImagePositionX(imagePositionX);
+            pattern.setImagePositionY(imagePositionY);
             pattern.setImagePath(null);
 
             pattern.setFilePath(
@@ -304,7 +308,7 @@ public class PatternController {
                     "Your pattern has been submitted successfully and is waiting for review."
             );
 
-            return "redirect:/dashboard";
+            return "redirect:/home";
 
         } catch (IOException e) {
             logger.error("Pattern submission failed", e);
@@ -355,6 +359,8 @@ public class PatternController {
             @RequestParam("originalPrice") double originalPrice,
             @RequestParam("discountPercent") double discountPercent,
             @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "imagePositionX", defaultValue = "50") int imagePositionX,
+            @RequestParam(value = "imagePositionY", defaultValue = "50") int imagePositionY,
             @RequestParam(value = "patternFile", required = false) MultipartFile patternFile,
             Authentication authentication,
             RedirectAttributes redirectAttributes) {
@@ -425,6 +431,8 @@ public class PatternController {
                     || !safeEquals(pattern.getCategory(), category)
                     || !safeEquals(pattern.getDifficulty(), difficulty)
                     || (image != null && !image.isEmpty())
+                    || pattern.getImagePositionX() != Math.max(0, Math.min(100, imagePositionX))
+                    || pattern.getImagePositionY() != Math.max(0, Math.min(100, imagePositionY))
                     || (patternFile != null && !patternFile.isEmpty());
 
             if (image != null && !image.isEmpty()) {
@@ -479,6 +487,9 @@ public class PatternController {
 
                 pattern.setFilePath("/uploads/private-patterns/" + filename);
             }
+
+            pattern.setImagePositionX(imagePositionX);
+            pattern.setImagePositionY(imagePositionY);
 
             pattern.setTitle(title);
             pattern.setDescription(description);
@@ -654,7 +665,7 @@ public class PatternController {
 
         java.util.List<Pattern> relatedPatterns =
                 patternRepository
-                        .findTop4ByApprovalStatusAndRemovedAtIsNullAndCategoryAndIdNotOrderBySubmittedAtDesc(
+                        .findTop8ByApprovalStatusAndRemovedAtIsNullAndCategoryAndIdNotOrderBySubmittedAtDesc(
                                 Pattern.ApprovalStatus.APPROVED,
                                 pattern.getCategory(),
                                 pattern.getId()
