@@ -1,6 +1,8 @@
 package com.weaveing.controller;
 
 import com.weaveing.entity.Pattern;
+import com.weaveing.dto.LeaderboardEntry;
+import com.weaveing.service.LeaderboardService;
 import com.weaveing.entity.Purchase;
 import com.weaveing.entity.User;
 import com.weaveing.repository.PatternRepository;
@@ -28,17 +30,20 @@ public class HomeController {
     private final PatternRepository patternRepository;
     private final PurchaseRepository purchaseRepository;
     private final WishlistRepository wishlistRepository;
+    private final LeaderboardService leaderboardService;
 
     public HomeController(
             UserRepository userRepository,
             PatternRepository patternRepository,
             PurchaseRepository purchaseRepository,
-            WishlistRepository wishlistRepository) {
+            WishlistRepository wishlistRepository,
+            LeaderboardService leaderboardService) {
 
         this.userRepository = userRepository;
         this.patternRepository = patternRepository;
         this.purchaseRepository = purchaseRepository;
         this.wishlistRepository = wishlistRepository;
+        this.leaderboardService = leaderboardService;
     }
 
     @GetMapping("/home")
@@ -49,6 +54,7 @@ public class HomeController {
             @RequestParam(defaultValue = "all") String priceType,
             @RequestParam(defaultValue = "newest") String sort,
             @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "creators") String leaderboard,
             Authentication authentication,
             Model model) {
 
@@ -226,6 +232,28 @@ public class HomeController {
         model.addAttribute("hasNext", totalPages > 0 && page < totalPages - 1);
         model.addAttribute("wishlistPatternIds", wishlistPatternIds);
         model.addAttribute("wishlistCounts", wishlistCounts);
+        List<LeaderboardEntry> leaderboardEntries;
+        String leaderboardMetric;
+
+        switch (leaderboard) {
+            case "sellers" -> {
+                leaderboardEntries = leaderboardService.getTopSellers();
+                leaderboardMetric = "Top Sellers";
+            }
+            case "downloads" -> {
+                leaderboardEntries = leaderboardService.getMostDownloaded();
+                leaderboardMetric = "Most Downloaded";
+            }
+            default -> {
+                leaderboard = "creators";
+                leaderboardEntries = leaderboardService.getTopCreators();
+                leaderboardMetric = "Top Creators";
+            }
+        }
+
+        model.addAttribute("leaderboardEntries", leaderboardEntries);
+        model.addAttribute("leaderboardMetric", leaderboardMetric);
+        model.addAttribute("selectedLeaderboard", leaderboard);
         model.addAttribute("categories", Pattern.CATEGORIES);
 
         model.addAttribute("search", cleanSearch);

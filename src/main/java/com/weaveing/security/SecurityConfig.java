@@ -36,6 +36,7 @@ public class SecurityConfig {
                                 "/verify",
                                 "/verify-device",
                                 "/patterns/{id}",
+                                "/patterns/{id}/image",
                                 "/api/patterns",
                                 "/api/patterns/{id}",
                                 "/api/vacancies",

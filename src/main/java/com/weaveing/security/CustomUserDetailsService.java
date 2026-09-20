@@ -53,7 +53,7 @@ public class CustomUserDetailsService
                                 new String[0]
                         )
                 )
-                .disabled(!user.isVerified())
+                .disabled(!user.isVerified() || user.isBanned())
                 .build();
     }
 }

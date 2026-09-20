@@ -157,6 +157,60 @@
 
         </section>
 
+        <section class="admin-section notification-section">
+
+            <div class="section-heading notification-heading">
+                <div>
+                    <p class="section-kicker">PATTERN REPORTS</p>
+                    <h2>Pending pattern reports</h2>
+                    <p>Reports submitted by users that need pattern moderation review.</p>
+                </div>
+                <span class="section-count"
+                      th:text="${pendingPatternReports.size()}">0</span>
+            </div>
+
+            <div class="notification-list"
+                 th:if="${!pendingPatternReports.isEmpty()}">
+
+                <article class="notification-card"
+                         th:each="report : ${pendingPatternReports}">
+
+                    <div class="notification-icon" aria-hidden="true">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                             stroke-linejoin="round">
+                            <path d="M12 3 2.8 20h18.4L12 3z"></path>
+                            <path d="M12 9v5"></path>
+                            <path d="M12 17h.01"></path>
+                        </svg>
+                    </div>
+
+                    <div class="notification-content">
+                        <span class="notification-kicker">PATTERN REPORT</span>
+                        <h3 th:text="${report.pattern.title}">Pattern title</h3>
+                        <p>
+                            Reported by
+                            <strong th:text="'@' + ${report.reportedBy.username}">@reporter</strong>
+                            and waiting for moderation.
+                        </p>
+                    </div>
+
+                    <a th:href="@{/admin/pattern-reports}"
+                       class="notification-action">
+                        Review reports
+                    </a>
+
+                </article>
+
+            </div>
+
+            <div class="simple-empty"
+                 th:if="${pendingPatternReports.isEmpty()}">
+                No pattern reports are waiting for review.
+            </div>
+
+        </section>
+
     </main>
 
 </div>

@@ -21,7 +21,7 @@
 
     <div class="container nav-inner">
 
-        <a th:href="@{/landing}" class="logo home-logo" aria-label="weave.ing home">
+        <a th:href="@{/home}" class="logo home-logo" aria-label="weave.ing home">
             <img th:src="@{/assets/images/logo.png}" alt="weave.ing">
         </a>
 
@@ -32,21 +32,6 @@
         </ul>
 
         <div class="nav-actions">
-
-            <a th:href="@{/messages}"
-               class="icon-btn messages-nav-btn"
-               aria-label="Messages">
-
-                <svg width="21" height="21"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="1.8"
-                     stroke-linecap="round"
-                     stroke-linejoin="round">
-                    <path d="M20 11.5a8.5 8.5 0 0 1-8.5 8.5H6l-3 2 .5-4.2A8.5 8.5 0 1 1 20 11.5z"/>
-                </svg>
-            </a>
 
             <a th:href="@{/wishlist}"
                class="icon-btn wishlist-nav-btn"
@@ -103,6 +88,26 @@
                 </span>
             </a>
 
+            <a th:href="@{/notifications}"
+               class="icon-btn notification-nav-btn"
+               aria-label="Notifications">
+
+                <svg width="21" height="21"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                    <path d="M10 21h4"/>
+                </svg>
+
+                <span th:if="${notificationUnreadCount > 0}"
+                      class="notification-badge"
+                      th:text="${notificationUnreadCount}">0</span>
+            </a>
+
         </div>
 
         <!-- Mobile hamburger -->
@@ -128,8 +133,6 @@
     <a href="#patterns">Marketplace</a>
     <a href="#leaderboard">Leaderboard</a>
     <a th:href="@{/vacancies}">Vacancies</a>
-    <a th:href="@{/messages}">Messages</a>
-
     <a th:if="${!user.admin}"
        th:href="@{/patterns/new}"
        class="btn btn-outline">
@@ -145,6 +148,11 @@
     <a th:href="@{/dashboard}"
        class="btn btn-outline">
         Dashboard
+    </a>
+
+    <a th:href="@{/notifications}"
+       class="btn btn-outline">
+        Notifications
     </a>
 
     <a th:href="@{/profile}"
@@ -597,7 +605,7 @@
             <h2>Leaderboard</h2>
 
             <p class="subtitle">
-                Top creators, ranked by community love this month.
+                Real community activity from approved patterns, sales, downloads, and saves.
             </p>
 
         </div>
@@ -605,187 +613,166 @@
     </div>
 
 
-    <div class="lb-tabs" id="lbTabs">
+    <div class="lb-tabs" id="lbTabs" role="tablist" aria-label="Leaderboard categories">
 
-        <button class="active">
+        <button type="button"
+                class="lb-tab"
+                data-leaderboard-type="creators"
+                th:classappend="${selectedLeaderboard == 'creators'} ? ' active' : ''">
             Top Creators
         </button>
 
-        <button>
+        <button type="button"
+                class="lb-tab"
+                data-leaderboard-type="sellers"
+                th:classappend="${selectedLeaderboard == 'sellers'} ? ' active' : ''">
             Top Sellers
         </button>
 
-        <button>
+        <button type="button"
+                class="lb-tab"
+                data-leaderboard-type="downloads"
+                th:classappend="${selectedLeaderboard == 'downloads'} ? ' active' : ''">
             Most Downloaded
         </button>
 
-        <button>
+        <button type="button" disabled title="Weekly activity is not tracked yet.">
             Weekly
         </button>
 
-        <button>
+        <button type="button" class="scope-active" disabled title="Showing all-time activity.">
             All Time
         </button>
 
     </div>
 
 
-    <div class="lb-list">
+    <div class="lb-status"
+         id="leaderboardStatus"
+         aria-live="polite"></div>
 
 
-        <div class="lb-item reveal">
+    <div class="lb-list"
+         id="leaderboardList"
+         th:if="${!leaderboardEntries.isEmpty()}">
 
-            <div class="lb-rank">🥇</div>
-
-            <div class="lb-avatar">
-
-                <img th:src="@{/assets/images/gintoki-doll.png}"
-                     alt="">
-
-            </div>
-
-            <div class="lb-info">
-
-                <div class="name">
-                    Prasangsa B.
-                </div>
-
-                <div class="badge">
-                    Top Designer · Founder
-                </div>
-
-            </div>
-
-            <div class="lb-score">
-                4,820 XP
-            </div>
-
-        </div>
-
-
-        <div class="lb-item reveal">
-
-            <div class="lb-rank">🥈</div>
-
-            <div class="lb-avatar">
-
-                <img th:src="@{/assets/images/pompompurin-doll.png}"
-                     alt="">
-
-            </div>
-
-            <div class="lb-info">
-
-                <div class="name">
-                    Sujita K.
-                </div>
-
-                <div class="badge">
-                    Top Seller
-                </div>
-
-            </div>
-
-            <div class="lb-score">
-                4,105 XP
-            </div>
-
-        </div>
-
-
-        <div class="lb-item reveal">
-
-            <div class="lb-rank">🥉</div>
-
-            <div class="lb-avatar">
-
-                <img th:src="@{/assets/images/luffy-keychain.png}"
-                     alt="">
-
-            </div>
-
-            <div class="lb-info">
-
-                <div class="name">
-                    Aayusha R.
-                </div>
-
-                <div class="badge">
-                    Fast Growing
-                </div>
-
-            </div>
-
-            <div class="lb-score">
-                3,760 XP
-            </div>
-
-        </div>
-
-
-        <div class="lb-item reveal">
+        <div class="lb-item reveal"
+             th:each="entry, stat : ${leaderboardEntries}">
 
             <div class="lb-rank">
-                4
+
+                <svg th:if="${stat.index == 0}"
+                     width="22" height="22"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     aria-hidden="true">
+                    <path d="M8 21h8"/>
+                    <path d="M12 17v4"/>
+                    <path d="M7 4h10v3a5 5 0 0 1-10 0V4z"/>
+                    <path d="M7 6H4a3 3 0 0 0 3 3"/>
+                    <path d="M17 6h3a3 3 0 0 1-3 3"/>
+                    <path d="M9 2h6"/>
+                </svg>
+
+                <svg th:if="${stat.index == 1}"
+                     width="22" height="22"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     aria-hidden="true">
+                    <path d="M8 21h8"/>
+                    <path d="M12 17v4"/>
+                    <path d="M7 4h10v3a5 5 0 0 1-10 0V4z"/>
+                    <path d="M7 6H4a3 3 0 0 0 3 3"/>
+                    <path d="M17 6h3a3 3 0 0 1-3 3"/>
+                    <path d="M9 2h6"/>
+                </svg>
+
+                <svg th:if="${stat.index == 2}"
+                     width="22" height="22"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     aria-hidden="true">
+                    <path d="M8 21h8"/>
+                    <path d="M12 17v4"/>
+                    <path d="M7 4h10v3a5 5 0 0 1-10 0V4z"/>
+                    <path d="M7 6H4a3 3 0 0 0 3 3"/>
+                    <path d="M17 6h3a3 3 0 0 1-3 3"/>
+                    <path d="M9 2h6"/>
+                </svg>
+
+                <span th:if="${stat.index > 2}"
+                      th:text="${stat.index + 1}">4</span>
+
             </div>
 
             <div class="lb-avatar">
 
-                <img th:src="@{/assets/images/pochacco-doll.png}"
-                     alt="">
+                <img th:if="${entry.user.profileImagePath != null and !#strings.isEmpty(entry.user.profileImagePath)}"
+                     th:src="${entry.user.profileImagePath}"
+                     th:style="|object-position: ${entry.user.profileImageObjectPosition};|"
+                     alt="Profile">
+
+                <span th:unless="${entry.user.profileImagePath != null and !#strings.isEmpty(entry.user.profileImagePath)}"
+                      class="avatar-initial"
+                      th:text="${#strings.substring(entry.user.username, 0, 1).toUpperCase()}">
+                    U
+                </span>
 
             </div>
 
             <div class="lb-info">
 
-                <div class="name">
-                    Nisha T.
+                <div class="name"
+                     th:text="${entry.user.name}">
+                    Creator name
                 </div>
 
-                <div class="badge">
-                    Community Favorite
-                </div>
-
-            </div>
-
-            <div class="lb-score">
-                3,412 XP
-            </div>
-
-        </div>
-
-
-        <div class="lb-item reveal">
-
-            <div class="lb-rank">
-                5
-            </div>
-
-            <div class="lb-avatar">
-
-                <img th:src="@{/assets/images/capybara-keychains.png}"
-                     alt="">
-
-            </div>
-
-            <div class="lb-info">
-
-                <div class="name">
-                    Bikash M.
-                </div>
-
-                <div class="badge">
-                    Top Designer
+                <div class="badge"
+                     th:text="${leaderboardMetric}">
+                    Top Creator
                 </div>
 
             </div>
 
             <div class="lb-score">
-                2,988 XP
+
+                <span th:if="${entry.metric == 'XP'}"
+                      th:text="|${entry.score} XP|">
+                    0 XP
+                </span>
+
+                <span th:if="${entry.metric == 'sales'}"
+                      th:text="|${entry.score} sale${entry.score == 1 ? '' : 's'}|">
+                    0 sales
+                </span>
+
+                <span th:if="${entry.metric == 'downloads'}"
+                      th:text="|${entry.score} download${entry.score == 1 ? '' : 's'}|">
+                    0 downloads
+                </span>
+
             </div>
 
         </div>
 
+    </div>
+
+    <div class="lb-empty"
+         id="leaderboardEmpty"
+         th:if="${leaderboardEntries.isEmpty()}">
+        No leaderboard activity yet. Create, sell, download, or save a pattern to appear here.
     </div>
 
 </section>
@@ -961,6 +948,66 @@
     </div>
 
 </footer>
+
+
+<!-- ============ PATTERN SUBMISSION CONFIRMATION ============ -->
+
+<div class="submission-modal"
+     id="submissionModal"
+     th:if="${patternSuccess != null}"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="submissionModalTitle">
+
+    <div class="submission-modal-backdrop" data-close-submission-modal></div>
+
+    <div class="submission-modal-card">
+
+        <button type="button"
+                class="submission-modal-close"
+                aria-label="Close"
+                data-close-submission-modal>
+            <svg width="18" height="18"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round">
+                <path d="M6 6l12 12M18 6L6 18"></path>
+            </svg>
+        </button>
+
+        <div class="submission-modal-icon" aria-hidden="true">
+            <svg width="28" height="28"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+                <path d="M22 2L11 13"></path>
+                <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+            </svg>
+        </div>
+
+        <p class="submission-modal-eyebrow">SUBMISSION RECEIVED</p>
+
+        <h2 id="submissionModalTitle">Your pattern has been sent for review</h2>
+
+        <p>
+            Your pattern has been submitted successfully and is now waiting for review.
+            We will notify you when it has been approved or rejected.
+        </p>
+
+        <button type="button"
+                class="submission-modal-button"
+                data-close-submission-modal>
+            Continue to marketplace
+        </button>
+
+    </div>
+
+</div>
 
 
 <!-- ============ TOAST ============ -->

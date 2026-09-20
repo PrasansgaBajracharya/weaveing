@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pattern Reports — weave.ing</title>
+
+    <link rel="stylesheet" th:href="@{/assets/css/admin-dashboard.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/admin-vacancies.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/confirmation.css}">
+
+    <style>
+        .pattern-reports-page .report-admin-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .pattern-reports-page .admin-report-card {
+            padding: 22px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: var(--white);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .pattern-reports-page .admin-report-card.is-pending {
+            border-color: var(--beige-dark);
+        }
+
+        .pattern-reports-page .admin-report-top,
+        .pattern-reports-page .report-meta-grid,
+        .pattern-reports-page .admin-report-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .pattern-reports-page .admin-report-top {
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .pattern-reports-page .admin-report-top h3 {
+            margin: 5px 0 0;
+            color: var(--brown-dark);
+        }
+
+        .pattern-reports-page .report-card-kicker,
+        .pattern-reports-page .report-meta-grid span,
+        .pattern-reports-page .admin-report-details > span {
+            display: block;
+            color: var(--muted);
+            font-size: .72rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            font-weight: 700;
+        }
+
+        .pattern-reports-page .report-status {
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: .7rem;
+            font-weight: 800;
+            background: var(--beige-mid);
+            color: var(--brown-dark);
+        }
+
+        .pattern-reports-page .report-status.pending {
+            background: var(--beige);
+        }
+
+        .pattern-reports-page .report-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            margin: 20px 0;
+        }
+
+        .pattern-reports-page .report-meta-grid strong {
+            display: block;
+            margin-top: 4px;
+            color: var(--brown-dark);
+            font-size: .88rem;
+        }
+
+        .pattern-reports-page .admin-report-details {
+            padding: 14px 16px;
+            border-radius: 13px;
+            background: var(--beige-light);
+        }
+
+        .pattern-reports-page .admin-report-details p {
+            margin: 7px 0 0;
+            color: var(--text);
+            font-size: .88rem;
+            line-height: 1.55;
+        }
+
+        .pattern-reports-page .admin-report-actions {
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .pattern-reports-page .moderation-button {
+            border: 0;
+            border-radius: 10px;
+            padding: 9px 13px;
+            font: inherit;
+            font-size: .78rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .pattern-reports-page .moderation-button.dismiss,
+        .pattern-reports-page .moderation-button.warn {
+            background: var(--beige-mid);
+            color: var(--brown-dark);
+        }
+
+        .pattern-reports-page .moderation-button.remove {
+            background: var(--brown);
+            color: var(--white);
+        }
+
+        .pattern-reports-page .report-action-note {
+            margin-top: 15px;
+            color: var(--muted);
+            font-size: .8rem;
+        }
+
+        .pattern-reports-page .reports-empty {
+            padding: 48px 24px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: var(--white);
+            color: var(--muted);
+            text-align: center;
+        }
+
+        @media (max-width: 800px) {
+            .pattern-reports-page .report-meta-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 560px) {
+            .pattern-reports-page .admin-report-top {
+                flex-direction: column;
+            }
+
+            .pattern-reports-page .report-meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pattern-reports-page .admin-report-actions {
+                flex-direction: column;
+            }
+
+            .pattern-reports-page .moderation-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="admin-nav">
+    <div class="nav-left">
+        <a th:href="@{/home}" class="logo">
+            <img th:src="@{/assets/images/logo.png}"
+                 alt="weave.ing"
+                 class="site-logo-image">
+        </a>
+    </div>
+
+    <div class="nav-right">
+        <a th:href="@{/admin/notifications}"
+           class="admin-notification-link"
+           aria-label="Admin notifications">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                <path d="M10 21h4"></path>
+            </svg>
+            <span>Notifications</span>
+            <span class="admin-notification-badge"
+                  th:if="${moderationNotificationCount > 0}"
+                  th:text="${moderationNotificationCount}">0</span>
+        </a>
+
+        <span class="admin-badge">ADMIN</span>
+
+        <form th:action="@{/logout}" method="post"
+              data-confirm="Log out of weave.ing?"
+              data-confirm-title="Log out?"
+              data-confirm-accept="Log out">
+            <button type="submit" class="logout-button">Log out</button>
+        </form>
+    </div>
+</nav>
+
+<div class="admin-layout">
+
+    <div th:replace="~{admin-sidebar :: sidebar}"></div>
+
+    <main class="admin-main pattern-reports-page">
+
+        <section class="admin-heading">
+            <p class="eyebrow">COMMUNITY SAFETY</p>
+            <h1>Pattern Reports</h1>
+            <p>Review reports submitted by users and take the appropriate moderation action.</p>
+        </section>
+
+        <section class="admin-section">
+
+            <div class="section-heading">
+                <div>
+                    <p class="section-kicker">MODERATION QUEUE</p>
+                    <h2>Reported patterns</h2>
+                    <p>Pending reports are shown first so they are easy to review.</p>
+                </div>
+                <span class="section-count"
+                      th:text="${pendingPatternReportCount}">
+                    0
+                </span>
+            </div>
+
+            <div class="report-admin-list"
+                 th:if="${!patternReports.isEmpty()}">
+
+                <article class="admin-report-card"
+                         th:each="report : ${patternReports}"
+                         th:classappend="${report.status.name() == 'PENDING'} ? ' is-pending' : ''">
+
+                    <div class="admin-report-top">
+                        <div>
+                            <span class="report-card-kicker"
+                                  th:text="${report.status}">
+                                PENDING
+                            </span>
+                            <h3 th:text="${report.pattern.title}">
+                                Pattern title
+                            </h3>
+                        </div>
+
+                        <span class="report-status"
+                              th:classappend="${report.status.name() == 'PENDING'} ? ' pending' : ''"
+                              th:text="${report.status}">
+                            PENDING
+                        </span>
+                    </div>
+
+                    <div class="report-meta-grid">
+                        <div>
+                            <span>Created by</span>
+                            <strong th:text="'@' + ${report.pattern.creator.username}">@creator</strong>
+                        </div>
+
+                        <div>
+                            <span>Reported by</span>
+                            <strong th:text="'@' + ${report.reportedBy.username}">@reporter</strong>
+                        </div>
+
+                        <div>
+                            <span>Reason</span>
+                            <strong th:text="${report.reason.name() == 'SPAM' ? 'Spam' : (report.reason.name() == 'MISLEADING' ? 'Misleading information' : (report.reason.name() == 'INAPPROPRIATE' ? 'Inappropriate content' : (report.reason.name() == 'UNRELATED' ? 'Unrelated to crochet' : 'Other')))}">
+                                Spam
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Reported</span>
+                            <strong th:text="${report.reportedAt}">
+                                Date
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="admin-report-details">
+                        <span>Reporter details</span>
+                        <p th:text="${report.details != null and !report.details.isBlank() ? report.details : 'No additional details were provided.'}">
+                            No additional details were provided.
+                        </p>
+                    </div>
+
+                    <div class="admin-report-actions"
+                         th:if="${report.status.name() == 'PENDING'}">
+
+                        <form th:action="@{/admin/pattern-reports/{id}/dismiss(id=${report.id})}"
+                              method="post">
+                            <button type="submit" class="moderation-button dismiss">
+                                Dismiss report
+                            </button>
+                        </form>
+
+                        <form th:action="@{/admin/pattern-reports/{id}/warn(id=${report.id})}"
+                              method="post">
+                            <button type="submit" class="moderation-button warn"
+                                    data-confirm="Warn the pattern creator?"
+                                    data-confirm-title="Warn user?"
+                                    data-confirm-accept="Warn">
+                                Warn user
+                            </button>
+                        </form>
+
+                        <form th:action="@{/admin/pattern-reports/{id}/ban(id=${report.id})}"
+                              method="post">
+                            <button type="submit" class="moderation-button warn"
+                                    data-confirm="Ban the pattern creator?"
+                                    data-confirm-title="Ban user?"
+                                    data-confirm-accept="Ban">
+                                Ban user
+                            </button>
+                        </form>
+
+                        <form th:action="@{/admin/pattern-reports/{id}/remove(id=${report.id})}"
+                              method="post">
+                            <button type="submit" class="moderation-button remove"
+                                    data-confirm="Remove this reported pattern?"
+                                    data-confirm-title="Remove pattern?"
+                                    data-confirm-accept="Remove">
+                                Remove pattern
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="report-action-note"
+                         th:if="${report.status.name() != 'PENDING'}">
+                        This report has already been reviewed.
+                    </div>
+
+                </article>
+
+            </div>
+
+            <div class="reports-empty"
+                 th:if="${patternReports.isEmpty()}">
+                <h3>No pattern reports yet.</h3>
+                <p>Reported patterns will appear here for moderation.</p>
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+<script th:src="@{/assets/js/confirmation.js}"></script>
+</body>
+</html>

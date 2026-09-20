@@ -197,7 +197,8 @@ h4 {
 }
 
 .dashboard-layout {
-    min-height: calc(100vh - 76px);
+    min-height: 100vh;
+    padding-top: 132px;
     display: flex;
 }
 
@@ -206,9 +207,9 @@ h4 {
     flex-shrink: 0;
 
     position: sticky;
-    top: 76px;
+    top: 132px;
 
-    height: calc(100vh - 76px);
+    height: calc(100vh - 132px);
 
     display: flex;
     flex-direction: column;

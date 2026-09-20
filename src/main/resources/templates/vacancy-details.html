@@ -30,14 +30,7 @@
 <div th:replace="~{fragments/site-layout :: siteHeader}"></div>
 
 
-<div class="site-back-wrap">
-    <a th:href="@{/vacancies}" class="site-back-button">
-        <span aria-hidden="true">←</span>
-        <span>Back to Vacancy Board</span>
-    </a>
-</div>
-
-<main class="details-page">
+<main class="details-page vacancy-details-page">
 
     <section class="details-card">
 
@@ -347,6 +340,27 @@
                         <p th:text="${app.message}">
                             Application message
                         </p>
+                    </div>
+
+                    <div class="application-cv"
+                         th:if="${app.cvFileName != null}">
+
+                        <div>
+                            <span class="application-message-label">CV</span>
+                            <p class="application-cv-name"
+                               th:text="${app.cvFileName}">
+                                CV.pdf
+                            </p>
+                        </div>
+
+                        <a th:href="@{/vacancies/{vacancyId}/applications/{applicationId}/cv(
+                                    vacancyId=${vacancy.id},
+                                    applicationId=${app.id}
+                                 )}"
+                           class="application-cv-button">
+                            Download CV
+                        </a>
+
                     </div>
 
                     <div class="application-decision"

@@ -22,16 +22,9 @@
 <div th:replace="~{fragments/site-layout :: siteHeader}"></div>
 
 
-<div class="site-back-wrap">
-    <a th:href="@{/vacancies}" class="site-back-button">
-        <span aria-hidden="true">←</span>
-        <span>Back to Vacancy</span>
-    </a>
-</div>
+<main class="form-page application-form-page">
 
-<main class="form-page">
-
-    <section class="form-card">
+    <section class="form-card application-form-card">
 
         <a th:href="@{/vacancies/{id}(id=${vacancy.id})}"
            class="back-link">
@@ -82,6 +75,7 @@
         <form th:action="@{/vacancies/{id}/apply(id=${vacancy.id})}"
               th:object="${application}"
               method="post"
+              enctype="multipart/form-data"
               class="vacancy-form">
 
 
@@ -108,6 +102,35 @@
                    th:if="${error}"
                    th:text="${error}">
                     Please add a message.
+                </p>
+
+            </div>
+
+            <div class="form-field cv-upload-field">
+
+                <label for="cv">
+                    Submit your CV
+                </label>
+
+                <p class="field-help">
+                    Upload a PDF CV so the vacancy owner can verify your experience before contacting you.
+                    Maximum 5 MB. Your CV is sent securely to the vacancy owner and is available only to them.
+                </p>
+
+                <input id="cv"
+                       name="cv"
+                       type="file"
+                       accept="application/pdf,.pdf"
+                       required>
+
+                <p class="field-help cv-safety-note">
+                    For your safety, only upload a CV you are comfortable sharing with this vacancy owner.
+                </p>
+
+                <p class="field-error"
+                   th:if="${cvError}"
+                   th:text="${cvError}">
+                    Please upload a valid PDF CV.
                 </p>
 
             </div>

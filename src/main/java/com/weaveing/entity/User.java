@@ -33,18 +33,13 @@ public class User {
     private boolean admin = false;
 
     @Column(nullable = false)
+    private boolean banned = false;
+
+    @Column(nullable = false)
     private LocalDateTime createdAt =
             LocalDateTime.now();
 
-    /*
-     * Profile picture
-     *
-     * Stores the web-accessible path of the user's
-     * uploaded profile picture.
-     *
-     * Example:
-     * /uploads/profile-pictures/profile-12-abc123.png
-     */
+    /* Profile picture */
     @Column
     private String profileImagePath;
 
@@ -120,6 +115,14 @@ public class User {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    public boolean isBanned() {
+        return banned;
+    }
+
+    public void setBanned(boolean banned) {
+        this.banned = banned;
     }
 
     public LocalDateTime getCreatedAt() {

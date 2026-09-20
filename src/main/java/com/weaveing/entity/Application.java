@@ -35,6 +35,17 @@ public class Application {
     @Column(length = 1000)
     private String message;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "cv_data", columnDefinition = "LONGBLOB")
+    private byte[] cvData;
+
+    @Column(name = "cv_file_name", length = 255)
+    private String cvFileName;
+
+    @Column(name = "cv_content_type", length = 100)
+    private String cvContentType;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Status status = Status.PENDING;
@@ -75,6 +86,30 @@ public class Application {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public byte[] getCvData() {
+        return cvData;
+    }
+
+    public void setCvData(byte[] cvData) {
+        this.cvData = cvData;
+    }
+
+    public String getCvFileName() {
+        return cvFileName;
+    }
+
+    public void setCvFileName(String cvFileName) {
+        this.cvFileName = cvFileName;
+    }
+
+    public String getCvContentType() {
+        return cvContentType;
+    }
+
+    public void setCvContentType(String cvContentType) {
+        this.cvContentType = cvContentType;
     }
 
     public Status getStatus() {

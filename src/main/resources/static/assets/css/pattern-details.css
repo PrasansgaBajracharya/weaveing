@@ -75,7 +75,7 @@
 
 .pattern-details-page {
     min-height: calc(100vh - 76px);
-    padding: 54px 0 90px;
+    padding: 132px 0 90px;
 
     background:
             radial-gradient(
@@ -102,10 +102,14 @@
 /* IMAGE*/
 
 .pattern-details-image-card {
+    width: min(100%, 540px);
+    justify-self: center;
     background: var(--white);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 12px;
+    max-width: 540px;
+    margin: 0 auto;
     box-shadow: var(--shadow-soft);
 }
 
@@ -120,7 +124,7 @@
     width: 100%;
     width: 100%;
     aspect-ratio: 1 / 1;
-    max-height: 760px;
+    max-height: 540px;
     object-fit: cover;
     display: block;
 }
@@ -705,8 +709,13 @@
         padding-top: 0;
     }
 
+    .pattern-details-image-card {
+        max-width: 540px;
+        width: 100%;
+    }
+
     .pattern-details-image {
-        max-height: none;
+        max-height: 520px;
     }
 
 }
@@ -737,7 +746,7 @@
     .pattern-details-page {
         min-height: calc(100vh - 68px);
 
-        padding: 30px 0 60px;
+        padding: 104px 0 60px;
     }
 
     .pattern-details-wrap {
@@ -847,6 +856,30 @@
 .messaging-coming-soon-card h2 { margin:0 0 9px; color:var(--brown-dark); font-family:var(--font-display); font-size:29px; }
 .messaging-coming-soon-card p { margin:0 0 22px; color:var(--muted); font-size:12px; line-height:1.8; }
 body.modal-open { overflow:hidden; }
+
+.pattern-report-row {
+    margin-top: 10px;
+}
+
+.pattern-report-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: .74rem;
+    font-weight: 700;
+    transition: color .2s ease, transform .2s ease;
+}
+
+.pattern-report-link:hover {
+    color: var(--brown-dark);
+    transform: translateX(1px);
+}
+
+.pattern-report-link svg {
+    flex-shrink: 0;
+}
 
 .related-patterns-section {
     padding-top: 18px;
@@ -1656,4 +1689,77 @@ body.modal-open { overflow:hidden; }
     font-size: .72em;
     font-style: normal;
     font-weight: 800;
+}
+
+
+.purchase-message {
+    margin: 16px 0;
+    padding: 13px 16px;
+    border: 1px solid var(--beige-dark);
+    border-radius: 14px;
+    background: var(--beige-light);
+    color: var(--brown-dark);
+    font-size: .86rem;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+/* Pattern report confirmation */
+.pattern-report-confirmation {
+    width: min(92%, 1180px);
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 15px 17px;
+    border: 1px solid var(--beige-dark);
+    border-radius: 16px;
+    background: var(--beige-light);
+    color: var(--brown-dark);
+    box-shadow: var(--shadow-soft);
+    position: relative;
+}
+
+.pattern-report-confirmation-icon {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--brown);
+}
+
+.pattern-report-confirmation strong {
+    display: block;
+    margin-bottom: 3px;
+    font-size: .92rem;
+}
+
+.pattern-report-confirmation p {
+    margin: 0;
+    color: var(--muted);
+    font-size: .82rem;
+    line-height: 1.5;
+}
+
+.pattern-report-confirmation-info {
+    background: var(--white);
+}
+
+.pattern-report-confirmation-close {
+    margin-left: auto;
+    color: var(--brown);
+    text-decoration: none;
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 2px 5px;
+}
+
+@media (max-width: 700px) {
+    .pattern-report-confirmation {
+        margin-top: 0;
+    }
 }

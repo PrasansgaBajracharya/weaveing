@@ -7,7 +7,7 @@
 
     <div class="container nav-inner">
 
-        <a th:href="@{/}" class="logo home-logo" aria-label="weave.ing home">
+        <a th:href="@{/home}" class="logo home-logo" aria-label="weave.ing home">
             <img th:src="@{/assets/images/logo.png}" alt="weave.ing">
         </a>
 
@@ -18,21 +18,6 @@
         </ul>
 
         <div class="nav-actions">
-
-            <a th:href="@{/messages}"
-               class="icon-btn messages-nav-btn"
-               aria-label="Messages">
-
-                <svg width="21" height="21"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="1.8"
-                     stroke-linecap="round"
-                     stroke-linejoin="round">
-                    <path d="M20 11.5a8.5 8.5 0 0 1-8.5 8.5H6l-3 2 .5-4.2A8.5 8.5 0 1 1 20 11.5z"/>
-                </svg>
-            </a>
 
             <a th:href="@{/wishlist}"
                class="icon-btn wishlist-nav-btn"
@@ -89,6 +74,26 @@
                 </span>
             </a>
 
+            <a th:href="@{/notifications}"
+               class="icon-btn notification-nav-btn"
+               aria-label="Notifications">
+
+                <svg width="21" height="21"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                    <path d="M10 21h4"/>
+                </svg>
+
+                <span th:if="${notificationUnreadCount > 0}"
+                      class="notification-badge"
+                      th:text="${notificationUnreadCount}">0</span>
+            </a>
+
         </div>
 
         <!-- Mobile hamburger -->
@@ -111,8 +116,6 @@
     <a th:href="@{/home#patterns}">Marketplace</a>
     <a th:href="@{/home#leaderboard}">Leaderboard</a>
     <a th:href="@{/vacancies}">Vacancies</a>
-    <a th:href="@{/messages}">Messages</a>
-
     <a th:if="${user != null and !user.admin}"
        th:href="@{/patterns/new}"
        class="btn btn-outline">
@@ -133,6 +136,11 @@
     <a th:href="@{/profile}"
        class="btn btn-primary">
         My Account
+    </a>
+
+    <a th:href="@{/notifications}"
+       class="btn btn-outline">
+        Notifications
     </a>
 
 </div>

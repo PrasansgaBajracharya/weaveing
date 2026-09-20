@@ -21,13 +21,6 @@
 <div th:replace="~{fragments/site-layout :: siteHeader}"></div>
 
 
-<div class="site-back-wrap">
-    <a th:href="@{/vacancies}" class="site-back-button">
-        <span aria-hidden="true">←</span>
-        <span>Back to Vacancy Board</span>
-    </a>
-</div>
-
 <main class="vacancy-page report-page">
 
     <div class="form-page">
@@ -359,10 +352,18 @@
         box-shadow: var(--shadow-soft);
     }
 
-    .report-reason input {
+    .report-reason > input[type="radio"] {
+        all: unset;
         position: absolute;
-        opacity: 0;
-        pointer-events: none;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        border: 0;
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        overflow: hidden;
+        white-space: nowrap;
     }
 
     .report-radio {
@@ -374,6 +375,10 @@
         border-radius: 50%;
         position: relative;
         box-sizing: border-box;
+    }
+
+    .report-reason > input[type="radio"]:focus-visible + .report-radio {
+        box-shadow: 0 0 0 3px rgba(99, 77, 64, .12);
     }
 
     .report-reason input:checked + .report-radio {

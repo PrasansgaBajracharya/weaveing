@@ -272,3 +272,62 @@
         width: 100%;
     }
 }
+
+
+.application-cv {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin: 0 24px 20px;
+    padding: 15px 16px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--beige-light);
+}
+
+.application-cv .application-message-label {
+    margin-bottom: 4px;
+}
+
+.application-cv-name {
+    margin: 0;
+    color: var(--brown-dark);
+    font-size: 10px;
+    font-weight: 700;
+    word-break: break-word;
+}
+
+.application-cv-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    flex-shrink: 0;
+    padding: 0 13px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--brown-dark);
+    font-size: 9px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+.application-cv-button:hover {
+    background: var(--beige);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 700px) {
+    .application-cv {
+        align-items: stretch;
+        flex-direction: column;
+        margin: 0 19px 19px;
+    }
+
+    .application-cv-button {
+        width: 100%;
+    }
+}

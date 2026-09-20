@@ -4,13 +4,17 @@ import com.weaveing.entity.Application;
 import com.weaveing.entity.Pattern;
 import com.weaveing.entity.Purchase;
 import com.weaveing.entity.User;
+import com.weaveing.entity.Notification;
 import com.weaveing.entity.Vacancy;
 import com.weaveing.entity.VacancyReport;
+import com.weaveing.entity.PatternReport;
 import com.weaveing.entity.Withdrawal;
 import com.weaveing.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -485,42 +489,75 @@ public class EmailService {
                         ? application.getApplicant().getUsername()
                         : "A weave.ing user";
 
-        SimpleMailMessage message =
-                new SimpleMailMessage();
+        try {
+            var mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper =
+                    new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-        message.setFrom(senderEmail);
-        message.setTo(vacancyOwner.getEmail());
+            helper.setFrom(senderEmail);
+            helper.setTo(vacancyOwner.getEmail());
+            helper.setSubject(
+                    "New application for your weave.ing vacancy"
+            );
 
-        message.setSubject(
-                "New application for your weave.ing vacancy"
-        );
+            helper.setText(
+                    "Hi " +
+                            ownerName +
+                            ",\n\n" +
 
-        message.setText(
-                "Hi " +
-                        ownerName +
-                        ",\n\n" +
+                            "@" +
+                            applicantUsername +
+                            " has applied for your vacancy:\n\n" +
 
-                        "@" +
-                        applicantUsername +
-                        " has applied for your vacancy:\n\n" +
+                            application.getVacancy().getTitle() +
+                            "\n\n" +
 
-                        application.getVacancy().getTitle() +
-                        "\n\n" +
+                            "Application message:\n" +
+                            (
+                                    application.getMessage() != null
+                                            ? application.getMessage()
+                                            : "No message provided."
+                            ) +
+                            "\n\n" +
 
-                        "Application message:\n" +
-                        (
-                                application.getMessage() != null
-                                        ? application.getMessage()
-                                        : "No message provided."
-                        ) +
-                        "\n\n" +
+                            "A CV was submitted with this application. " +
+                            "The CV is also available securely from the application page.\n\n" +
 
-                        "Log in to Weave.ing to review the application.\n\n" +
+                            "Log in to Weave.ing to review the application.\n\n" +
 
-                        "— The Weave.ing Team"
-        );
+                            "— The Weave.ing Team"
+            );
 
-        mailSender.send(message);
+            if (application.getCvData() != null &&
+                    application.getCvData().length > 0) {
+
+                String fileName =
+                        application.getCvFileName() != null &&
+                                !application.getCvFileName().isBlank()
+                                ? application.getCvFileName()
+                                : "cv.pdf";
+
+                String contentType =
+                        application.getCvContentType() != null &&
+                                !application.getCvContentType().isBlank()
+                                ? application.getCvContentType()
+                                : "application/pdf";
+
+                helper.addAttachment(
+                        fileName,
+                        new ByteArrayResource(application.getCvData()),
+                        contentType
+                );
+            }
+
+            mailSender.send(mimeMessage);
+
+        } catch (Exception e) {
+            throw new IllegalStateException(
+                    "Unable to send vacancy application email",
+                    e
+            );
+        }
     }
 
     public void sendVacancyApplicationAcceptedEmail(
@@ -886,6 +923,100 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    public void sendPatternReportAdminNotification(PatternReport report) {
+        if (report == null || report.getPattern() == null) return;
+        List<User> admins = userRepository.findByAdminTrue();
+        String title = report.getPattern().getTitle();
+        String creator = report.getPattern().getCreator() == null ? "Unknown user" : report.getPattern().getCreator().getUsername();
+        String reporter = report.getReportedBy() == null ? "Unknown user" : report.getReportedBy().getUsername();
+        String details = report.getDetails() == null || report.getDetails().isBlank() ? "No additional details were provided." : report.getDetails();
+        String text = "Hello Weave.ing Admin,\n\n" +
+                "A pattern has been reported and is waiting for moderation review.\n\n" +
+                "Pattern: " + title + "\n" +
+                "Created by: @" + creator + "\n" +
+                "Reported by: @" + reporter + "\n" +
+                "Reason: " + report.getReason() + "\n\n" +
+                "Additional details:\n" + details + "\n\n" +
+                "Please review the report from the admin dashboard:\n" +
+                "http://localhost:8080/admin/pattern-reports\n\n" +
+                "— The Weave.ing System";
+        for (User admin : admins) {
+            if (admin.getEmail() == null || admin.getEmail().isBlank()) continue;
+            try {
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setFrom(senderEmail);
+                message.setTo(admin.getEmail());
+                message.setSubject("New pattern report — Weave.ing");
+                message.setText(text);
+                mailSender.send(message);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    public void sendPatternReportUserNotification(PatternReport report) {
+        if (report == null || report.getPattern() == null || report.getPattern().getCreator() == null) return;
+        User user = report.getPattern().getCreator();
+        if (user.getEmail() == null || user.getEmail().isBlank()) return;
+        String name = user.getName() == null || user.getName().isBlank() ? user.getUsername() : user.getName();
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(senderEmail);
+        message.setTo(user.getEmail());
+        message.setSubject("A pattern associated with your account was reported — Weave.ing");
+        message.setText("Hi " + name + ",\n\n" +
+                "A report has been submitted regarding your pattern \"" + report.getPattern().getTitle() + "\" on Weave.ing.\n\n" +
+                "Our moderation team will review the report and the content involved. A report does not automatically mean that a violation has been confirmed.\n\n" +
+                "Please make sure your patterns follow the Weave.ing community guidelines. Repeated or confirmed violations may result in content removal or account restrictions.\n\n" +
+                "— The Weave.ing Team");
+        mailSender.send(message);
+    }
+
+    public void sendPatternModerationWarning(PatternReport report) {
+        if (report == null || report.getPattern() == null || report.getPattern().getCreator() == null) return;
+        User user = report.getPattern().getCreator();
+        if (user.getEmail() == null || user.getEmail().isBlank()) return;
+        String name = user.getName() == null || user.getName().isBlank() ? user.getUsername() : user.getName();
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(senderEmail);
+        message.setTo(user.getEmail());
+        message.setSubject("Moderation warning regarding your weave.ing pattern");
+        message.setText("Hi " + name + ",\n\n" +
+                "Our moderation team has reviewed a report submitted about your pattern:\n\n" +
+                report.getPattern().getTitle() + "\n\n" +
+                "A moderation warning has been issued for this content. Please make sure future patterns follow the Weave.ing community guidelines. Continued or serious violations may result in content removal or account restrictions.\n\n" +
+                "— The Weave.ing Moderation Team");
+        mailSender.send(message);
+    }
+
+    public void sendPatternAccountBanNotification(PatternReport report) {
+        if (report == null || report.getPattern() == null || report.getPattern().getCreator() == null) return;
+        User user = report.getPattern().getCreator();
+        if (user.getEmail() == null || user.getEmail().isBlank()) return;
+        String name = user.getName() == null || user.getName().isBlank() ? user.getUsername() : user.getName();
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(senderEmail);
+        message.setTo(user.getEmail());
+        message.setSubject("Your Weave.ing account has been restricted");
+        message.setText("Hi " + name + ",\n\n" +
+                "Your Weave.ing account has been banned following moderation review of a report concerning your pattern:\n\n" +
+                report.getPattern().getTitle() + "\n\n" +
+                "You will no longer be able to sign in to the account.\n\n" +
+                "— The Weave.ing Moderation Team");
+        mailSender.send(message);
+    }
+
+    public void sendPatternRemovedNotification(Pattern pattern) {
+        if (pattern == null || pattern.getCreator() == null || pattern.getCreator().getEmail() == null || pattern.getCreator().getEmail().isBlank()) return;
+        User user = pattern.getCreator();
+        String name = user.getName() == null || user.getName().isBlank() ? user.getUsername() : user.getName();
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(senderEmail);
+        message.setTo(user.getEmail());
+        message.setSubject("Your weave.ing pattern was removed");
+        message.setText("Hi " + name + ",\n\nYour pattern:\n\n" + pattern.getTitle() + "\n\nhas been removed from the Weave.ing marketplace following moderation review.\n\nPlease review the Weave.ing community guidelines before submitting another pattern.\n\n— The Weave.ing Moderation Team");
+        mailSender.send(message);
+    }
+
     public void sendWithdrawalPendingUserNotification(
             Withdrawal withdrawal) {
 
@@ -1026,6 +1157,73 @@ public class EmailService {
         );
 
         mailSender.send(message);
+    }
+
+    public void sendSaleNotificationEmail(
+            Purchase purchase) {
+
+        if (purchase == null ||
+                purchase.getPattern() == null ||
+                purchase.getPattern().getCreator() == null ||
+                purchase.getPattern().getCreator().getEmail() == null ||
+                purchase.getPattern().getCreator().getEmail().isBlank()) {
+            return;
+        }
+
+        User seller = purchase.getPattern().getCreator();
+        String sellerName = seller.getName();
+
+        if (sellerName == null || sellerName.isBlank()) {
+            sellerName = seller.getUsername();
+        }
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(senderEmail);
+        message.setTo(seller.getEmail());
+        message.setSubject(
+                "Your pattern was purchased — Weave.ing"
+        );
+        message.setText(
+                "Hi " + sellerName + ",\n\n" +
+                        "Your crochet pattern \"" +
+                        purchase.getPattern().getTitle() +
+                        "\" has been purchased successfully.\n\n" +
+                        "Amount added to your Weave.ing earnings: Rs " +
+                        purchase.getAmount() +
+                        "\n\n" +
+                        "You can view your updated earnings in your dashboard.\n\n" +
+                        "— The Weave.ing Team"
+        );
+
+        try {
+            mailSender.send(message);
+        } catch (Exception ignored) {
+        }
+    }
+
+    public void sendNotificationEmail(
+            Notification notification) {
+
+        if (notification == null ||
+                notification.getUser() == null ||
+                notification.getUser().getEmail() == null ||
+                notification.getUser().getEmail().isBlank()) {
+            return;
+        }
+
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(senderEmail);
+            message.setTo(notification.getUser().getEmail());
+            message.setSubject(notification.getTitle() + " — Weave.ing");
+            message.setText(
+                    notification.getMessage() +
+                            "\n\n" +
+                            "You can view this notification in your Weave.ing account."
+            );
+            mailSender.send(message);
+        } catch (Exception ignored) {
+        }
     }
 
 }

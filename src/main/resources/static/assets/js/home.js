@@ -1,5 +1,29 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    /* Pattern submission confirmation */
+    const submissionModal = document.getElementById('submissionModal');
+
+    if (submissionModal) {
+        document.body.classList.add('submission-modal-open');
+
+        const closeSubmissionModal = () => {
+            submissionModal.remove();
+            document.body.classList.remove('submission-modal-open');
+        };
+
+        submissionModal.querySelectorAll('[data-close-submission-modal]')
+            .forEach((button) => {
+                button.addEventListener('click', closeSubmissionModal);
+            });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeSubmissionModal();
+            }
+        }, { once: true });
+    }
+
+
     /* =========================================================
        MOBILE MENU
     ========================================================= */
@@ -618,6 +642,227 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         );
     });
+
+
+    /* Leaderboard tabs */
+
+    const leaderboardTabs =
+        document.querySelectorAll('.lb-tab');
+
+    const leaderboardList =
+        document.getElementById('leaderboardList');
+
+    const leaderboardEmpty =
+        document.getElementById('leaderboardEmpty');
+
+    const leaderboardStatus =
+        document.getElementById('leaderboardStatus');
+
+    function rankIcon(rank) {
+
+        if (rank > 3) {
+            const number = document.createElement('span');
+            number.textContent = rank;
+            return number;
+        }
+
+        const svg = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'svg'
+        );
+
+        svg.setAttribute('width', '22');
+        svg.setAttribute('height', '22');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('stroke-width', '1.8');
+        svg.setAttribute('stroke-linecap', 'round');
+        svg.setAttribute('stroke-linejoin', 'round');
+        svg.setAttribute('aria-hidden', 'true');
+
+        [
+            ['path', {d: 'M8 21h8'}],
+            ['path', {d: 'M12 17v4'}],
+            ['path', {d: 'M7 4h10v3a5 5 0 0 1-10 0V4z'}],
+            ['path', {d: 'M7 6H4a3 3 0 0 0 3 3'}],
+            ['path', {d: 'M17 6h3a3 3 0 0 1-3 3'}],
+            ['path', {d: 'M9 2h6'}]
+        ].forEach(([tag, attributes]) => {
+            const path = document.createElementNS(
+                'http://www.w3.org/2000/svg',
+                tag
+            );
+
+            Object.entries(attributes).forEach(([key, value]) => {
+                path.setAttribute(key, value);
+            });
+
+            svg.appendChild(path);
+        });
+
+        return svg;
+    }
+
+    function createLeaderboardItem(entry) {
+
+        const item = document.createElement('div');
+        item.className = 'lb-item';
+
+        const rank = document.createElement('div');
+        rank.className = 'lb-rank';
+        rank.appendChild(rankIcon(entry.rank));
+
+        const avatar = document.createElement('div');
+        avatar.className = 'lb-avatar';
+
+        if (entry.profileImagePath) {
+            const image = document.createElement('img');
+            image.src = entry.profileImagePath;
+            image.alt = 'Profile';
+
+            if (entry.profileImageObjectPosition) {
+                image.style.objectPosition =
+                    entry.profileImageObjectPosition;
+            }
+
+            avatar.appendChild(image);
+        } else {
+            const initial = document.createElement('span');
+            initial.className = 'avatar-initial';
+            initial.textContent =
+                (entry.username || 'U').charAt(0).toUpperCase();
+            avatar.appendChild(initial);
+        }
+
+        const info = document.createElement('div');
+        info.className = 'lb-info';
+
+        const name = document.createElement('div');
+        name.className = 'name';
+        name.textContent = entry.name || entry.username || 'User';
+
+        const badge = document.createElement('div');
+        badge.className = 'badge';
+        badge.textContent = metricLabel(entry.metric);
+
+        info.appendChild(name);
+        info.appendChild(badge);
+
+        const score = document.createElement('div');
+        score.className = 'lb-score';
+        score.textContent = formatScore(entry);
+
+        item.appendChild(rank);
+        item.appendChild(avatar);
+        item.appendChild(info);
+        item.appendChild(score);
+
+        return item;
+    }
+
+    function metricLabel(metric) {
+        if (metric === 'sales') {
+            return 'Top Sellers';
+        }
+
+        if (metric === 'downloads') {
+            return 'Most Downloaded';
+        }
+
+        return 'Top Creators';
+    }
+
+    function formatScore(entry) {
+        if (entry.metric === 'sales') {
+            return `${entry.score} sale${entry.score === 1 ? '' : 's'}`;
+        }
+
+        if (entry.metric === 'downloads') {
+            return `${entry.score} download${entry.score === 1 ? '' : 's'}`;
+        }
+
+        return `${entry.score} XP`;
+    }
+
+    async function loadLeaderboard(type, activeTab) {
+
+        leaderboardTabs.forEach(tab => {
+            tab.classList.toggle('active', tab === activeTab);
+            tab.disabled = true;
+        });
+
+        if (leaderboardStatus) {
+            leaderboardStatus.textContent = 'Updating leaderboard...';
+        }
+
+        try {
+            const response = await fetch(
+                `/api/leaderboard?type=${encodeURIComponent(type)}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Leaderboard request failed');
+            }
+
+            const entries = await response.json();
+
+            if (leaderboardList) {
+                leaderboardList.replaceChildren();
+            }
+
+            if (leaderboardEmpty) {
+                leaderboardEmpty.hidden = entries.length > 0;
+            }
+
+            if (entries.length > 0 && leaderboardList) {
+                entries.forEach(entry => {
+                    leaderboardList.appendChild(
+                        createLeaderboardItem(entry)
+                    );
+                });
+
+                leaderboardList.hidden = false;
+            } else if (leaderboardList) {
+                leaderboardList.hidden = true;
+            }
+
+            if (leaderboardStatus) {
+                leaderboardStatus.textContent = '';
+            }
+
+        } catch (error) {
+
+            if (leaderboardStatus) {
+                leaderboardStatus.textContent =
+                    'Could not refresh leaderboard. Please try again.';
+            }
+
+        } finally {
+            leaderboardTabs.forEach(tab => {
+                tab.disabled = false;
+            });
+        }
+    }
+
+    if (leaderboardTabs.length && leaderboardList) {
+
+        leaderboardTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                loadLeaderboard(
+                    tab.dataset.leaderboardType,
+                    tab
+                );
+            });
+        });
+    }
 
 
     /* =========================================================

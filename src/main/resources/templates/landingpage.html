@@ -200,7 +200,12 @@
 
                 <div class="product-thumb">
 
-                    <img th:src="${pattern.imagePath}"
+                    <img th:if="${pattern.imageData != null and pattern.imageData.length > 0}"
+                         th:src="@{/patterns/{id}/image(id=${pattern.id})}"
+                         th:alt="${pattern.title}">
+
+                    <img th:if="${pattern.imageData == null or pattern.imageData.length == 0}"
+                         th:src="${pattern.imagePath}"
                          th:alt="${pattern.title}">
 
                     <span class="product-badge"

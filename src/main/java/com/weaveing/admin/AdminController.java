@@ -4,15 +4,18 @@ import com.weaveing.entity.Pattern;
 import com.weaveing.entity.User;
 import com.weaveing.entity.Vacancy;
 import com.weaveing.entity.VacancyReport;
+import com.weaveing.entity.PatternReport;
 import com.weaveing.entity.Purchase;
 import com.weaveing.entity.Withdrawal;
 import com.weaveing.repository.PatternRepository;
 import com.weaveing.repository.UserRepository;
 import com.weaveing.repository.VacancyReportRepository;
 import com.weaveing.repository.VacancyRepository;
+import com.weaveing.repository.PatternReportRepository;
 import com.weaveing.repository.PurchaseRepository;
 import com.weaveing.repository.WithdrawalRepository;
 import com.weaveing.service.EmailService;
+import com.weaveing.service.NotificationService;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -40,26 +43,32 @@ public class AdminController {
     private final UserRepository userRepository;
     private final VacancyRepository vacancyRepository;
     private final VacancyReportRepository vacancyReportRepository;
+    private final PatternReportRepository patternReportRepository;
     private final PurchaseRepository purchaseRepository;
     private final WithdrawalRepository withdrawalRepository;
     private final EmailService emailService;
+    private final NotificationService notificationService;
 
     public AdminController(
             PatternRepository patternRepository,
             UserRepository userRepository,
             VacancyRepository vacancyRepository,
             VacancyReportRepository vacancyReportRepository,
+            PatternReportRepository patternReportRepository,
             PurchaseRepository purchaseRepository,
             WithdrawalRepository withdrawalRepository,
-            EmailService emailService) {
+            EmailService emailService,
+            NotificationService notificationService) {
 
         this.patternRepository = patternRepository;
         this.userRepository = userRepository;
         this.vacancyRepository = vacancyRepository;
         this.vacancyReportRepository = vacancyReportRepository;
+        this.patternReportRepository = patternReportRepository;
         this.purchaseRepository = purchaseRepository;
         this.withdrawalRepository = withdrawalRepository;
         this.emailService = emailService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping
@@ -135,6 +144,24 @@ public class AdminController {
         return "admin-patterns";
     }
 
+
+    @GetMapping("/pattern-reports")
+    public String patternReports(Model model) {
+
+        List<PatternReport> patternReports =
+                patternReportRepository.findAllByOrderByReportedAtDesc();
+
+        model.addAttribute("patternReports", patternReports);
+        model.addAttribute(
+                "pendingPatternReportCount",
+                patternReportRepository.countByStatus(PatternReport.Status.PENDING)
+        );
+
+        addAdminNavigation(model);
+
+        return "admin-pattern-reports";
+    }
+
     @GetMapping("/notifications")
     public String notifications(Model model) {
 
@@ -148,8 +175,14 @@ public class AdminController {
                         VacancyReport.Status.PENDING
                 );
 
+        List<PatternReport> pendingPatternReports =
+                patternReportRepository.findByStatusOrderByReportedAtDesc(
+                        PatternReport.Status.PENDING
+                );
+
         model.addAttribute("pendingPatterns", pendingPatterns);
         model.addAttribute("pendingReports", pendingReports);
+        model.addAttribute("pendingPatternReports", pendingPatternReports);
 
         addAdminNavigation(model);
 
@@ -423,10 +456,7 @@ public class AdminController {
         pattern.setReviewedAt(LocalDateTime.now());
         patternRepository.save(pattern);
 
-        try {
-            emailService.sendPatternApprovalEmail(pattern);
-        } catch (Exception ignored) {
-        }
+        notificationService.notifyPatternApproved(pattern);
 
         return "redirect:/admin/patterns";
     }
@@ -462,11 +492,71 @@ public class AdminController {
         pattern.setReviewedAt(LocalDateTime.now());
         patternRepository.save(pattern);
 
+        notificationService.notifyPatternRejected(pattern);
+
+        return "redirect:/admin/patterns";
+    }
+
+    @PostMapping("/pattern-reports/{reportId}/dismiss")
+    public String dismissPatternReport(@PathVariable Long reportId) {
+        PatternReport report = findPatternReport(reportId);
+        if (report.getStatus() == PatternReport.Status.PENDING) {
+            report.setStatus(PatternReport.Status.DISMISSED);
+            report.setReviewedAt(LocalDateTime.now());
+            patternReportRepository.save(report);
+        }
+        return "redirect:/admin/patterns";
+    }
+
+    @PostMapping("/pattern-reports/{reportId}/warn")
+    public String warnPatternUser(@PathVariable Long reportId) {
+        PatternReport report = findPatternReport(reportId);
+        if (report.getStatus() == PatternReport.Status.PENDING) {
+            report.setStatus(PatternReport.Status.ACTION_TAKEN);
+            report.setReviewedAt(LocalDateTime.now());
+            patternReportRepository.save(report);
+            notificationService.notifyPatternModerationWarning(report);
+        }
+        return "redirect:/admin/patterns";
+    }
+
+    @PostMapping("/pattern-reports/{reportId}/ban")
+    public String banPatternUser(@PathVariable Long reportId) {
+        PatternReport report = findPatternReport(reportId);
+        if (report.getStatus() == PatternReport.Status.PENDING) {
+            User creator = report.getPattern().getCreator();
+            if (creator != null && !creator.isAdmin()) {
+                creator.setBanned(true);
+                userRepository.save(creator);
+                report.setStatus(PatternReport.Status.ACTION_TAKEN);
+                report.setReviewedAt(LocalDateTime.now());
+                patternReportRepository.save(report);
+                try {
+                    emailService.sendPatternAccountBanNotification(report);
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        return "redirect:/admin/patterns";
+    }
+
+    @PostMapping("/pattern-reports/{reportId}/remove")
+    public String removeReportedPattern(@PathVariable Long reportId) {
+        PatternReport report = findPatternReport(reportId);
+        Pattern pattern = report.getPattern();
+        if (pattern.getRemovedAt() == null) {
+            pattern.setRemovedAt(LocalDateTime.now());
+            patternRepository.save(pattern);
+        }
+        if (report.getStatus() == PatternReport.Status.PENDING) {
+            report.setStatus(PatternReport.Status.ACTION_TAKEN);
+            report.setReviewedAt(LocalDateTime.now());
+            patternReportRepository.save(report);
+        }
         try {
-            emailService.sendPatternRejectionEmail(pattern);
+            emailService.sendPatternRemovedNotification(pattern);
         } catch (Exception ignored) {
         }
-
         return "redirect:/admin/patterns";
     }
 
@@ -609,9 +699,14 @@ public class AdminController {
                         VacancyReport.Status.PENDING
                 );
 
+        long pendingPatternReports =
+                patternReportRepository.countByStatus(
+                        PatternReport.Status.PENDING
+                );
+
         model.addAttribute(
                 "moderationNotificationCount",
-                pendingPatterns + pendingReports
+                pendingPatterns + pendingReports + pendingPatternReports
         );
     }
 
@@ -631,6 +726,11 @@ public class AdminController {
                                 "Vacancy not found"
                         )
                 );
+    }
+
+    private PatternReport findPatternReport(Long id) {
+        return patternReportRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pattern report not found"));
     }
 
     private VacancyReport findReport(Long id) {

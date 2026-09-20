@@ -5,8 +5,9 @@
 .home-logo {
     display: inline-flex;
     align-items: center;
-    width: 132px;
-    height: 58px;
+    width: 190px;
+    height: auto;
+    min-height: 58px;
     flex-shrink: 0;
 }
 
@@ -179,4 +180,34 @@
         align-items: flex-start;
         flex-direction: column;
     }
+}
+
+.notification-nav-btn {
+    position: relative;
+}
+
+.notification-nav-btn svg {
+    transition: transform .2s ease;
+}
+
+.notification-nav-btn:hover svg {
+    transform: translateY(-1px);
+}
+
+.notification-badge {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--brown);
+    color: var(--white);
+    font-size: 9px;
+    font-weight: 800;
+    line-height: 1;
 }

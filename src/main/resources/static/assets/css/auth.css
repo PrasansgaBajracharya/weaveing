@@ -551,7 +551,7 @@ body.auth-body {
 .password-toggle {
     position: absolute;
     right: 12px;
-    top: 50%;
+    top: 26px;
     transform: translateY(-50%);
     width: 36px;
     height: 36px;

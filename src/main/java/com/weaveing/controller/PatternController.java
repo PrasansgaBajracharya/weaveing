@@ -690,6 +690,11 @@ public class PatternController {
         );
 
         model.addAttribute(
+                "user",
+                user
+        );
+
+        model.addAttribute(
                 "ownsPattern",
                 ownsPattern
         );

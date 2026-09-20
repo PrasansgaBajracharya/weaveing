@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Pattern — weave.ing</title>
+    <link rel="stylesheet" th:href="@{/assets/css/pattern-report.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/site-layout.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/site-layout :: siteHeader}"></div>
+
+<main class="pattern-report-page">
+    <div class="pattern-report-container">
+
+        <a th:href="@{/patterns/{id}(id=${pattern.id})}"
+           class="pattern-report-back">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M19 12H5"></path>
+                <path d="m12 19-7-7 7-7"></path>
+            </svg>
+            Back to pattern
+        </a>
+
+        <section class="pattern-report-card">
+            <div class="pattern-report-heading">
+                <span class="pattern-report-kicker">COMMUNITY SAFETY</span>
+                <h1>Report this pattern</h1>
+                <p>Help us keep weave.ing a safe and useful space for the crochet community.</p>
+            </div>
+
+            <div class="pattern-report-preview">
+                <span>YOU ARE REPORTING</span>
+                <h2 th:text="${pattern.title}">Pattern title</h2>
+                <p>
+                    Created by
+                    <strong th:text="${pattern.creator.username}">username</strong>
+                </p>
+            </div>
+
+            <form th:action="@{/patterns/{id}/report(id=${pattern.id})}"
+                  th:object="${report}"
+                  method="post"
+                  class="pattern-report-form">
+
+                <div class="pattern-report-field">
+                    <label>Why are you reporting this pattern?</label>
+                    <p class="pattern-report-help">Choose the reason that best describes the problem.</p>
+
+                    <div class="pattern-report-reasons">
+                        <label class="pattern-report-reason" th:each="reason : ${reasons}">
+                            <input type="radio" th:field="*{reason}" th:value="${reason.name()}">
+                            <span class="pattern-report-radio" aria-hidden="true"></span>
+                            <span class="pattern-report-copy">
+                                <strong th:switch="${reason.name()}">
+                                    <span th:case="'SPAM'">Spam</span>
+                                    <span th:case="'MISLEADING'">Misleading information</span>
+                                    <span th:case="'INAPPROPRIATE'">Inappropriate content</span>
+                                    <span th:case="'UNRELATED'">Unrelated to crochet</span>
+                                    <span th:case="'OTHER'">Other</span>
+                                </strong>
+                                <small th:switch="${reason.name()}">
+                                    <span th:case="'SPAM'">Repeated, promotional, or unwanted content.</span>
+                                    <span th:case="'MISLEADING'">The pattern information appears false or deceptive.</span>
+                                    <span th:case="'INAPPROPRIATE'">The content is unsafe, offensive, or unsuitable.</span>
+                                    <span th:case="'UNRELATED'">The pattern does not belong on the crochet marketplace.</span>
+                                    <span th:case="'OTHER'">Something else needs the moderation team's attention.</span>
+                                </small>
+                            </span>
+                        </label>
+                    </div>
+
+                    <p class="pattern-report-error" th:if="${error}" th:text="${error}">Please choose a reason.</p>
+                </div>
+
+                <div class="pattern-report-field">
+                    <label for="pattern-report-details">
+                        Additional details
+                        <span>Optional</span>
+                    </label>
+                    <p class="pattern-report-help">Tell us anything that may help our moderation team understand the issue.</p>
+                    <textarea id="pattern-report-details"
+                              th:field="*{details}"
+                              maxlength="1000"
+                              rows="6"
+                              placeholder="What seems wrong with this pattern?"></textarea>
+                    <div class="pattern-report-character-help">Maximum 1000 characters</div>
+                </div>
+
+                <div class="pattern-report-notice">
+                    <div class="pattern-report-notice-icon" aria-hidden="true">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="1.8"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3 22 20H2L12 3Z"></path>
+                            <path d="M12 9v5"></path>
+                            <path d="M12 17h.01"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <strong>A report does not automatically mean the pattern has violated our rules.</strong>
+                        <p>Our moderation team will review the report and take appropriate action if necessary.</p>
+                    </div>
+                </div>
+
+                <div class="pattern-report-actions">
+                    <a th:href="@{/patterns/{id}(id=${pattern.id})}" class="pattern-report-cancel">Cancel</a>
+                    <button type="submit" class="pattern-report-submit">Submit report</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</main>
+
+</body>
+</html>

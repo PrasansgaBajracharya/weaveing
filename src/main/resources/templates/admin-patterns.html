@@ -14,7 +14,77 @@
     <link rel="stylesheet"
           th:href="@{/assets/css/admin-dashboard.css}">
 
+    <link rel="stylesheet"
+          th:href="@{/assets/css/admin-vacancies.css}">
+
     <link rel="stylesheet" th:href="@{/assets/css/confirmation.css}">
+
+<style>
+    .admin-collapsible {
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: var(--white);
+        overflow: hidden;
+    }
+
+    .admin-collapsible summary {
+        list-style: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 22px 24px;
+    }
+
+    .admin-collapsible summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .admin-collapsible summary::after {
+        content: "+";
+        flex: 0 0 auto;
+        font-size: 1.35rem;
+        color: var(--brown);
+    }
+
+    .admin-collapsible[open] summary::after {
+        content: "−";
+    }
+
+    .admin-collapsible summary h2,
+    .admin-collapsible summary p {
+        margin-left: 0;
+    }
+
+    .admin-collapsible summary h2 {
+        margin-bottom: 5px;
+    }
+
+    .admin-collapsible summary p:last-child {
+        margin-bottom: 0;
+    }
+
+    .collapsible-content {
+        padding: 0 24px 24px;
+    }
+
+    .pattern-reports-link-section .section-heading {
+        margin-bottom: 0;
+    }
+
+    @media (max-width: 700px) {
+        .admin-collapsible summary {
+            align-items: flex-start;
+        }
+
+        .pattern-reports-link-section .section-heading {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+
 </head>
 
 
@@ -393,140 +463,131 @@
 
 
 
-    <!-- ========================================================
-         APPROVED PATTERNS
-         ======================================================== -->
+    <!-- APPROVED PATTERNS -->
 
     <section class="admin-section secondary-section">
 
-
-        <div class="section-heading">
-
-            <p class="section-kicker">
-                PUBLISHED
-            </p>
-
-            <h2>
-                Approved Patterns
-            </h2>
-
-        </div>
-
-
-        <div th:if="${approvedPatterns.isEmpty()}"
-             class="simple-empty">
-
-            No approved patterns yet.
-
-        </div>
-
-
-        <div th:unless="${approvedPatterns.isEmpty()}"
-             class="compact-list">
-
-
-            <div class="compact-card"
-                 th:each="pattern : ${approvedPatterns}">
-
-
+        <details class="admin-collapsible">
+            <summary>
                 <div>
+                    <p class="section-kicker">PUBLISHED</p>
+                    <h2>Approved Patterns</h2>
+                    <p>Patterns currently live on the marketplace.</p>
+                </div>
+                <span class="section-count"
+                      th:text="${approvedPatterns.size()}">
+                    0
+                </span>
+            </summary>
 
-                    <strong th:text="${pattern.title}">
-                        Pattern Title
-                    </strong>
+            <div class="collapsible-content">
 
-                    <span>
+                <div th:if="${approvedPatterns.isEmpty()}"
+                     class="simple-empty">
+                    No approved patterns yet.
+                </div>
 
-                        by @<span th:text="${pattern.creator.username}">
-                            username
+                <div th:unless="${approvedPatterns.isEmpty()}"
+                     class="compact-list">
+
+                    <div class="compact-card"
+                         th:each="pattern : ${approvedPatterns}">
+                        <div>
+                            <strong th:text="${pattern.title}">
+                                Pattern Title
+                            </strong>
+                            <span>
+                                by @<span th:text="${pattern.creator.username}">
+                                    username
+                                </span>
+                            </span>
+                        </div>
+
+                        <span class="status approved">
+                            APPROVED
                         </span>
-
-                    </span>
+                    </div>
 
                 </div>
 
-
-                <span class="status approved">
-                    APPROVED
-                </span>
-
-
             </div>
-
-        </div>
+        </details>
 
     </section>
 
 
-
-    <!-- ========================================================
-         REJECTED PATTERNS
-         ======================================================== -->
+    <!-- REJECTED PATTERNS -->
 
     <section class="admin-section secondary-section">
 
-
-        <div class="section-heading">
-
-            <p class="section-kicker">
-                REVIEW HISTORY
-            </p>
-
-            <h2>
-                Rejected Patterns
-            </h2>
-
-        </div>
-
-
-        <div th:if="${rejectedPatterns.isEmpty()}"
-             class="simple-empty">
-
-            No rejected patterns yet.
-
-        </div>
-
-
-        <div th:unless="${rejectedPatterns.isEmpty()}"
-             class="compact-list">
-
-
-            <div class="compact-card"
-                 th:each="pattern : ${rejectedPatterns}">
-
-
+        <details class="admin-collapsible">
+            <summary>
                 <div>
+                    <p class="section-kicker">REVIEW HISTORY</p>
+                    <h2>Rejected Patterns</h2>
+                    <p>Patterns that were not approved for publication.</p>
+                </div>
+                <span class="section-count"
+                      th:text="${rejectedPatterns.size()}">
+                    0
+                </span>
+            </summary>
 
-                    <strong th:text="${pattern.title}">
-                        Pattern Title
-                    </strong>
+            <div class="collapsible-content">
 
-                    <span>
+                <div th:if="${rejectedPatterns.isEmpty()}"
+                     class="simple-empty">
+                    No rejected patterns yet.
+                </div>
 
-                        by @<span th:text="${pattern.creator.username}">
-                            username
+                <div th:unless="${rejectedPatterns.isEmpty()}"
+                     class="compact-list">
+
+                    <div class="compact-card"
+                         th:each="pattern : ${rejectedPatterns}">
+                        <div>
+                            <strong th:text="${pattern.title}">
+                                Pattern Title
+                            </strong>
+                            <span>
+                                by @<span th:text="${pattern.creator.username}">
+                                    username
+                                </span>
+                            </span>
+                            <small th:if="${pattern.rejectionReason != null}"
+                                   th:text="${pattern.rejectionReason}">
+                                Rejection reason
+                            </small>
+                        </div>
+
+                        <span class="status rejected">
+                            REJECTED
                         </span>
-
-                    </span>
-
-
-                    <small th:if="${pattern.rejectionReason != null}"
-                           th:text="${pattern.rejectionReason}">
-
-                        Rejection reason
-
-                    </small>
+                    </div>
 
                 </div>
 
+            </div>
+        </details>
 
-                <span class="status rejected">
-                    REJECTED
-                </span>
+    </section>
 
 
+    <!-- PATTERN REPORTS LINK -->
+
+    <section class="admin-section secondary-section pattern-reports-link-section">
+
+        <div class="section-heading">
+            <div>
+                <p class="section-kicker">COMMUNITY SAFETY</p>
+                <h2>Pattern Reports</h2>
+                <p>Review reports submitted by the community in the dedicated moderation area.</p>
             </div>
 
+            <a th:href="@{/admin/pattern-reports}"
+               class="notification-action">
+                Review reports
+            </a>
         </div>
 
     </section>

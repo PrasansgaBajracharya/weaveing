@@ -22,13 +22,6 @@
 <div th:replace="~{fragments/site-layout :: siteHeader}"></div>
 
 
-<div class="site-back-wrap">
-    <a th:href="@{/vacancies}" class="site-back-button">
-        <span aria-hidden="true">←</span>
-        <span>Back to Vacancy Board</span>
-    </a>
-</div>
-
 <main class="form-page">
 
     <section class="form-card">
@@ -74,7 +67,8 @@
                        type="text"
                        th:field="*{title}"
                        maxlength="150"
-                       placeholder="e.g. Crochet keychain maker needed">
+                       placeholder="e.g. Crochet keychain maker needed"
+                       required>
 
                 <p class="field-error"
                    th:if="${#fields.hasErrors('title')}"
@@ -98,7 +92,8 @@
                 <textarea id="description"
                           th:field="*{description}"
                           rows="7"
-                          placeholder="Tell the community about the project, what the work involves, and what you're hoping to find..."></textarea>
+                          placeholder="Tell the community about the project, what the work involves, and what you're hoping to find..."
+                          required></textarea>
 
                 <p class="field-error"
                    th:if="${#fields.hasErrors('description')}"
@@ -122,7 +117,8 @@
                 <textarea id="requirements"
                           th:field="*{requirements}"
                           rows="7"
-                          placeholder="e.g. Comfortable with crochet basics, able to follow written patterns, available on weekends..."></textarea>
+                          placeholder="e.g. Comfortable with crochet basics, able to follow written patterns, available on weekends..."
+                          required></textarea>
 
                 <p class="field-error"
                    th:if="${#fields.hasErrors('requirements')}"
@@ -140,7 +136,8 @@
 
                 <input id="deadline"
                        type="date"
-                       th:field="*{deadline}">
+                       th:field="*{deadline}"
+                       required>
 
                 <p class="field-help">
                     Choose the final date people can apply.

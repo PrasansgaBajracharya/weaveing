@@ -18,14 +18,53 @@
 
 <div th:replace="~{fragments/site-layout :: siteHeader}"></div>
 
-<div class="site-back-wrap">
-    <a th:href="@{/home}" class="site-back-button">
-        <span aria-hidden="true">←</span>
-        <span>Back to Marketplace</span>
-    </a>
-</div>
-
 <main class="pattern-details-page">
+
+    <div class="pattern-report-confirmation"
+         th:if="${param.report != null and param.report[0] == 'submitted'}"
+         role="status">
+        <div class="pattern-report-confirmation-icon" aria-hidden="true">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6 9 17l-5-5"></path>
+            </svg>
+        </div>
+        <div>
+            <strong>Your report has been sent. Thank you.</strong>
+            <p>Our moderation team will review it and take appropriate action if needed.</p>
+        </div>
+        <a th:href="@{/patterns/{id}(id=${pattern.id})}"
+           class="pattern-report-confirmation-close"
+           aria-label="Dismiss">
+            ×
+        </a>
+    </div>
+
+    <div class="pattern-report-confirmation pattern-report-confirmation-info"
+         th:if="${param.report != null and param.report[0] == 'already'}"
+         role="status">
+        <div class="pattern-report-confirmation-icon" aria-hidden="true">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 8v4"></path>
+                <path d="M12 16h.01"></path>
+                <circle cx="12" cy="12" r="9"></circle>
+            </svg>
+        </div>
+        <div>
+            <strong>You have already reported this pattern.</strong>
+            <p>Your report is already with the moderation team.</p>
+        </div>
+        <a th:href="@{/patterns/{id}(id=${pattern.id})}"
+           class="pattern-report-confirmation-close"
+           aria-label="Dismiss">
+            ×
+        </a>
+    </div>
+
+
 
     <section class="container pattern-details-wrap">
 
@@ -74,6 +113,29 @@
                 <span aria-hidden="true">✉</span>
                 Message Creator
             </button>
+
+            <div class="pattern-report-row"
+                 th:if="${isAuthenticated and pattern.creator.id != user.id}">
+
+                <a th:href="@{/patterns/{id}/report(id=${pattern.id})}"
+                   class="pattern-report-link">
+
+                    <svg width="15" height="15"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8"
+                         stroke-linecap="round"
+                         stroke-linejoin="round"
+                         aria-hidden="true">
+                        <path d="M12 3 22 20H2L12 3Z"></path>
+                        <path d="M12 9v5"></path>
+                        <path d="M12 17h.01"></path>
+                    </svg>
+
+                    Report Pattern
+                </a>
+            </div>
 
             <div class="pattern-details-stats">
 

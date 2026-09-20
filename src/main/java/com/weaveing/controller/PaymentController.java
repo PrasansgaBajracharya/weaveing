@@ -5,7 +5,7 @@ import com.weaveing.entity.Purchase;
 import com.weaveing.entity.User;
 import com.weaveing.repository.PurchaseRepository;
 import com.weaveing.repository.UserRepository;
-import com.weaveing.service.EmailService;
+import com.weaveing.service.NotificationService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -25,16 +25,16 @@ public class PaymentController {
 
     private final PurchaseRepository purchaseRepository;
     private final UserRepository userRepository;
-    private final EmailService emailService;
+    private final NotificationService notificationService;
 
     public PaymentController(
             PurchaseRepository purchaseRepository,
             UserRepository userRepository,
-            EmailService emailService) {
+            NotificationService notificationService) {
 
         this.purchaseRepository = purchaseRepository;
         this.userRepository = userRepository;
-        this.emailService = emailService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/payment/{purchaseId}")
@@ -169,14 +169,12 @@ public class PaymentController {
 
             purchaseRepository.save(purchase);
 
-            emailService.sendPurchaseConfirmationEmail(
-                    purchase
-            );
+            notificationService.notifyPurchaseConfirmed(purchase);
+            notificationService.notifySellerSale(purchase);
 
             redirectAttributes.addFlashAttribute(
                     "purchaseMessage",
-                    "Payment successful. Your pattern is now unlocked. Transaction ID: " +
-                            transactionId
+                    "Payment successful. Your pattern is now unlocked."
             );
 
             return "redirect:/patterns/" +
@@ -318,9 +316,8 @@ public class PaymentController {
 
                 purchaseRepository.save(purchase);
 
-                emailService.sendPurchaseConfirmationEmail(
-                        purchase
-                );
+                notificationService.notifyPurchaseConfirmed(purchase);
+                notificationService.notifySellerSale(purchase);
             }
 
             session.removeAttribute("wishlistCheckoutPurchaseIds");
