@@ -590,9 +590,16 @@
              th:if="${!#lists.isEmpty(relatedPatterns)}">
 
         <div class="related-patterns-heading">
-            <span class="pattern-details-category">EXPLORE MORE</span>
-            <h2>More like this</h2>
-            <p>Keep exploring patterns from the same category.</p>
+            <div>
+                <span class="pattern-details-category">EXPLORE MORE</span>
+                <h2>More like this</h2>
+                <p>Keep exploring patterns from the same category.</p>
+            </div>
+
+            <span class="related-patterns-count"
+                  th:text="${relatedPatterns.size()} + ' patterns'">
+            4 patterns
+        </span>
         </div>
 
         <div class="related-patterns-grid">
@@ -607,10 +614,17 @@
                          th:alt="${related.title}"
                          th:style="|object-position: ${related.imageObjectPosition};|">
 
+                    <div class="related-pattern-image-shade"></div>
+
                     <span th:if="${related.free}"
                           class="related-free-badge">
-                        Free
-                    </span>
+                    Free
+                </span>
+
+                    <span class="related-pattern-view"
+                          aria-hidden="true">
+                    ↗
+                </span>
 
                 </div>
 
@@ -620,19 +634,28 @@
                         Pattern title
                     </h3>
 
-                    <p>
+                    <p class="related-pattern-creator">
                         by
-                        <a th:href="@{/users/{username}(username=${related.creator.username})}"
-                           class="pattern-creator-link">
-                            @<span th:text="${related.creator.username}">username</span>
-                        </a>
+                        <span th:text="'@' + ${related.creator.username}">
+                        @username
+                    </span>
                     </p>
 
-                    <strong th:text="${related.free
-                        ? 'Free'
-                        : 'Rs ' + #numbers.formatDecimal(related.price, 0, 0)}">
-                        Rs 0
-                    </strong>
+                    <div class="related-pattern-footer">
+
+                        <strong class="related-pattern-price"
+                                th:text="${related.free
+                                ? 'Free'
+                                : 'Rs ' + #numbers.formatDecimal(related.price, 0, 0)}">
+                            Rs 0
+                        </strong>
+
+                        <span class="related-pattern-explore">
+                        Explore
+                        <span aria-hidden="true">→</span>
+                    </span>
+
+                    </div>
 
                 </div>
 

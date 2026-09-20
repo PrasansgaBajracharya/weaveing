@@ -1,11 +1,3 @@
-/* =========================================================
-   weave.ing — Pattern Details Page
-   ========================================================= */
-
-
-/* =========================================================
-   PAGE
-========================================================= */
 
 .pattern-details-body {
     min-height: 100vh;
@@ -15,9 +7,7 @@
 
 
 
-/* =========================================================
-   SIMPLE HEADER
-========================================================= */
+/* SIMPLE HEADER*/
 
 .pattern-details-header {
     position: relative;
@@ -81,9 +71,7 @@
 
 
 
-/* =========================================================
-   MAIN AREA
-========================================================= */
+/* MAIN AREA*/
 
 .pattern-details-page {
     min-height: calc(100vh - 76px);
@@ -111,9 +99,7 @@
 
 
 
-/* =========================================================
-   IMAGE
-========================================================= */
+/* IMAGE*/
 
 .pattern-details-image-card {
     background: var(--white);
@@ -165,9 +151,7 @@
 
 
 
-/* =========================================================
-   CONTENT
-========================================================= */
+/* CONTENT */
 
 .pattern-details-content {
     padding: 12px 0 0;
@@ -259,9 +243,7 @@
 
 
 
-/* =========================================================
-   PRICE
-========================================================= */
+/* PRICE*/
 
 .pattern-details-price-row {
     margin-bottom: 23px;
@@ -276,9 +258,7 @@
 
 
 
-/* =========================================================
-   DESCRIPTION
-========================================================= */
+/*DESCRIPTION */
 
 .pattern-details-description h2 {
     margin: 0 0 10px;
@@ -304,9 +284,7 @@
 
 
 
-/* =========================================================
-   PURCHASE STATUS — PROMINENT NOTIFICATION
-========================================================= */
+/* PURCHASE STATUS — PROMINENT NOTIFICATION*/
 
 .purchase-status-banner {
     display: flex;
@@ -390,9 +368,7 @@
 
 
 
-/* =========================================================
-   ACCESS CARD
-========================================================= */
+/* ACCESS CARD*/
 
 .pattern-access-card {
     display: flex;
@@ -454,22 +430,9 @@
 
 
 
-/* =========================================================
-   ACTION BUTTONS
-========================================================= */
+/*ACTION BUTTONS*/
 
-/*
- * These are REAL clickable actions now.
- *
- * The previous version had:
- *
- * cursor: not-allowed;
- *
- * and muted colors because the purchase button was still
- * a placeholder.
- *
- * That has now been removed.
- */
+/*These are clickable actions. */
 
 .pattern-primary-action {
     display: inline-flex;
@@ -539,9 +502,7 @@
 
 
 
-/* =========================================================
-   ACTION GROUP
-========================================================= */
+/* ACTION GROUP*/
 
 .pattern-action-group {
     display: flex;
@@ -565,9 +526,7 @@
 
 
 
-/* =========================================================
-   SECONDARY ACTION
-========================================================= */
+/*  SECONDARY ACTION*/
 
 .pattern-secondary-action {
     display: inline-flex;
@@ -625,9 +584,7 @@
 
 
 
-/* =========================================================
-   PURCHASE AREA
-========================================================= */
+/* PURCHASE AREA*/
 
 .pattern-purchase-area {
     margin-top: 24px;
@@ -647,9 +604,7 @@
 
 
 
-/* =========================================================
-   PURCHASE BUTTON
-========================================================= */
+/* PURCHASE BUTTON*/
 
 .purchase-pattern-button {
     min-height: 54px;
@@ -661,9 +616,7 @@
 
 
 
-/* =========================================================
-   PENDING PURCHASE BOX
-========================================================= */
+/* PENDING PURCHASE BOX*/
 
 .pending-purchase-box {
     display: flex;
@@ -722,9 +675,7 @@
 
 
 
-/* =========================================================
-   SMALL NOTE
-========================================================= */
+/* SMALL NOTE*/
 
 .pattern-details-note {
     margin: 11px 0 0;
@@ -740,9 +691,7 @@
 
 
 
-/* =========================================================
-   RESPONSIVE — TABLET
-========================================================= */
+/* RESPONSIVE — TABLET*/
 
 @media (max-width: 900px) {
 
@@ -764,9 +713,7 @@
 
 
 
-/* =========================================================
-   RESPONSIVE — MOBILE
-========================================================= */
+/* RESPONSIVE — MOBILE*/
 
 @media (max-width: 640px) {
 
@@ -860,9 +807,7 @@
 
 
 
-/* =========================================================
-   VERY SMALL MOBILE
-========================================================= */
+/* VERY SMALL MOBILE */
 
 @media (max-width: 420px) {
 
@@ -904,26 +849,43 @@
 body.modal-open { overflow:hidden; }
 
 .related-patterns-section {
-    padding-top: 15px;
+    padding-top: 18px;
     padding-bottom: 92px;
 }
 
 .related-patterns-heading {
-    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 26px;
 }
 
 .related-patterns-heading h2 {
-    margin: 5px 0 7px;
+    margin: 7px 0 7px;
     color: var(--brown-dark);
     font-family: var(--font-display);
-    font-size: 30px;
+    font-size: 32px;
     font-weight: 600;
+    line-height: 1.1;
 }
 
 .related-patterns-heading p {
     margin: 0;
     color: var(--muted);
     font-size: 12px;
+    line-height: 1.6;
+}
+
+.related-patterns-count {
+    flex: 0 0 auto;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--white);
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
 }
 
 .related-patterns-grid {
@@ -933,25 +895,36 @@ body.modal-open { overflow:hidden; }
 }
 
 .related-pattern-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
     overflow: hidden;
     color: inherit;
     text-decoration: none;
     background: var(--white);
-    border: 1px solid var(--border);
+    border: 1px solid rgba(86, 65, 54, .10);
     border-radius: 20px;
-    box-shadow: var(--shadow-soft);
-    transition: transform .25s var(--ease), box-shadow .25s var(--ease);
+    box-shadow: 0 6px 20px rgba(74, 56, 48, .06);
+    transition:
+            transform .25s var(--ease),
+            box-shadow .25s var(--ease),
+            border-color .25s ease;
 }
 
 .related-pattern-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-med);
+    transform: translateY(-5px);
+    border-color: rgba(86, 65, 54, .16);
+    box-shadow: 0 14px 30px rgba(74, 56, 48, .11);
 }
 
 .related-pattern-image-wrap {
     position: relative;
-    aspect-ratio: 1 / 1;
+    width: calc(100% - 18px);
+    margin: 9px auto 0;
     overflow: hidden;
+    aspect-ratio: 1.08 / 1;
+    border-radius: 15px;
     background: var(--beige-light);
 }
 
@@ -960,41 +933,152 @@ body.modal-open { overflow:hidden; }
     height: 100%;
     display: block;
     object-fit: cover;
+    transition: transform .5s cubic-bezier(.2, .65, .2, 1);
+}
+
+.related-pattern-card:hover .related-pattern-image-wrap img {
+    transform: scale(1.045);
+}
+
+.related-pattern-image-shade {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(
+            180deg,
+            rgba(34, 24, 19, .02) 0%,
+            transparent 58%,
+            rgba(34, 24, 19, .08) 100%
+    );
 }
 
 .related-free-badge {
     position: absolute;
-    top: 12px;
-    left: 12px;
-    padding: 5px 9px;
-    border-radius: 999px;
-    background: var(--white);
+    top: 11px;
+    left: 11px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    min-height: 27px;
+    padding: 0 10px;
+    border: 1px solid rgba(255, 255, 255, .8);
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, .94);
     color: var(--brown-dark);
+    box-shadow: 0 4px 12px rgba(74, 56, 48, .10);
     font-size: 9px;
-    font-weight: 800;
+    font-weight: 900;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.related-pattern-view {
+    position: absolute;
+    top: 11px;
+    right: 11px;
+    z-index: 2;
+    width: 31px;
+    height: 31px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, .8);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .93);
+    color: var(--brown-dark);
+    box-shadow: 0 4px 12px rgba(74, 56, 48, .10);
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0;
+    transform: translateY(3px);
+    transition:
+            opacity .22s ease,
+            transform .22s ease;
+}
+
+.related-pattern-card:hover .related-pattern-view {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .related-pattern-copy {
-    padding: 15px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    padding: 16px 17px 17px;
 }
 
 .related-pattern-copy h3 {
-    margin: 0 0 5px;
+    display: -webkit-box;
+    min-height: 40px;
+    margin: 0 0 9px;
+    overflow: hidden;
     color: var(--brown-dark);
     font-family: var(--font-display);
     font-size: 18px;
-    line-height: 1.15;
+    font-weight: 600;
+    line-height: 1.2;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
 }
 
-.related-pattern-copy p {
-    margin: 0 0 9px;
+.related-pattern-creator {
+    margin: 0 0 15px;
     color: var(--muted);
     font-size: 10px;
+    line-height: 1.4;
 }
 
-.related-pattern-copy strong {
+.related-pattern-creator span {
     color: var(--brown-dark);
-    font-size: 12px;
+    font-weight: 800;
+}
+
+.related-pattern-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid rgba(86, 65, 54, .08);
+}
+
+.related-pattern-price {
+    display: inline-flex;
+    align-items: center;
+    min-height: 29px;
+    padding: 0 10px;
+    border-radius: 9px;
+    background: var(--beige-light);
+    color: var(--brown-dark);
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.related-pattern-explore {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--brown-light);
+    font-size: 9px;
+    font-weight: 800;
+    white-space: nowrap;
+    transition:
+            color .2s ease,
+            gap .2s ease;
+}
+
+.related-pattern-card:hover .related-pattern-explore {
+    gap: 8px;
+    color: var(--brown-dark);
+}
+
+@media (max-width: 1050px) {
+    .related-patterns-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 900px) {
@@ -1003,12 +1087,41 @@ body.modal-open { overflow:hidden; }
     }
 }
 
+@media (max-width: 640px) {
+    .related-patterns-section {
+        padding-bottom: 60px;
+    }
+
+    .related-patterns-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .related-patterns-heading h2 {
+        font-size: 28px;
+    }
+
+    .related-patterns-grid {
+        gap: 15px;
+    }
+
+    .related-pattern-copy {
+        padding: 15px;
+    }
+}
+
 @media (max-width: 520px) {
     .related-patterns-grid {
         grid-template-columns: 1fr;
     }
-}
 
+    .related-pattern-image-wrap {
+        width: calc(100% - 16px);
+        margin-top: 8px;
+        aspect-ratio: 1.2 / 1;
+    }
+}
 .details-back-link {
     padding: 9px 14px;
     border: 1px solid var(--border);
@@ -1031,7 +1144,7 @@ body.modal-open { overflow:hidden; }
     object-fit: contain;
 }
 
-/* Consistent site logo sizing */
+/*  site logo sizing */
 .site-logo-image {
     display: block;
     width: 190px;
